@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Providers;
+
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Fortify;
+
+final class FortifyServiceProvider extends ServiceProvider
+{
+    public function register(): void {}
+
+    public function boot(): void
+    {
+        $this->bootFortifyDefaults();
+        $this->bootRateLimitingDefaults();
+    }
+
+    private function bootFortifyDefaults(): void
+    {
+        Fortify::twoFactorChallengeView(fn (): Factory|View => view('pages.auth.two-factor-challenge'));
+        Fortify::confirmPasswordView(fn (): Factory|View => view('pages.auth.confirm-password'));
+    }
+
+    private function bootRateLimitingDefaults(): void
+    {
+        RateLimiter::for('two-factor', fn (Request $request) => Limit::perMinute(5)->by($request->session()->get('login.id')));
+        RateLimiter::for('passkeys', function (Request $request): Limit {
+            $credentialId = $request->string('credential.id')->toString();
+            $key = $credentialId !== '' ? $credentialId : $request->session()->getId();
+
+            return Limit::perMinute(10)->by($key.'|'.$request->ip());
+        });
+    }
+}

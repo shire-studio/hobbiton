@@ -1,0 +1,87 @@
+name: quick post
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quick-post
+  cancel-in-progress: false
+
+jobs:
+  kits-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      kits: ${{ steps.kits.outputs.kits }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Read Kits
+        id: kits
+        run: echo "kits=$(jq -c '[.kits | to_entries[] | {name: .key, label: .value.label, repository: .value.repository}]' hobbiton.json)" >> "$GITHUB_OUTPUT"
+
+  post:
+    name: Post ${{ matrix.kit.label }}
+    needs: kits-matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        kit: ${{ fromJson(needs.kits-matrix.outputs.kits) }}
+
+    steps:
+      - name: Checkout Hobbiton
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: 8.5
+          tools: composer:v2
+          coverage: none
+
+      - name: Install Hobbiton Dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Raise ${{ matrix.kit.label }}
+        run: php artisan raise --kit=${{ matrix.kit.name }} --to=${{ runner.temp }}/kit
+
+      - name: Checkout ${{ matrix.kit.repository }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ matrix.kit.repository }}
+          path: starter-kit
+          token: ${{ secrets.STARTER_KIT_TOKEN }}
+
+      - name: Copy Kit
+        run: rsync -a --delete --exclude=/.git "${{ runner.temp }}/kit/" starter-kit/
+
+      - name: Commit and Push
+        working-directory: starter-kit
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message || 'chore: sync from Hobbiton' }}
+          SOURCE: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes for ${{ matrix.kit.label }}."
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit --message="$(printf '%s\n\nPosted from Hobbiton: %s' "$COMMIT_MESSAGE" "$SOURCE")"
+          git push origin HEAD

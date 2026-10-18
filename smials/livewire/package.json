@@ -1,0 +1,39 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vp build",
+    "dev": "vp dev",
+    "lint": "vp lint --fix && vp fmt resources/js resources/css",
+    "test:lint": "vp lint --type-aware && vp fmt --check resources/js resources/css",
+    "test:types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "npm-check-updates": "^23.1.1",
+    "playwright": "^1.64.1",
+    "prettier": "^3.9.10",
+    "prettier-plugin-blade": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "vite-plus": "catalog:"
+  },
+  "dependencies": {
+    "@laravel/passkeys": "^0.4.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "concurrently": "^10.0.6",
+    "fontaine": "^1.0.1",
+    "laravel-vite-plugin": "^3.2.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "vite": "catalog:"
+  },
+  "optionalDependencies": {
+    "@laravel/multiplex": "^0.4.5",
+    "@rollup/rollup-linux-x64-gnu": "^4.64.8",
+    "@rollup/rollup-win32-x64-msvc": "^4.64.8",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.3.3",
+    "@tailwindcss/oxide-win32-x64-msvc": "^4.3.3",
+    "lightningcss-linux-x64-gnu": "^1.33.0",
+    "lightningcss-win32-x64-msvc": "^1.33.0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 2,
+  "htmlWhitespaceSensitivity": "css",
+  "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "./resources/css/app.css",
+  "tailwindFunctions": ["cn", "cva"],
+  "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
+}

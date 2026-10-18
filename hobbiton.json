@@ -1,0 +1,125 @@
+{
+    "$comment": "Hobbiton raises every Shire Studio starter kit from shared smials. Each kit lists its smials in order, later smials override earlier ones. raise, tend, survey, deliver and both CI workflows read this file.",
+    "kits": {
+        "vue": {
+            "label": "Vue",
+            "repository": "shire-studio/laravel-starter-kit-vue",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-vue"
+            ],
+            "replacements": {
+                "{{kit}}": "vue",
+                "{{framework}}": "Vue 3",
+                "{{components}}": "shadcn-vue"
+            }
+        },
+        "react": {
+            "label": "React",
+            "repository": "shire-studio/laravel-starter-kit-react",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-react"
+            ],
+            "replacements": {
+                "{{kit}}": "react",
+                "{{framework}}": "React 19",
+                "{{components}}": "shadcn/ui"
+            }
+        },
+        "svelte": {
+            "label": "Svelte",
+            "repository": "shire-studio/laravel-starter-kit-svelte",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-svelte"
+            ],
+            "replacements": {
+                "{{kit}}": "svelte",
+                "{{framework}}": "Svelte 5",
+                "{{components}}": "shadcn-svelte"
+            }
+        },
+        "livewire": {
+            "label": "Livewire",
+            "repository": "shire-studio/laravel-starter-kit-livewire",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "livewire"
+            ],
+            "replacements": {
+                "{{kit}}": "livewire",
+                "{{framework}}": "Livewire 4",
+                "{{components}}": "Flux"
+            }
+        },
+        "api": {
+            "label": "API",
+            "repository": "shire-studio/laravel-starter-kit-api",
+            "node": false,
+            "smials": [
+                "common",
+                "auth",
+                "api"
+            ],
+            "exclude": [
+                "app/Actions/DeleteUserPasskeys.php",
+                "app/Actions/LoginUser.php",
+                "app/Actions/LogoutUser.php",
+                "app/Http/Middleware/HandleAppearance.php",
+                "app/Http/Requests/TwoFactorAuthenticationRequest.php",
+                "app/Models/Passkey.php",
+                "config/fortify.php",
+                "database/factories/PasskeyFactory.php",
+                "database/migrations/2026_06_11_000000_create_passkeys_table.php",
+                "routes/web.php",
+                "tests/Browser/WelcomeTest.php",
+                "tests/Feature/WellKnownPasskeyEndpointsTest.php",
+                "tests/Unit/Actions/DeleteUserPasskeysTest.php",
+                "tests/Unit/Actions/LoginUserTest.php",
+                "tests/Unit/Middleware/HandleAppearanceTest.php",
+                "tests/Unit/Models/PasskeyTest.php",
+                "tests/Unit/Providers/PasskeyRateLimiterTest.php"
+            ],
+            "replacements": {
+                "{{kit}}": "api",
+                "{{framework}}": "Sanctum",
+                "{{components}}": "JSON resources"
+            }
+        },
+        "blade": {
+            "label": "Blade",
+            "repository": "shire-studio/laravel-starter-kit-blade",
+            "node": true,
+            "smials": [
+                "common",
+                "blade"
+            ],
+            "replacements": {
+                "{{kit}}": "blade",
+                "{{framework}}": "Blade",
+                "{{components}}": "Blade"
+            }
+        }
+    },
+    "replacementPaths": [
+        "composer.json",
+        "README.md",
+        ".github/workflows/tests.yml"
+    ]
+}

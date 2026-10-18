@@ -1,0 +1,131 @@
+import { Form, Head } from '@inertiajs/react'
+import {
+  index as loginOptions,
+  store as loginStore,
+} from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyLoginController'
+import InputError from '@/components/InputError'
+import PasskeyVerify from '@/components/PasskeyVerify'
+import PasswordInput from '@/components/PasswordInput'
+import TextLink from '@/components/TextLink'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Spinner } from '@/components/ui/spinner'
+import AuthLayout from '@/layouts/AuthLayout'
+import { register } from '@/routes'
+import { store } from '@/routes/login'
+import { request } from '@/routes/password'
+
+type Props = {
+  canResetPassword: boolean
+  canRegister: boolean
+  status: string | null
+}
+
+export default function Login({
+  canResetPassword,
+  canRegister,
+  status,
+}: Props) {
+  return (
+    <AuthLayout
+      title="Log in to your account"
+      description="Enter your email and password below to log in"
+    >
+      <Head title="Log in" />
+
+      {status && (
+        <div className="mb-4 text-center text-sm font-medium text-green-600">
+          {status}
+        </div>
+      )}
+
+      <PasskeyVerify
+        routes={{
+          options: loginOptions(),
+          submit: loginStore(),
+        }}
+      />
+
+      <Form
+        {...store.form()}
+        resetOnSuccess={['password']}
+        className="flex flex-col gap-6"
+      >
+        {({ errors, processing, validate }) => (
+          <>
+            <div className="grid gap-6">
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  name="email"
+                  required
+                  autoFocus
+                  tabIndex={1}
+                  autoComplete="email"
+                  placeholder="email@example.com"
+                  onBlur={() => validate('email')}
+                />
+                <InputError message={errors.email} />
+              </div>
+
+              <div className="grid gap-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  {canResetPassword && (
+                    <TextLink href={request()} className="text-sm" tabIndex={5}>
+                      Forgot your password?
+                    </TextLink>
+                  )}
+                </div>
+                <PasswordInput
+                  id="password"
+                  name="password"
+                  required
+                  tabIndex={2}
+                  autoComplete="current-password"
+                  placeholder="Password"
+                  onBlur={() => validate('password')}
+                />
+                <InputError message={errors.password} />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label
+                  htmlFor="remember"
+                  className="flex items-center space-x-3"
+                >
+                  <Checkbox id="remember" name="remember" tabIndex={3} />
+                  <span>Remember me</span>
+                </Label>
+              </div>
+
+              <Button
+                type="submit"
+                className="mt-4 w-full"
+                tabIndex={4}
+                disabled={processing}
+                data-test="login-button"
+              >
+                {processing && <Spinner />}
+                Log in
+              </Button>
+            </div>
+
+            {canRegister && (
+              <div className="text-center text-sm text-muted-foreground">
+                Don't have an account?{' '}
+                <TextLink href={register()} tabIndex={5}>
+                  Sign up
+                </TextLink>
+              </div>
+            )}
+          </>
+        )}
+      </Form>
+    </AuthLayout>
+  )
+}

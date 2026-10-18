@@ -1,0 +1,112 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Notification;
+
+it('renders forgot password page', function (): void {
+    $response = $this->fromRoute('home')
+        ->get(route('password.request'));
+
+    $response->assertOk()
+        ->assertViewIs('pages.auth.forgot-password')
+        ->assertViewHas('status');
+});
+
+it('may send password reset notification', function (): void {
+    Notification::fake();
+
+    $user = User::factory()->create([
+        'email' => 'test@example.com',
+    ]);
+
+    $response = $this->fromRoute('password.request')
+        ->post(route('password.email'), [
+            'email' => 'test@example.com',
+        ]);
+
+    $response->assertRedirectToRoute('password.request')
+        ->assertSessionHas('status', 'A reset link will be sent if the account exists.');
+
+    $this->get(route('password.request'))
+        ->assertOk()
+        ->assertViewIs('pages.auth.forgot-password')
+        ->assertViewHas('status', 'A reset link will be sent if the account exists.');
+
+    Notification::assertSentTo($user, ResetPassword::class);
+});
+
+it('sends the reset link regardless of email letter case', function (): void {
+    Notification::fake();
+
+    $user = User::factory()->create([
+        'email' => 'test@example.com',
+    ]);
+
+    $response = $this->fromRoute('password.request')
+        ->post(route('password.email'), [
+            'email' => 'Test@Example.com',
+        ]);
+
+    $response->assertRedirectToRoute('password.request');
+
+    Notification::assertSentTo($user, ResetPassword::class);
+});
+
+it('validates a password reset request without sending a notification', function (): void {
+    Notification::fake();
+
+    $user = User::factory()->create();
+
+    $response = $this->withPrecognition()
+        ->post(route('password.email'), [
+            'email' => $user->email,
+        ]);
+
+    $response->assertSuccessfulPrecognition();
+    Notification::assertNothingSent();
+});
+
+it('returns generic message for non-existent email', function (): void {
+    Notification::fake();
+
+    $response = $this->fromRoute('password.request')
+        ->post(route('password.email'), [
+            'email' => 'nonexistent@example.com',
+        ]);
+
+    $response->assertRedirectToRoute('password.request')
+        ->assertSessionHas('status', 'A reset link will be sent if the account exists.');
+
+    Notification::assertNothingSent();
+});
+
+it('requires email', function (): void {
+    $response = $this->fromRoute('password.request')
+        ->post(route('password.email'), []);
+
+    $response->assertRedirectToRoute('password.request')
+        ->assertSessionHasErrors('email');
+});
+
+it('requires valid email format', function (): void {
+    $response = $this->fromRoute('password.request')
+        ->post(route('password.email'), [
+            'email' => 'not-an-email',
+        ]);
+
+    $response->assertRedirectToRoute('password.request')
+        ->assertSessionHasErrors('email');
+});
+
+it('redirects authenticated users away from forgot password', function (): void {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)
+        ->fromRoute('dashboard')
+        ->get(route('password.request'));
+
+    $response->assertRedirectToRoute('dashboard');
+});
