@@ -27,7 +27,8 @@ jobs:
 
       - name: Read Kits
         id: kits
-        run: echo "kits=$(jq -c '[.kits | to_entries[] | {name: .key, label: .value.label, repository: .value.repository}]' hobbiton.json)" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "kits=$(jq -c '[.kits | to_entries[] | {name: .key, label: .value.label, repository: .value.repository}]' hobbiton.json)" >> "$GITHUB_OUTPUT"
 
   post:
     name: Post ${{ matrix.kit.label }}
@@ -72,7 +73,7 @@ jobs:
       - name: Commit and Push
         working-directory: starter-kit
         env:
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message || 'chore: sync from Hobbiton' }}
+          COMMIT_MESSAGE: "${{ github.event.head_commit.message || 'chore: sync from Hobbiton' }}"
           SOURCE: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
         run: |
           if [ -z "$(git status --porcelain)" ]; then

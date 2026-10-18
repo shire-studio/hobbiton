@@ -52,7 +52,8 @@ jobs:
 
       - name: Read Kits
         id: kits
-        run: echo "kits=$(jq -c '[.kits | to_entries[] | {name: .key, label: .value.label, node: .value.node}]' hobbiton.json)" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "kits=$(jq -c '[.kits | to_entries[] | {name: .key, label: .value.label, node: .value.node}]' hobbiton.json)" >> "$GITHUB_OUTPUT"
 
   kits:
     name: ${{ matrix.kit.label }}
