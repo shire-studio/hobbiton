@@ -55,6 +55,7 @@ php artisan key:generate
 | `composer survey` | Raise every kit and run its full `composer test` |
 | `composer survey -- --api --tend` | Survey only the API kit, then copy lock files and tool fixes back |
 | `composer deliver -- --vue` | Mirror a kit into a local checkout of its repository, without committing |
+| `composer fence -- --hobbiton` | Protect `main` on every kit repository and on Hobbiton |
 
 ### Tending a Kit
 
@@ -88,9 +89,15 @@ Every kit has its own README header in `art/` of its top smial. `header.html` is
 
 Merging to `main` runs the **quick post** workflow. It raises every kit and opens a pull request on the kit's repository from the `hobbiton/quick-post` branch, titled with the merged commit message. While that pull request is open, later posts add commits to it instead of opening another, so merging it brings the kit up to date with Hobbiton. Kits with nothing to change get no pull request.
 
-Each kit's `main` stays protected, and its own **tests** workflow checks the pull request before it is merged. To post only some kits, run the workflow by hand with a comma separated `kits` input such as `react,svelte`.
+Each kit's own **tests** workflow checks the pull request before it is merged. Tests run on pull requests only, never again after a merge, so `main` must be fenced to keep untested changes out. To post only some kits, run the workflow by hand with a comma separated `kits` input such as `react,svelte`.
 
 The workflow needs a `STARTER_KIT_TOKEN` secret that can push branches and open pull requests on every kit repository (for a fine grained token, **Contents** and **Pull requests** set to read and write). Releases still happen in each kit repository through its own **release** workflow.
+
+### Fencing
+
+`composer fence` protects `main` on every kit repository. A change then needs a pull request, and its `ci` check must pass against the latest `main` before it can merge, so nothing reaches `main` untested. Pass kit flags such as `-- --react` to fence only some kits, and add `--hobbiton` to also fence Hobbiton with its own tests and every survey. Admins can still merge without waiting for checks in an emergency.
+
+Branch protection needs public repositories, so run it once the repositories are made public.
 
 ## License
 

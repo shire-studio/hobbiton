@@ -46,7 +46,8 @@
         "deliver": [
             "Composer\\Config::disableProcessTimeout",
             "node scripts/deliver.js"
-        ]
+        ],
+        "fence": "node scripts/fence.js"
     },
     "config": {
         "optimize-autoloader": true,
