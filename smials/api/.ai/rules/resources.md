@@ -1,11 +1,12 @@
 ---
 paths:
+  - 'app/Http/Controllers/**'
   - 'app/Http/Resources/**'
   - 'app/Enums/**'
   - 'tests/**'
 ---
 
-# API contracts
+# API resources
 
 ## Contract source
 API responses are the contract with clients. Shape every structured response with a final `JsonResource` under `app/Http/Resources` instead of returning models or hand built arrays from controllers. List each attribute explicitly so adding a model column never leaks it to clients.
