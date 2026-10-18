@@ -7,7 +7,6 @@
 <br/>
 
 <p>
-    <a href="https://github.com/shire-studio/laravel-starter-kit-{{kit}}/actions"><img src="https://github.com/shire-studio/laravel-starter-kit-{{kit}}/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
     <a href="https://packagist.org/packages/shire-studio/laravel-starter-kit-{{kit}}"><img src="https://img.shields.io/packagist/v/shire-studio/laravel-starter-kit-{{kit}}" alt="Latest Stable Version"></a>
     <a href="LICENSE.md"><img src="https://img.shields.io/packagist/l/shire-studio/laravel-starter-kit-{{kit}}" alt="License"></a>
 </p>
