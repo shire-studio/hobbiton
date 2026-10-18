@@ -25,10 +25,10 @@ A smial is a folder under `smials/` holding part of a kit. Raising a kit copies 
 | `auth` | Actions, form requests, models, rules, factories and their unit tests | Vue, React, Svelte, Livewire, API |
 | `web` | Session controllers and feature tests that never render a page | Vue, React, Svelte, Livewire |
 | `inertia` | Controllers, routes, middleware, Data classes and feature tests | Vue, React, Svelte |
-| `inertia-vue`, `inertia-react`, `inertia-svelte` | The frontend, its tooling and its lock files | One kit each |
-| `livewire` | Controllers that return Blade views, Livewire components and Flux views | Livewire |
-| `api` | JSON controllers, Sanctum and the API tests | API |
-| `blade` | The landing page | Blade |
+| `inertia-vue`, `inertia-react`, `inertia-svelte` | The frontend, its tooling, its artwork and its lock files | One kit each |
+| `livewire` | Controllers that return Blade views, Livewire components, Flux views and the artwork | Livewire |
+| `api` | JSON controllers, Sanctum, the API tests and the artwork | API |
+| `blade` | The landing page and the artwork | Blade |
 
 `hobbiton.json` lists every kit with its smials, the files it leaves out and the `{{placeholders}}` it fills in. `raise`, `tend`, `survey`, `deliver` and both CI workflows read it.
 
@@ -79,6 +79,10 @@ Edit `raised/react` like any Laravel app. Tend copies each change to the most sp
 ## Lock Files and Vet
 
 Each kit keeps its own `composer.lock`, `pnpm-lock.yaml` and `vet.json` in its top smial, since the kits resolve different packages. The Inertia kits share `vet.json` in `inertia` because their PHP dependencies are identical. After changing a `composer.json` or `package.json`, run `composer survey -- --tend` to refresh the lock files.
+
+## Artwork
+
+Every kit has its own README header in `art/` of its top smial. `header.html` is the source, and `header-light.png` and `header-dark.png` are screenshots of it at 2400 by 800 with a transparent background. Open `header.html#light` or `header.html#dark` in a 1200 by 400 viewport at 2x scale to render them again after changing the tagline or the chips.
 
 ## The Quick Post
 
