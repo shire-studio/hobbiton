@@ -5,6 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      kits:
+        description: Kits to post, separated by commas (for example react,svelte). Leave empty to post every kit.
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -27,8 +32,10 @@ jobs:
 
       - name: Read Kits
         id: kits
+        env:
+          SELECTED: ${{ inputs.kits }}
         run: |
-          echo "kits=$(jq -c '[.kits | to_entries[] | {name: .key, label: .value.label, repository: .value.repository}]' hobbiton.json)" >> "$GITHUB_OUTPUT"
+          echo "kits=$(jq -c --arg selected "$SELECTED" '($selected | split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(. != ""))) as $only | [.kits | to_entries[] | select(($only | length) == 0 or (.key as $k | $only | index($k))) | {name: .key, label: .value.label, repository: .value.repository}]' hobbiton.json)" >> "$GITHUB_OUTPUT"
 
   post:
     name: Post ${{ matrix.kit.label }}
