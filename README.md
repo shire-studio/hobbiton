@@ -1,6 +1,6 @@
 # Hobbiton
 
-Hobbiton is where every Shire Studio Laravel starter kit is grown. Each kit is raised from a stack of shared **smials**, so a fix made once reaches every kit that shares it. When a change lands on `main`, the **quick post** delivers each kit to its own repository.
+Hobbiton is where every Shire Studio Laravel starter kit is grown. Each kit is raised from a stack of shared **smials**, so a fix made once reaches every kit that shares it. When a change lands on `main`, the **quick post** opens a pull request on each kit's repository.
 
 ## The Kits
 
@@ -86,7 +86,11 @@ Every kit has its own README header in `art/` of its top smial. `header.html` is
 
 ## The Quick Post
 
-Merging to `main` runs the **quick post** workflow. It raises every kit and pushes the result to the kit's repository, reusing the merged commit message. It needs a `STARTER_KIT_TOKEN` secret with write access to every kit repository. Releases still happen in each kit repository through its own **release** workflow.
+Merging to `main` runs the **quick post** workflow. It raises every kit and opens a pull request on the kit's repository from the `hobbiton/quick-post` branch, titled with the merged commit message. While that pull request is open, later posts add commits to it instead of opening another, so merging it brings the kit up to date with Hobbiton. Kits with nothing to change get no pull request.
+
+Each kit's `main` stays protected, and its own **tests** workflow checks the pull request before it is merged. To post only some kits, run the workflow by hand with a comma separated `kits` input such as `react,svelte`.
+
+The workflow needs a `STARTER_KIT_TOKEN` secret that can push branches and open pull requests on every kit repository (for a fine grained token, **Contents** and **Pull requests** set to read and write). Releases still happen in each kit repository through its own **release** workflow.
 
 ## License
 
