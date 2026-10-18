@@ -50,4 +50,3 @@ resources/js/types/typescript-transformer-manifest.json
 /opencode.jsonc
 .ai/mcp/mcp.json
 /tests/Browser/Screenshots
-/storage/framework/coverage.php
