@@ -73,23 +73,43 @@ jobs:
           repository: ${{ matrix.kit.repository }}
           path: starter-kit
           token: ${{ secrets.STARTER_KIT_TOKEN }}
+          fetch-depth: 0
 
-      - name: Copy Kit
-        run: rsync -a --delete --exclude=/.git "${{ runner.temp }}/kit/" starter-kit/
-
-      - name: Commit and Push
+      - name: Open or Update the Pull Request
         working-directory: starter-kit
         env:
+          GH_TOKEN: ${{ secrets.STARTER_KIT_TOKEN }}
+          BRANCH: hobbiton/quick-post
           COMMIT_MESSAGE: "${{ github.event.head_commit.message || 'chore: sync from Hobbiton' }}"
           SOURCE: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
         run: |
-          if [ -z "$(git status --porcelain)" ]; then
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          # Build on the open quick post pull request when there is one, so it collects every post until it is merged.
+          pr="$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
+          if [ -n "$pr" ]; then
+            git fetch origin "$BRANCH"
+            git checkout -B "$BRANCH" FETCH_HEAD
+          else
+            git checkout -B "$BRANCH"
+          fi
+
+          rsync -a --delete --exclude=/.git "${{ runner.temp }}/kit/" ./
+          git add -A
+
+          if git diff --cached --quiet; then
             echo "No changes for ${{ matrix.kit.label }}."
             exit 0
           fi
 
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
           git commit --message="$(printf '%s\n\nPosted from Hobbiton: %s' "$COMMIT_MESSAGE" "$SOURCE")"
-          git push origin HEAD
+          git push --force origin "HEAD:$BRANCH"
+
+          body="$(printf 'Posted from [Hobbiton](%s/%s). Edit the kit in Hobbiton rather than on this branch, since every post replaces its files.\n\n%s' "${{ github.server_url }}" "${{ github.repository }}" "$(git log origin/main..HEAD --format='- %s')")"
+
+          if [ -n "$pr" ]; then
+            gh pr edit "$pr" --body "$body"
+          else
+            gh pr create --base main --head "$BRANCH" --title "$(printf '%s' "$COMMIT_MESSAGE" | head -n 1)" --body "$body"
+          fi
