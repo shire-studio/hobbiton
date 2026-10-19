@@ -1,6 +1,0 @@
-[scripts]
-setup_file = ".bloom/setup.sh"
-archive_file = ".bloom/archive.sh"
-
-[scripts.run.queue]
-command = "php artisan queue:work"
