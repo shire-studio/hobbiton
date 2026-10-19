@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "86b0825d79f4dad18c2e0e332b59bc74",
+    "content-hash": "dd898667a7365bfeff331efc9abb1a5b",
     "packages": [
         {
             "name": "brick/math",
@@ -855,16 +855,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "3.2.0",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "cdc139396207a5eba10c242d241fb014cb098390"
+                "reference": "a3059ba1a84c9139c4ae03cf0f45bea276c97c74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/cdc139396207a5eba10c242d241fb014cb098390",
-                "reference": "cdc139396207a5eba10c242d241fb014cb098390",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/a3059ba1a84c9139c4ae03cf0f45bea276c97c74",
+                "reference": "a3059ba1a84c9139c4ae03cf0f45bea276c97c74",
                 "shasum": ""
             },
             "require": {
@@ -954,7 +954,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/3.2.0"
+                "source": "https://github.com/guzzle/psr7/tree/3.1.0"
             },
             "funding": [
                 {
@@ -970,7 +970,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-17T23:57:19+00:00"
+            "time": "2026-08-24T11:02:13+00:00"
         },
         {
             "name": "guzzlehttp/uri-template",
@@ -1410,16 +1410,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.10.4",
+            "version": "2.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "40821b7606d8d946bac57dbd2290076c722e3a65"
+                "reference": "6efbd9c472b91db0a3350fcd601c8332c2382e1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/40821b7606d8d946bac57dbd2290076c722e3a65",
-                "reference": "40821b7606d8d946bac57dbd2290076c722e3a65",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/6efbd9c472b91db0a3350fcd601c8332c2382e1f",
+                "reference": "6efbd9c472b91db0a3350fcd601c8332c2382e1f",
                 "shasum": ""
             },
             "require": {
@@ -1513,7 +1513,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-17T19:59:50+00:00"
+            "time": "2026-09-21T13:07:34+00:00"
         },
         {
             "name": "league/config",
@@ -6297,6 +6297,82 @@
                 "source": "https://github.com/laravel/pint"
             },
             "time": "2026-09-10T10:47:55+00:00"
+        },
+        {
+            "name": "laravel/vet",
+            "version": "v0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/vet.git",
+                "reference": "7b10fd2beecf9f386c92731729c9f33a152b213b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/vet/zipball/7b10fd2beecf9f386c92731729c9f33a152b213b",
+                "reference": "7b10fd2beecf9f386c92731729c9f33a152b213b",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2.0",
+                "ext-dom": "*",
+                "ext-mbstring": "*",
+                "ext-openssl": "*",
+                "ext-phar": "*",
+                "ext-tokenizer": "*",
+                "ext-zip": "*",
+                "php": "^8.4"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "^7.15.5|^8.0",
+                "laravel-zero/foundation": "^13.25",
+                "laravel-zero/framework": "^13.0",
+                "laravel/pint": "^1.32.1",
+                "mockery/mockery": "^1.6.15",
+                "pestphp/pest": "^5.2.1",
+                "pestphp/pest-plugin-phpstan": "^5.2.1",
+                "pestphp/pest-plugin-rector": "^5.0.4",
+                "phpstan/phpstan": "^2.2.16",
+                "rector/rector": "^2.6.7"
+            },
+            "bin": [
+                "builds/vet"
+            ],
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Laravel\\Vet\\Composer\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "App\\": "app/",
+                    "Laravel\\Vet\\Composer\\": "src/Composer/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nuno Maduro",
+                    "email": "enunomaduro@gmail.com"
+                }
+            ],
+            "description": "A dependency audit trust file for PHP.",
+            "keywords": [
+                "Audit",
+                "cli",
+                "composer",
+                "console",
+                "dev",
+                "php",
+                "security",
+                "supply chain"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/vet/issues",
+                "source": "https://github.com/laravel/vet/tree/v0.2.1"
+            },
+            "time": "2026-09-27T14:39:48+00:00"
         },
         {
             "name": "mockery/mockery",
