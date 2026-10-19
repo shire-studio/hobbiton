@@ -1,3 +1,11 @@
+<picture>
+    <source media="(prefers-color-scheme: dark)" srcset="art/header-dark.png">
+    <img alt="Logo for Hobbiton" src="art/header-light.png">
+</picture>
+
+<br/>
+<br/>
+
 # Hobbiton
 
 Hobbiton is where every Shire Studio Laravel starter kit is grown. Each kit is raised from a stack of shared **smials**, so a fix made once reaches every kit that shares it. When a change lands on `main`, the **quick post** opens a pull request on each kit's repository.
@@ -82,7 +90,7 @@ Each kit keeps its own `composer.lock`, `pnpm-lock.yaml` and `vet.json` in its t
 
 ## Artwork
 
-Every kit has its own README header in `art/` of its top smial. `header.html` is the source, and `header-light.png` and `header-dark.png` are screenshots of it at 2400 by 800 with a transparent background. Open `header.html#light` or `header.html#dark` in a 1200 by 400 viewport at 2x scale to render them again after changing the tagline or the chips.
+Every kit has its own README header in `art/` of its top smial. `header.html` is the source, and `header-light.png` and `header-dark.png` are screenshots of it at 2400 by 800 with a transparent background. Open `header.html#light` or `header.html#dark` in a 1200 by 400 viewport at 2x scale to render them again after changing the tagline or the chips. Hobbiton's own header lives in `art/` at the root and follows the same rules, with a smial in place of the rocket.
 
 ## The Quick Post
 
