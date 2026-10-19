@@ -93,12 +93,12 @@
             "hash": "tree-v2:1726a64b700472e12c6e5917132914a632350a91b90816cc3c5940ddea1f92d7"
         },
         "league/uri": {
-            "version": "7.8.1",
-            "hash": "tree-v2:4397d51a8c4e6080a42f161000bf9db6e73840654aff3cc445f27b405c36ab5c"
+            "version": "7.9.0",
+            "hash": "tree-v2:4cdc2d22dffc1be5c928e1c01bdcb12c8a354f6a4f58499288e25a74d645b86f"
         },
         "league/uri-interfaces": {
-            "version": "7.8.1",
-            "hash": "tree-v2:227c217ed67b9cd48cc589867bf18379e95858e068724b8fbef94713311b024e"
+            "version": "7.9.0",
+            "hash": "tree-v2:f176832fd32f00d4ca1915979a6c96ab8e752e6653df950a87d77b790f2d7ed6"
         },
         "monolog/monolog": {
             "version": "3.12.1",
