@@ -90,7 +90,7 @@ Each kit keeps its own `composer.lock`, `pnpm-lock.yaml` and `vet.json` in its t
 
 ## Artwork
 
-Every kit has its own README header in `art/` of its top smial. `header.html` is the source, and `header-light.png` and `header-dark.png` are screenshots of it at 2400 by 800 with a transparent background. Open `header.html#light` or `header.html#dark` in a 1200 by 400 viewport at 2x scale to render them again after changing the tagline or the chips. Hobbiton's own header lives in `art/` at the root and follows the same rules, with a smial in place of the rocket.
+Every kit has its own README header in `art/` of its top smial, and Hobbiton's own header lives in `art/` at the root. `header-light.png` and `header-dark.png` are 2400 by 800 renders with a transparent background, painted with the layered landscape from the website hero: the afternoon painting for light and the moonlit one for dark. They are rendered outside this repository, so replace both files together when a tagline or the chips change.
 
 ## The Quick Post
 
