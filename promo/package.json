@@ -1,0 +1,26 @@
+{
+    "name": "hobbiton-promo",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "studio": "remotion studio",
+        "render": "pnpm render:landscape && pnpm render:portrait && pnpm render:landscape-short && pnpm render:portrait-short",
+        "render:landscape": "remotion render Landscape out/landscape.mp4",
+        "render:portrait": "remotion render Portrait out/portrait.mp4",
+        "render:landscape-short": "remotion render LandscapeShort out/landscape-short.mp4",
+        "render:portrait-short": "remotion render PortraitShort out/portrait-short.mp4",
+        "typecheck": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
+        "typescript": "^6.0.3"
+    },
+    "dependencies": {
+        "@remotion/cli": "4.0.536",
+        "@remotion/google-fonts": "4.0.536",
+        "react": "^19.3.1",
+        "react-dom": "^19.3.1",
+        "remotion": "4.0.536"
+    }
+}
