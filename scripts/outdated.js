@@ -11,6 +11,16 @@
 const unquote = value => value.trim().replace(/^'(.*)'$/, '$1');
 const bare = version => version.replace(/^[\^~]/, '');
 
+/**
+ * The selected kits plus every sibling when any sibling is selected, in manifest order. The Inertia kits share
+ * composer.json and vet.json, so updating one of them alone would leave the others' locks behind.
+ */
+export function withSiblings(selected, names, siblings) {
+    const expanded = selected.some(name => siblings.includes(name)) ? [...selected, ...siblings] : selected;
+
+    return names.filter(name => expanded.includes(name));
+}
+
 export function isHold(constraint) {
     return !constraint.startsWith('^') && !constraint.startsWith('dev-');
 }

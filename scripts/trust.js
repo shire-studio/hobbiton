@@ -85,14 +85,29 @@ export function pruneTrust(trust, lock) {
     return withGrants(trust, grants, dev);
 }
 
+export function hasGrants(trust) {
+    return grantsOf(trust).size > 0;
+}
+
+/**
+ * Changed packages the trust file does not grant. Metapackages ship no files, so Vet never asks about them.
+ */
 export function rejectedPackages(oldLock, newLock, trust) {
     const previous = lockVersions(oldLock);
     const grants = grantsOf(trust);
+    const metapackages = new Set([...(newLock.packages ?? []), ...(newLock['packages-dev'] ?? [])].filter(({ type }) => type === 'metapackage').map(({ name }) => name));
 
     return [...lockVersions(newLock)]
-        .filter(([name, { version }]) => previous.get(name)?.version !== version && grants.get(name)?.version !== version)
+        .filter(([name, { version }]) => !metapackages.has(name) && previous.get(name)?.version !== version && grants.get(name)?.version !== version)
         .map(([name]) => name)
         .sort();
+}
+
+/**
+ * Pin every locked package, so a sibling kit with the same composer.json resolves exactly the same versions.
+ */
+export function pinArguments(lock) {
+    return [...lockVersions(lock)].flatMap(([name, { version }]) => ['--with', `${name}:${version}`]);
 }
 
 export function holdArguments(rejected, oldLock) {

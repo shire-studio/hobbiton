@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { holdArguments, lockVersions, newGrants, poolKey, pruneTrust, rejectedPackages, seedTrust } from '../../scripts/trust.js';
+import { hasGrants, holdArguments, lockVersions, newGrants, pinArguments, poolKey, pruneTrust, rejectedPackages, seedTrust } from '../../scripts/trust.js';
 
 const lock = (packages, dev = []) => ({
     packages: Object.entries(packages).map(([name, version]) => ({ name, version })),
@@ -80,4 +80,20 @@ test('holdArguments holds rejected packages at their old version and reports new
         args: ['--with', 'a:1.0.0'],
         unheld: ['c'],
     });
+});
+
+test('rejectedPackages leaves out packages Vet never asks about because they ship no files', () => {
+    const oldLock = { packages: [{ name: 'roave/security-advisories', version: '1.0.0' }], 'packages-dev': [] };
+    const newLock = { packages: [{ name: 'roave/security-advisories', version: '1.1.0', type: 'metapackage' }], 'packages-dev': [] };
+
+    assert.deepEqual(rejectedPackages(oldLock, newLock, { require: {}, 'require-dev': {} }), []);
+});
+
+test('hasGrants is false for a trust file emptied by an interrupted solve', () => {
+    assert.equal(hasGrants({ require: {}, 'require-dev': {}, 'minimum-release-age': 2 }), false);
+    assert.equal(hasGrants({ require: { a: grant('1.0.0') }, 'require-dev': {} }), true);
+});
+
+test('pinArguments pins every locked package so a sibling kit resolves the same versions', () => {
+    assert.deepEqual(pinArguments(lock({ a: '1.0.0' }, { b: 'v2.1.0' })), ['--with', 'a:1.0.0', '--with', 'b:v2.1.0']);
 });

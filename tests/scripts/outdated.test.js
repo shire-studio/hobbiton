@@ -12,6 +12,7 @@ import {
     npmMajors,
     npmZeroMinors,
     staleExcludes,
+    withSiblings,
 } from '../../scripts/outdated.js';
 
 const workspace = `allowBuilds:
@@ -149,4 +150,11 @@ test('formatHolds lines up name, the held version and kits', () => {
         text,
         'fidry/cpu-core-counter   held at 1.3.0, 1.4.1 available         api\nlaravel/framework        held at v13.34.0, v13.38.0 available   api, vue',
     );
+});
+
+test('withSiblings adds every Inertia kit when any of them is selected, in manifest order', () => {
+    const names = ['vue', 'react', 'svelte', 'livewire', 'api', 'blade'];
+
+    assert.deepEqual(withSiblings(['react', 'api'], names, ['vue', 'react', 'svelte']), ['vue', 'react', 'svelte', 'api']);
+    assert.deepEqual(withSiblings(['api'], names, ['vue', 'react', 'svelte']), ['api']);
 });
