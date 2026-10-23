@@ -93,7 +93,7 @@ jobs:
       - name: Install Hobbiton Dependencies
         run: |
           composer install --no-interaction --prefer-dist --no-progress
-          npm ci
+          pnpm install --frozen-lockfile
 
       - name: Install Playwright Browsers
         if: matrix.kit.node

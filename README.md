@@ -48,7 +48,7 @@ The three Inertia kits use the same page names (for example `auth/Login`), so th
 
 ```bash
 composer install
-npm install
+pnpm install
 cp .env.example .env
 php artisan key:generate
 ```
