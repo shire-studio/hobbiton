@@ -5,6 +5,7 @@ import {
     catalogEntries,
     composerFindings,
     formatFindings,
+    formatHolds,
     groupFindings,
     isHold,
     lockMismatches,
@@ -136,4 +137,16 @@ test('formatFindings lines up name, versions and kits', () => {
     ]);
 
     assert.equal(text, '@inertiajs/vue3   2.3.1 → 3.0.0   vue\nvitest            3.2.4 → 4.0.1   vue, blade');
+});
+
+test('formatHolds lines up name, the held version and kits', () => {
+    const text = formatHolds([
+        { name: 'fidry/cpu-core-counter', from: '1.3.0', to: '1.4.1', kits: ['api'] },
+        { name: 'laravel/framework', from: 'v13.34.0', to: 'v13.38.0', kits: ['api', 'vue'] },
+    ]);
+
+    assert.equal(
+        text,
+        'fidry/cpu-core-counter   held at 1.3.0, 1.4.1 available         api\nlaravel/framework        held at v13.34.0, v13.38.0 available   api, vue',
+    );
 });

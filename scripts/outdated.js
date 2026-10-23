@@ -123,9 +123,16 @@ export function groupFindings(findings) {
     return [...groups.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function formatFindings(groups) {
-    const rows = groups.map(({ name, from, to, kits }) => [name, `${from} → ${to}`, kits.join(', ')]);
+function columns(rows) {
     const widths = [0, 1].map(column => Math.max(...rows.map(row => row[column].length)));
 
     return rows.map(([name, versions, kits]) => `${name.padEnd(widths[0])}   ${versions.padEnd(widths[1])}   ${kits}`).join('\n');
+}
+
+export function formatFindings(groups) {
+    return columns(groups.map(({ name, from, to, kits }) => [name, `${from} → ${to}`, kits.join(', ')]));
+}
+
+export function formatHolds(groups) {
+    return columns(groups.map(({ name, from, to, kits }) => [name, `held at ${from}, ${to} available`, kits.join(', ')]));
 }

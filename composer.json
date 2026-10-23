@@ -45,6 +45,10 @@
             "Composer\\Config::disableProcessTimeout",
             "node scripts/survey.js"
         ],
+        "harvest": [
+            "Composer\\Config::disableProcessTimeout",
+            "node scripts/harvest.js"
+        ],
         "deliver": [
             "Composer\\Config::disableProcessTimeout",
             "node scripts/deliver.js"
