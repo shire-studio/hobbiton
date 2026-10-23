@@ -5,10 +5,12 @@
     "scripts": {
         "tend": "node scripts/tend.js",
         "survey": "node scripts/survey.js",
+        "harvest": "node scripts/harvest.js",
         "deliver": "node scripts/deliver.js"
     },
     "devDependencies": {
-        "chokidar": "^4.0.3",
-        "concurrently": "^9.2.1"
+        "chokidar": "^6.0.0",
+        "concurrently": "^10.0.6",
+        "taze": "^21.3.0"
     }
 }

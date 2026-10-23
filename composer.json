@@ -6,14 +6,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.5.0",
-        "laravel/framework": "^13.0",
+        "laravel/framework": "^13.38",
         "laravel/prompts": "^0.3.26"
     },
     "require-dev": {
-        "laravel/pint": "^1.32",
+        "laravel/pint": "^1.32.1",
         "laravel/vet": "^0.2.1",
-        "mockery/mockery": "^1.6",
-        "pestphp/pest": "^5.3"
+        "mockery/mockery": "^1.6.15",
+        "pestphp/pest": "^5.3.3"
     },
     "autoload": {
         "psr-4": {
@@ -33,7 +33,8 @@
         "lint": "pint --parallel",
         "test": [
             "pint --parallel --test",
-            "pest"
+            "pest",
+            "node --test tests/scripts/*.test.js"
         ],
         "smials:pint": "pint --parallel smials",
         "tend": [
@@ -43,6 +44,10 @@
         "survey": [
             "Composer\\Config::disableProcessTimeout",
             "node scripts/survey.js"
+        ],
+        "harvest": [
+            "Composer\\Config::disableProcessTimeout",
+            "node scripts/harvest.js"
         ],
         "deliver": [
             "Composer\\Config::disableProcessTimeout",

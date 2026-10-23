@@ -13,7 +13,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { log, parseArgs, raisedDir, rootDir, run } from './helpers.js';
+import { log, parseArgs, prepareKit, raisedDir, rootDir, run } from './helpers.js';
 
 const { kits, flags } = parseArgs(process.argv.slice(2), ['tend']);
 const manifest = JSON.parse(fs.readFileSync(path.join(rootDir, 'hobbiton.json'), 'utf-8'));
@@ -28,15 +28,7 @@ for (const name of kits) {
     log(`Surveying ${kit.label}...`, 'blue');
 
     try {
-        await run('php', ['artisan', 'raise', `--kit=${name}`], { cwd: rootDir });
-
-        if (!fs.existsSync(path.join(dir, '.env'))) {
-            fs.copyFileSync(path.join(dir, '.env.example'), path.join(dir, '.env'));
-        }
-
-        // The lock's content hash covers composer.json, which raising personalises per kit.
-        await run('composer', ['update', '--lock', '--no-interaction', '--no-progress'], { cwd: dir });
-        await run('composer', ['install', '--no-interaction', '--no-progress'], { cwd: dir });
+        await prepareKit(name);
         await run('php', ['artisan', 'key:generate', '--ansi'], { cwd: dir });
 
         // Wayfinder reads real column types for route bindings, so the schema must exist before the frontend builds.
