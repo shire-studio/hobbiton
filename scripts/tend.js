@@ -55,6 +55,23 @@ function isIgnored(relativePath) {
     }
 }
 
+/**
+ * Files changed or added in the kit since its last commit (survey commits after raising), or null when it has no commit to compare with.
+ */
+function editedSinceCommit() {
+    try {
+        execFileSync('git', ['-C', kitDir, 'rev-parse', '--verify', '-q', 'HEAD'], { stdio: 'ignore' });
+    } catch {
+        return null;
+    }
+
+    const status = execFileSync('git', ['-C', kitDir, 'status', '--porcelain', '-z', '--untracked-files=all'], { encoding: 'utf-8' });
+
+    return new Set(status.split('\0').filter(entry => entry.length > 3).map(entry => normalizePath(entry.slice(3))));
+}
+
+const edited = checking ? editedSinceCommit() : null;
+
 function syncFile(absolutePath) {
     const relativePath = normalizePath(path.relative(kitDir, absolutePath));
 
@@ -75,6 +92,11 @@ function syncFile(absolutePath) {
     }
 
     if (checking) {
+        // A file that differs from smials/ but not from the kit's last commit is only behind smials/, not edited.
+        if (edited !== null && !edited.has(relativePath)) {
+            return false;
+        }
+
         log(`Untended ${relativePath} -> smials/${smial}`, 'yellow');
 
         return true;
