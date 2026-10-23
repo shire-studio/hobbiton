@@ -1,22 +1,5 @@
-import { Form } from '@inertiajs/react'
 import { REGEXP_ONLY_DIGITS } from 'input-otp'
 import { Check, Copy, ScanLine } from 'lucide-react'
-import AlertError from '@/components/AlertError'
-import InputError from '@/components/InputError'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from '@/components/ui/input-otp'
-import { Spinner } from '@/components/ui/spinner'
 import { confirm } from '@/routes/two-factor'
 import type { TwoFactorConfigContent } from '@/types'
 
@@ -97,9 +80,9 @@ export default function TwoFactorSetupModal({
   }, [isOpen])
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="flex items-center justify-center">
+    <UiDialog open={isOpen} onOpenChange={onOpenChange}>
+      <UiDialogContent className="sm:max-w-md">
+        <UiDialogHeader className="flex items-center justify-center">
           <div className="mb-3 w-auto rounded-full border border-border bg-card p-0.5 shadow-sm">
             <div className="relative overflow-hidden rounded-full border border-border bg-muted p-2.5">
               <div className="absolute inset-0 grid grid-cols-5 opacity-50">
@@ -121,11 +104,11 @@ export default function TwoFactorSetupModal({
               <ScanLine className="relative z-20 size-6 text-foreground" />
             </div>
           </div>
-          <DialogTitle>{modalConfig.title}</DialogTitle>
-          <DialogDescription className="text-center">
+          <UiDialogTitle>{modalConfig.title}</UiDialogTitle>
+          <UiDialogDescription className="text-center">
             {modalConfig.description}
-          </DialogDescription>
-        </DialogHeader>
+          </UiDialogDescription>
+        </UiDialogHeader>
 
         <div className="relative flex w-auto flex-col items-center justify-center space-y-5">
           {!showVerificationStep ? (
@@ -137,7 +120,7 @@ export default function TwoFactorSetupModal({
                   <div className="relative mx-auto aspect-square w-64 overflow-hidden rounded-lg border border-border">
                     {!qrCodeSvg ? (
                       <div className="absolute inset-0 z-10 flex aspect-square h-auto w-full animate-pulse items-center justify-center bg-background">
-                        <Spinner className="size-6" />
+                        <UiSpinner className="size-6" />
                       </div>
                     ) : (
                       <div className="relative z-10 overflow-hidden border p-5">
@@ -157,9 +140,9 @@ export default function TwoFactorSetupModal({
                 </div>
 
                 <div className="flex w-full items-center space-x-5">
-                  <Button className="w-full" onClick={handleModalNextStep}>
+                  <UiButton className="w-full" onClick={handleModalNextStep}>
                     {modalConfig.buttonText}
-                  </Button>
+                  </UiButton>
                 </div>
 
                 <div className="relative flex w-full items-center justify-center">
@@ -173,7 +156,7 @@ export default function TwoFactorSetupModal({
                   <div className="flex w-full items-stretch overflow-hidden rounded-xl border border-border">
                     {!manualSetupKey ? (
                       <div className="flex h-full w-full items-center justify-center bg-muted p-3">
-                        <Spinner />
+                        <UiSpinner />
                       </div>
                     ) : (
                       <>
@@ -215,7 +198,7 @@ export default function TwoFactorSetupModal({
                     className="relative w-full space-y-3"
                   >
                     <div className="flex w-full flex-col items-center justify-center space-y-3 py-2">
-                      <InputOTP
+                      <UiInputOTP
                         id="otp"
                         value={code}
                         onChange={setCode}
@@ -224,17 +207,17 @@ export default function TwoFactorSetupModal({
                         pattern={REGEXP_ONLY_DIGITS}
                         autoFocus
                       >
-                        <InputOTPGroup>
+                        <UiInputOTPGroup>
                           {Array.from({ length: 6 }, (_, index) => (
-                            <InputOTPSlot key={index} index={index} />
+                            <UiInputOTPSlot key={index} index={index} />
                           ))}
-                        </InputOTPGroup>
-                      </InputOTP>
+                        </UiInputOTPGroup>
+                      </UiInputOTP>
                       <InputError message={errors.code} />
                     </div>
 
                     <div className="flex w-full items-center space-x-5">
-                      <Button
+                      <UiButton
                         type="button"
                         variant="outline"
                         className="w-auto flex-1"
@@ -242,14 +225,14 @@ export default function TwoFactorSetupModal({
                         disabled={processing}
                       >
                         Back
-                      </Button>
-                      <Button
+                      </UiButton>
+                      <UiButton
                         type="submit"
                         className="w-auto flex-1"
                         disabled={processing || code.length < 6}
                       >
                         Confirm
-                      </Button>
+                      </UiButton>
                     </div>
                   </div>
                 </>
@@ -257,7 +240,7 @@ export default function TwoFactorSetupModal({
             </Form>
           )}
         </div>
-      </DialogContent>
-    </Dialog>
+      </UiDialogContent>
+    </UiDialog>
   )
 }

@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import AuthSimpleLayout from '@/layouts/auth/AuthSimpleLayout'
 
 type Props = {
   title?: string

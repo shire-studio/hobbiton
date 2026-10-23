@@ -1,8 +1,3 @@
-import { Form, Head } from '@inertiajs/react'
-import TextLink from '@/components/TextLink'
-import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
-import AuthLayout from '@/layouts/AuthLayout'
 import { logout } from '@/routes'
 import { send } from '@/routes/verification'
 
@@ -31,10 +26,10 @@ export default function VerifyEmail({ status }: Props) {
       <Form {...send.form()} className="space-y-6 text-center">
         {({ processing }) => (
           <>
-            <Button disabled={processing} variant="secondary">
-              {processing && <Spinner />}
+            <UiButton disabled={processing} variant="secondary">
+              {processing && <UiSpinner />}
               Resend verification email
-            </Button>
+            </UiButton>
 
             <TextLink
               href={logout()}

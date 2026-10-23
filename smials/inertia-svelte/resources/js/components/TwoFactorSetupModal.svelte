@@ -1,21 +1,5 @@
 <script lang="ts">
-  import { Form } from '@inertiajs/svelte'
   import { Check, Copy, ScanLine } from '@lucide/svelte'
-  import AlertError from '@/components/AlertError.svelte'
-  import InputError from '@/components/InputError.svelte'
-  import { Button } from '@/components/ui/button'
-  import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogTitle,
-  } from '@/components/ui/dialog'
-  import {
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
-  } from '@/components/ui/input-otp'
-  import { Spinner } from '@/components/ui/spinner'
   import { confirm } from '@/routes/two-factor'
   import type { TwoFactorConfigContent } from '@/types'
 
@@ -106,8 +90,8 @@
   })
 </script>
 
-<Dialog bind:open={isOpen}>
-  <DialogContent class="sm:max-w-md">
+<UiDialog bind:open={isOpen}>
+  <UiDialogContent class="sm:max-w-md">
     <div class="flex flex-col items-center justify-center">
       <div
         class="mb-3 w-auto rounded-full border border-border bg-card p-0.5 shadow-sm"
@@ -129,10 +113,10 @@
         </div>
       </div>
       <div class="my-3 space-y-1 text-center">
-        <DialogTitle>{modalConfig.title}</DialogTitle>
-        <DialogDescription>
+        <UiDialogTitle>{modalConfig.title}</UiDialogTitle>
+        <UiDialogDescription>
           {modalConfig.description}
-        </DialogDescription>
+        </UiDialogDescription>
       </div>
     </div>
 
@@ -153,7 +137,7 @@
                 <div
                   class="absolute inset-0 z-10 flex aspect-square h-auto w-full animate-pulse items-center justify-center bg-background"
                 >
-                  <Spinner class="size-6" />
+                  <UiSpinner class="size-6" />
                 </div>
               {:else}
                 <div class="relative z-10 overflow-hidden border p-5">
@@ -172,9 +156,9 @@
           </div>
 
           <div class="flex w-full items-center space-x-5">
-            <Button class="w-full" onclick={handleModalNextStep}>
+            <UiButton class="w-full" onclick={handleModalNextStep}>
               {modalConfig.buttonText}
-            </Button>
+            </UiButton>
           </div>
 
           <div class="relative flex w-full items-center justify-center">
@@ -192,7 +176,7 @@
                 <div
                   class="flex h-full w-full items-center justify-center bg-muted p-3"
                 >
-                  <Spinner />
+                  <UiSpinner />
                 </div>
               {:else}
                 <input
@@ -232,24 +216,24 @@
               <div
                 class="flex w-full flex-col items-center justify-center space-y-3 py-2"
               >
-                <InputOTP
+                <UiInputOTP
                   id="otp"
                   bind:value={code}
                   maxlength={6}
                   disabled={processing}
                   autofocus
                 >
-                  <InputOTPGroup>
+                  <UiInputOTPGroup>
                     {#each { length: 6 } as _, index (index)}
-                      <InputOTPSlot {index} />
+                      <UiInputOTPSlot {index} />
                     {/each}
-                  </InputOTPGroup>
-                </InputOTP>
+                  </UiInputOTPGroup>
+                </UiInputOTP>
                 <InputError message={formErrors?.code} />
               </div>
 
               <div class="flex w-full items-center space-x-5">
-                <Button
+                <UiButton
                   type="button"
                   variant="outline"
                   class="w-auto flex-1"
@@ -257,19 +241,19 @@
                   disabled={processing}
                 >
                   Back
-                </Button>
-                <Button
+                </UiButton>
+                <UiButton
                   type="submit"
                   class="w-auto flex-1"
                   disabled={processing || code.length < 6}
                 >
                   Confirm
-                </Button>
+                </UiButton>
               </div>
             </div>
           {/snippet}
         </Form>
       {/if}
     </div>
-  </DialogContent>
-</Dialog>
+  </UiDialogContent>
+</UiDialog>

@@ -1,15 +1,4 @@
 <script lang="ts">
-  import { Form } from '@inertiajs/svelte'
-  import AppHead from '@/components/AppHead.svelte'
-  import DeleteUser from '@/components/DeleteUser.svelte'
-  import Heading from '@/components/Heading.svelte'
-  import InputError from '@/components/InputError.svelte'
-  import TextLink from '@/components/TextLink.svelte'
-  import { Button } from '@/components/ui/button'
-  import { Input } from '@/components/ui/input'
-  import { Label } from '@/components/ui/label'
-  import AppLayout from '@/layouts/AppLayout.svelte'
-  import SettingsLayout from '@/layouts/settings/Layout.svelte'
   import { edit, update } from '@/routes/user-profile'
   import { send } from '@/routes/verification'
   import type { BreadcrumbItem } from '@/types'
@@ -45,8 +34,8 @@
       <Form {...update.form()} class="space-y-6">
         {#snippet children({ errors, processing, validate })}
           <div class="grid gap-2">
-            <Label for="name">Name</Label>
-            <Input
+            <UiLabel for="name">Name</UiLabel>
+            <UiInput
               id="name"
               class="mt-1 block w-full"
               name="name"
@@ -60,8 +49,8 @@
           </div>
 
           <div class="grid gap-2">
-            <Label for="email">Email address</Label>
-            <Input
+            <UiLabel for="email">Email address</UiLabel>
+            <UiInput
               id="email"
               type="email"
               class="mt-1 block w-full"
@@ -93,10 +82,10 @@
           {/if}
 
           <div class="flex items-center gap-4">
-            <Button
+            <UiButton
               type="submit"
               disabled={processing}
-              data-test="update-profile-button">Save</Button
+              data-test="update-profile-button">Save</UiButton
             >
           </div>
         {/snippet}

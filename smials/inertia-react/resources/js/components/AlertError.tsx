@@ -1,5 +1,4 @@
 import { AlertCircle } from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 type Props = {
   errors: string[]
@@ -13,16 +12,16 @@ export default function AlertError({
   const uniqueErrors = Array.from(new Set(errors))
 
   return (
-    <Alert variant="destructive">
+    <UiAlert variant="destructive">
       <AlertCircle className="size-4" />
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription>
+      <UiAlertTitle>{title}</UiAlertTitle>
+      <UiAlertDescription>
         <ul className="list-inside list-disc text-sm">
           {uniqueErrors.map((error, index) => (
             <li key={index}>{error}</li>
           ))}
         </ul>
-      </AlertDescription>
-    </Alert>
+      </UiAlertDescription>
+    </UiAlert>
   )
 }

@@ -1,8 +1,4 @@
 import type { ReactNode } from 'react'
-import AppContent from '@/components/AppContent'
-import AppHeader from '@/components/AppHeader'
-import AppShell from '@/components/AppShell'
-import { Toaster } from '@/components/ui/sonner'
 import type { BreadcrumbItem } from '@/types'
 
 type Props = {
@@ -15,7 +11,7 @@ export default function AppHeaderLayout({ breadcrumbs = [], children }: Props) {
     <AppShell variant="header">
       <AppHeader breadcrumbs={breadcrumbs} />
       <AppContent variant="header">{children}</AppContent>
-      <Toaster />
+      <UiToaster />
     </AppShell>
   )
 }

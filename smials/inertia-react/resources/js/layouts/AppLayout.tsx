@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import AppSidebarLayout from '@/layouts/app/AppSidebarLayout'
 import type { BreadcrumbItem } from '@/types'
 
 type Props = {

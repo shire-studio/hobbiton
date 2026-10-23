@@ -1,11 +1,3 @@
-import { Link } from '@inertiajs/react'
-import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from '@/components/ui/sidebar'
 import type { NavItem } from '@/types'
 
 type Props = {
@@ -16,12 +8,12 @@ export default function NavMain({ items }: Props) {
   const { isCurrentUrl } = useCurrentUrl()
 
   return (
-    <SidebarGroup className="px-2 py-0">
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
-      <SidebarMenu>
+    <UiSidebarGroup className="px-2 py-0">
+      <UiSidebarGroupLabel>Platform</UiSidebarGroupLabel>
+      <UiSidebarMenu>
         {items.map((item) => (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton
+          <UiSidebarMenuItem key={item.title}>
+            <UiSidebarMenuButton
               asChild
               isActive={isCurrentUrl(item.href)}
               tooltip={{ children: item.title }}
@@ -30,10 +22,10 @@ export default function NavMain({ items }: Props) {
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
               </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+            </UiSidebarMenuButton>
+          </UiSidebarMenuItem>
         ))}
-      </SidebarMenu>
-    </SidebarGroup>
+      </UiSidebarMenu>
+    </UiSidebarGroup>
   )
 }

@@ -1,23 +1,16 @@
 <script lang="ts">
-  import {
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-  } from '@/components/ui/sidebar'
   import { toUrl } from '@/lib/utils'
   import type { NavItem } from '@/types'
 
   let { items }: { items: NavItem[] } = $props()
 </script>
 
-<SidebarGroup class="group-data-[collapsible=icon]:p-0">
-  <SidebarGroupContent>
-    <SidebarMenu>
+<UiSidebarGroup class="group-data-[collapsible=icon]:p-0">
+  <UiSidebarGroupContent>
+    <UiSidebarMenu>
       {#each items as item (item.title)}
-        <SidebarMenuItem>
-          <SidebarMenuButton
+        <UiSidebarMenuItem>
+          <UiSidebarMenuButton
             class="text-neutral-600 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-100"
             asChild
           >
@@ -35,9 +28,9 @@
                 <span>{item.title}</span>
               </a>
             {/snippet}
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+          </UiSidebarMenuButton>
+        </UiSidebarMenuItem>
       {/each}
-    </SidebarMenu>
-  </SidebarGroupContent>
-</SidebarGroup>
+    </UiSidebarMenu>
+  </UiSidebarGroupContent>
+</UiSidebarGroup>

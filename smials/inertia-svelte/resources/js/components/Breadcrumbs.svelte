@@ -1,13 +1,4 @@
 <script lang="ts">
-  import { Link } from '@inertiajs/svelte'
-  import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-  } from '@/components/ui/breadcrumb'
   import type { BreadcrumbItem as BreadcrumbItemType } from '@/types'
 
   let {
@@ -17,25 +8,25 @@
   } = $props()
 </script>
 
-<Breadcrumb>
-  <BreadcrumbList>
+<UiBreadcrumb>
+  <UiBreadcrumbList>
     {#each breadcrumbs as item, index (index)}
-      <BreadcrumbItem>
+      <UiBreadcrumbItem>
         {#if index === breadcrumbs.length - 1}
-          <BreadcrumbPage>{item.title}</BreadcrumbPage>
+          <UiBreadcrumbPage>{item.title}</UiBreadcrumbPage>
         {:else}
-          <BreadcrumbLink asChild>
+          <UiBreadcrumbLink asChild>
             {#snippet children(props)}
               <Link href={item.href} class={props.class}>
                 {item.title}
               </Link>
             {/snippet}
-          </BreadcrumbLink>
+          </UiBreadcrumbLink>
         {/if}
-      </BreadcrumbItem>
+      </UiBreadcrumbItem>
       {#if index !== breadcrumbs.length - 1}
-        <BreadcrumbSeparator />
+        <UiBreadcrumbSeparator />
       {/if}
     {/each}
-  </BreadcrumbList>
-</Breadcrumb>
+  </UiBreadcrumbList>
+</UiBreadcrumb>

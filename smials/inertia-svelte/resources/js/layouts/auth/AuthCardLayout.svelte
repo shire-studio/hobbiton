@@ -1,14 +1,5 @@
 <script lang="ts">
-  import { Link } from '@inertiajs/svelte'
   import type { Snippet } from 'svelte'
-  import AppLogoIcon from '@/components/AppLogoIcon.svelte'
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from '@/components/ui/card'
   import { home } from '@/routes'
 
   let {
@@ -33,17 +24,17 @@
     </Link>
 
     <div class="flex flex-col gap-6">
-      <Card class="rounded-xl">
-        <CardHeader class="px-10 pt-8 pb-0 text-center">
-          <CardTitle class="text-xl">{title}</CardTitle>
-          <CardDescription>
+      <UiCard class="rounded-xl">
+        <UiCardHeader class="px-10 pt-8 pb-0 text-center">
+          <UiCardTitle class="text-xl">{title}</UiCardTitle>
+          <UiCardDescription>
             {description}
-          </CardDescription>
-        </CardHeader>
-        <CardContent class="px-10 py-8">
+          </UiCardDescription>
+        </UiCardHeader>
+        <UiCardContent class="px-10 py-8">
           {@render children?.()}
-        </CardContent>
-      </Card>
+        </UiCardContent>
+      </UiCard>
     </div>
   </div>
 </div>

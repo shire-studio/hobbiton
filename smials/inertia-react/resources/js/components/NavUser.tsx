@@ -1,37 +1,25 @@
 import { ChevronsUpDown } from 'lucide-react'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar'
-import UserInfo from '@/components/UserInfo'
-import UserMenuContent from '@/components/UserMenuContent'
+import { useSidebar } from '@/components/ui/sidebar'
 
 export default function NavUser() {
   const user = usePage().props.auth.user!
   const { isMobile, state } = useSidebar()
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
+    <UiSidebarMenu>
+      <UiSidebarMenuItem>
+        <UiDropdownMenu>
+          <UiDropdownMenuTrigger asChild>
+            <UiSidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               data-test="sidebar-menu-button"
             >
               <UserInfo user={user} />
               <ChevronsUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
+            </UiSidebarMenuButton>
+          </UiDropdownMenuTrigger>
+          <UiDropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={
               isMobile ? 'bottom' : state === 'collapsed' ? 'left' : 'bottom'
@@ -40,9 +28,9 @@ export default function NavUser() {
             sideOffset={4}
           >
             <UserMenuContent user={user} />
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+          </UiDropdownMenuContent>
+        </UiDropdownMenu>
+      </UiSidebarMenuItem>
+    </UiSidebarMenu>
   )
 }

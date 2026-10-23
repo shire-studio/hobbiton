@@ -1,13 +1,5 @@
 <script lang="ts">
-  import { Link } from '@inertiajs/svelte'
   import { LogOut, Settings } from '@lucide/svelte'
-  import UserInfo from '@/components/UserInfo.svelte'
-  import {
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-  } from '@/components/ui/dropdown-menu'
   import { logout } from '@/routes'
   import { edit } from '@/routes/user-profile'
   import type { User } from '@/types'
@@ -20,14 +12,14 @@
   }
 </script>
 
-<DropdownMenuLabel class="p-0 font-normal">
+<UiDropdownMenuLabel class="p-0 font-normal">
   <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
     <UserInfo {user} showEmail={true} />
   </div>
-</DropdownMenuLabel>
-<DropdownMenuSeparator />
-<DropdownMenuGroup>
-  <DropdownMenuItem asChild>
+</UiDropdownMenuLabel>
+<UiDropdownMenuSeparator />
+<UiDropdownMenuGroup>
+  <UiDropdownMenuItem asChild>
     {#snippet children(props)}
       <Link
         class="{props.class} block w-full cursor-pointer"
@@ -39,10 +31,10 @@
         Settings
       </Link>
     {/snippet}
-  </DropdownMenuItem>
-</DropdownMenuGroup>
-<DropdownMenuSeparator />
-<DropdownMenuItem asChild>
+  </UiDropdownMenuItem>
+</UiDropdownMenuGroup>
+<UiDropdownMenuSeparator />
+<UiDropdownMenuItem asChild>
   {#snippet children(props)}
     <Link
       class="{props.class} block w-full cursor-pointer"
@@ -55,4 +47,4 @@
       Log out
     </Link>
   {/snippet}
-</DropdownMenuItem>
+</UiDropdownMenuItem>

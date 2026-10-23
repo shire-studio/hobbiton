@@ -4,10 +4,6 @@
     index as registerOptions,
     store as registerStore,
   } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyRegistrationController'
-  import InputError from '@/components/InputError.svelte'
-  import { Button } from '@/components/ui/button'
-  import { Input } from '@/components/ui/input'
-  import { Label } from '@/components/ui/label'
 
   let { onSuccess }: { onSuccess: () => void } = $props()
 
@@ -70,17 +66,17 @@
       Passkeys are not supported in this browser.
     </div>
   {:else if !showForm}
-    <Button variant="outline" onclick={() => (showForm = true)}>
+    <UiButton variant="outline" onclick={() => (showForm = true)}>
       Add passkey
-    </Button>
+    </UiButton>
   {:else}
     <form
       onsubmit={handleSubmit}
       class="space-y-4 rounded-lg border border-border bg-muted/50 p-4"
     >
       <div class="grid gap-2">
-        <Label for="passkey-name">Passkey name</Label>
-        <Input
+        <UiLabel for="passkey-name">Passkey name</UiLabel>
+        <UiInput
           id="passkey-name"
           type="text"
           bind:value={name}
@@ -98,15 +94,15 @@
       {/if}
 
       <div class="flex gap-2">
-        <Button
+        <UiButton
           type="submit"
           disabled={passkeyRegister.isLoading || !name.trim()}
         >
           {passkeyRegister.isLoading ? 'Registering...' : 'Register passkey'}
-        </Button>
-        <Button type="button" variant="ghost" onclick={handleCancel}>
+        </UiButton>
+        <UiButton type="button" variant="ghost" onclick={handleCancel}>
           Cancel
-        </Button>
+        </UiButton>
       </div>
     </form>
   {/if}

@@ -1,11 +1,3 @@
-import { Form, Head } from '@inertiajs/react'
-import InputError from '@/components/InputError'
-import TextLink from '@/components/TextLink'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Spinner } from '@/components/ui/spinner'
-import AuthLayout from '@/layouts/AuthLayout'
 import { login } from '@/routes'
 import { email } from '@/routes/password'
 
@@ -32,8 +24,8 @@ export default function ForgotPassword({ status }: Props) {
           {({ errors, processing, validate }) => (
             <>
               <div className="grid gap-2">
-                <Label htmlFor="email">Email address</Label>
-                <Input
+                <UiLabel htmlFor="email">Email address</UiLabel>
+                <UiInput
                   id="email"
                   type="email"
                   name="email"
@@ -46,14 +38,14 @@ export default function ForgotPassword({ status }: Props) {
               </div>
 
               <div className="my-6 flex items-center justify-start">
-                <Button
+                <UiButton
                   className="w-full"
                   disabled={processing}
                   data-test="email-password-reset-link-button"
                 >
-                  {processing && <Spinner />}
+                  {processing && <UiSpinner />}
                   Email password reset link
-                </Button>
+                </UiButton>
               </div>
             </>
           )}

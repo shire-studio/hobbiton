@@ -1,6 +1,4 @@
-import { Link } from '@inertiajs/react'
 import type { ReactNode } from 'react'
-import AppLogoIcon from '@/components/AppLogoIcon'
 import { home } from '@/routes'
 
 type Props = {

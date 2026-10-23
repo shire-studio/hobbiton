@@ -1,7 +1,6 @@
 <script lang="ts">
   import { page } from '@inertiajs/svelte'
   import type { Snippet } from 'svelte'
-  import { SidebarProvider } from '@/components/ui/sidebar'
   import type { AppVariant } from '@/types'
 
   let {
@@ -22,7 +21,7 @@
     {@render children?.()}
   </div>
 {:else}
-  <SidebarProvider defaultOpen={isOpen}>
+  <UiSidebarProvider defaultOpen={isOpen}>
     {@render children?.()}
-  </SidebarProvider>
+  </UiSidebarProvider>
 {/if}

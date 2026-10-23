@@ -1,3 +1,5 @@
+import { globSync, readFileSync } from 'fs'
+import { basename, dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { wayfinder } from '@laravel/vite-plugin-wayfinder'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
@@ -7,6 +9,45 @@ import { bunny } from 'laravel-vite-plugin/fonts'
 import AutoImport from 'unplugin-auto-import/vite'
 import { watch } from 'vite-plugin-watch'
 import { defineConfig } from 'vite-plus'
+
+const jsDir = fileURLToPath(new URL('./resources/js', import.meta.url))
+
+/**
+ * Auto import every component and layout by its file name, so names match the Vue kit.
+ */
+function components() {
+  return globSync(['components/*.svelte', 'layouts/**/*.svelte'], {
+    cwd: jsDir,
+  }).map((file) => ({
+    from: join(jsDir, file),
+    imports: [['default', basename(file, '.svelte')] as [string, string]],
+  }))
+}
+
+/**
+ * Auto import every shadcn-svelte component with a Ui prefix, so names match the Vue kit.
+ * Bare names that are also exported under an alias, such as Root in Select, are skipped.
+ */
+function uiComponents() {
+  return globSync('components/ui/*/index.ts', { cwd: jsDir }).map((file) => {
+    const code = readFileSync(join(jsDir, file), 'utf-8').replace(/\/\/.*/g, '')
+    const exports = [...code.matchAll(/export \{([^}]*)\}/g)]
+      .flatMap(([, names]) => names.split(','))
+      .map((name) => name.trim().split(' as '))
+    const aliased = new Set(
+      exports.filter((names) => names.length > 1).map(([name]) => name),
+    )
+
+    return {
+      from: `@/components/ui/${basename(dirname(file))}`,
+      imports: exports
+        .filter((names) => names.length > 1 || !aliased.has(names[0]))
+        .map((names) => names.at(-1)!)
+        .filter((name) => /^[A-Z]/.test(name))
+        .map((name): [string, string] => [name, `Ui${name}`]),
+    }
+  })
+}
 
 export default defineConfig({
   fmt: {
@@ -85,8 +126,18 @@ export default defineConfig({
         'svelte',
         {
           svelte: ['untrack'],
-          '@inertiajs/svelte': ['page', 'router', 'useForm', 'useRemember'],
+          '@inertiajs/svelte': [
+            'page',
+            'router',
+            'useForm',
+            'useRemember',
+            'Link',
+            'Form',
+            'Deferred',
+          ],
         },
+        ...components(),
+        ...uiComponents(),
       ],
       dirs: ['resources/js/composables'],
     }),

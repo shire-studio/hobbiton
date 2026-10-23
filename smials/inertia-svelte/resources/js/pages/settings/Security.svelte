@@ -1,15 +1,4 @@
 <script lang="ts">
-  import { Form } from '@inertiajs/svelte'
-  import AppHead from '@/components/AppHead.svelte'
-  import Heading from '@/components/Heading.svelte'
-  import InputError from '@/components/InputError.svelte'
-  import ManagePasskeys from '@/components/ManagePasskeys.svelte'
-  import ManageTwoFactor from '@/components/ManageTwoFactor.svelte'
-  import PasswordInput from '@/components/PasswordInput.svelte'
-  import { Button } from '@/components/ui/button'
-  import { Label } from '@/components/ui/label'
-  import AppLayout from '@/layouts/AppLayout.svelte'
-  import SettingsLayout from '@/layouts/settings/Layout.svelte'
   import { edit, update } from '@/routes/password'
   import type { BreadcrumbItem } from '@/types'
 
@@ -59,7 +48,7 @@
       >
         {#snippet children({ errors, processing })}
           <div class="grid gap-2">
-            <Label for="current_password">Current password</Label>
+            <UiLabel for="current_password">Current password</UiLabel>
             <PasswordInput
               id="current_password"
               name="current_password"
@@ -71,7 +60,7 @@
           </div>
 
           <div class="grid gap-2">
-            <Label for="password">New password</Label>
+            <UiLabel for="password">New password</UiLabel>
             <PasswordInput
               id="password"
               name="password"
@@ -83,7 +72,7 @@
           </div>
 
           <div class="grid gap-2">
-            <Label for="password_confirmation">Confirm password</Label>
+            <UiLabel for="password_confirmation">Confirm password</UiLabel>
             <PasswordInput
               id="password_confirmation"
               name="password_confirmation"
@@ -95,13 +84,13 @@
           </div>
 
           <div class="flex items-center gap-4">
-            <Button
+            <UiButton
               type="submit"
               disabled={processing}
               data-test="update-password-button"
             >
               Save
-            </Button>
+            </UiButton>
           </div>
         {/snippet}
       </Form>

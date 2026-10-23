@@ -1,6 +1,5 @@
 import { Eye, EyeOff } from 'lucide-react'
 import type { ComponentProps } from 'react'
-import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 
 type Props = Omit<ComponentProps<'input'>, 'type'>
@@ -10,7 +9,7 @@ export default function PasswordInput({ className, ref, ...props }: Props) {
 
   return (
     <div className="relative">
-      <Input
+      <UiInput
         ref={ref}
         type={showPassword ? 'text' : 'password'}
         className={cn('pr-10', className)}

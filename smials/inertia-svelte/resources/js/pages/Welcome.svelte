@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { Link } from '@inertiajs/svelte'
-  import AppHead from '@/components/AppHead.svelte'
   import { dashboard, login, register } from '@/routes'
 </script>
 

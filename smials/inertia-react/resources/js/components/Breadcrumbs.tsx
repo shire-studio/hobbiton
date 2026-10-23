@@ -1,13 +1,4 @@
-import { Link } from '@inertiajs/react'
 import { Fragment } from 'react'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
 import type { BreadcrumbItem as BreadcrumbItemType } from '@/types'
 
 type Props = {
@@ -16,23 +7,23 @@ type Props = {
 
 export default function Breadcrumbs({ breadcrumbs }: Props) {
   return (
-    <Breadcrumb>
-      <BreadcrumbList>
+    <UiBreadcrumb>
+      <UiBreadcrumbList>
         {breadcrumbs.map((item, index) => (
           <Fragment key={index}>
-            <BreadcrumbItem>
+            <UiBreadcrumbItem>
               {index === breadcrumbs.length - 1 ? (
-                <BreadcrumbPage>{item.title}</BreadcrumbPage>
+                <UiBreadcrumbPage>{item.title}</UiBreadcrumbPage>
               ) : (
-                <BreadcrumbLink asChild>
+                <UiBreadcrumbLink asChild>
                   <Link href={item.href}>{item.title}</Link>
-                </BreadcrumbLink>
+                </UiBreadcrumbLink>
               )}
-            </BreadcrumbItem>
-            {index !== breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+            </UiBreadcrumbItem>
+            {index !== breadcrumbs.length - 1 && <UiBreadcrumbSeparator />}
           </Fragment>
         ))}
-      </BreadcrumbList>
-    </Breadcrumb>
+      </UiBreadcrumbList>
+    </UiBreadcrumb>
   )
 }

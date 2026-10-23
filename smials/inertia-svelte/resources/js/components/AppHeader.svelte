@@ -1,36 +1,6 @@
 <script lang="ts">
-  import { Link } from '@inertiajs/svelte'
   import { Menu, Search } from '@lucide/svelte'
-  import AppLogo from '@/components/AppLogo.svelte'
-  import AppLogoIcon from '@/components/AppLogoIcon.svelte'
-  import Breadcrumbs from '@/components/Breadcrumbs.svelte'
-  import UserMenuContent from '@/components/UserMenuContent.svelte'
-  import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-  import { Button } from '@/components/ui/button'
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-  } from '@/components/ui/dropdown-menu'
-  import {
-    NavigationMenu,
-    NavigationMenuItem,
-    NavigationMenuList,
-    navigationMenuTriggerStyle,
-  } from '@/components/ui/navigation-menu'
-  import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-  } from '@/components/ui/sheet'
-  import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-  } from '@/components/ui/tooltip'
+  import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu'
   import { extraNavItems, mainNavItems } from '@/lib/navigation'
   import { cn, toUrl } from '@/lib/utils'
   import { dashboard } from '@/routes'
@@ -50,10 +20,10 @@
     <div class="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
       <!-- Mobile Menu -->
       <div class="lg:hidden">
-        <Sheet>
-          <SheetTrigger asChild>
+        <UiSheet>
+          <UiSheetTrigger asChild>
             {#snippet children(props)}
-              <Button
+              <UiButton
                 variant="ghost"
                 size="icon"
                 class="mr-2 h-9 w-9"
@@ -61,16 +31,16 @@
                 aria-expanded={props['aria-expanded']}
               >
                 <Menu class="h-5 w-5" />
-              </Button>
+              </UiButton>
             {/snippet}
-          </SheetTrigger>
-          <SheetContent side="left" class="w-[300px] p-6">
-            <SheetTitle class="sr-only">Navigation menu</SheetTitle>
-            <SheetHeader class="flex justify-start text-left">
+          </UiSheetTrigger>
+          <UiSheetContent side="left" class="w-[300px] p-6">
+            <UiSheetTitle class="sr-only">Navigation menu</UiSheetTitle>
+            <UiSheetHeader class="flex justify-start text-left">
               <AppLogoIcon
                 class="size-6 fill-current text-black dark:text-white"
               />
-            </SheetHeader>
+            </UiSheetHeader>
             <div
               class="flex h-full flex-1 flex-col justify-between space-y-4 py-6"
             >
@@ -106,8 +76,8 @@
                 {/each}
               </div>
             </div>
-          </SheetContent>
-        </Sheet>
+          </UiSheetContent>
+        </UiSheet>
       </div>
 
       <Link href={dashboard()} class="flex items-center gap-x-2">
@@ -116,10 +86,10 @@
 
       <!-- Desktop Menu -->
       <div class="hidden h-full lg:flex lg:flex-1">
-        <NavigationMenu class="ml-10 flex h-full items-stretch">
-          <NavigationMenuList class="flex h-full items-stretch space-x-2">
+        <UiNavigationMenu class="ml-10 flex h-full items-stretch">
+          <UiNavigationMenuList class="flex h-full items-stretch space-x-2">
             {#each mainNavItems as item, index (index)}
-              <NavigationMenuItem class="relative flex h-full items-center">
+              <UiNavigationMenuItem class="relative flex h-full items-center">
                 <Link
                   class={cn(
                     navigationMenuTriggerStyle(),
@@ -138,27 +108,27 @@
                     class="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"
                   ></div>
                 {/if}
-              </NavigationMenuItem>
+              </UiNavigationMenuItem>
             {/each}
-          </NavigationMenuList>
-        </NavigationMenu>
+          </UiNavigationMenuList>
+        </UiNavigationMenu>
       </div>
 
       <div class="ml-auto flex items-center space-x-2">
         <div class="relative flex items-center space-x-1">
-          <Button
+          <UiButton
             variant="ghost"
             size="icon"
             class="group h-9 w-9 cursor-pointer"
           >
             <Search class="size-5 opacity-80 group-hover:opacity-100" />
-          </Button>
+          </UiButton>
 
           <div class="hidden space-x-1 lg:flex">
             {#each extraNavItems as item (item.title)}
-              <TooltipProvider delayDuration={0}>
-                <Tooltip>
-                  <TooltipTrigger>
+              <UiTooltipProvider delayDuration={0}>
+                <UiTooltip>
+                  <UiTooltipTrigger>
                     {#snippet child({ props })}
                       <a
                         href={toUrl(item.href)}
@@ -175,20 +145,20 @@
                         {/if}
                       </a>
                     {/snippet}
-                  </TooltipTrigger>
-                  <TooltipContent>
+                  </UiTooltipTrigger>
+                  <UiTooltipContent>
                     <p>{item.title}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                  </UiTooltipContent>
+                </UiTooltip>
+              </UiTooltipProvider>
             {/each}
           </div>
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+        <UiDropdownMenu>
+          <UiDropdownMenuTrigger asChild>
             {#snippet children(props)}
-              <Button
+              <UiButton
                 variant="ghost"
                 size="icon"
                 class="relative size-10 w-auto rounded-full p-1 focus-within:ring-2 focus-within:ring-primary"
@@ -196,20 +166,20 @@
                 aria-expanded={props['aria-expanded']}
                 data-state={props['data-state']}
               >
-                <Avatar class="size-8 overflow-hidden rounded-full">
-                  <AvatarFallback
+                <UiAvatar class="size-8 overflow-hidden rounded-full">
+                  <UiAvatarFallback
                     class="rounded-lg bg-neutral-200 font-semibold text-black dark:bg-neutral-700 dark:text-white"
                   >
                     {getInitials(user.name)}
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
+                  </UiAvatarFallback>
+                </UiAvatar>
+              </UiButton>
             {/snippet}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" class="w-56">
+          </UiDropdownMenuTrigger>
+          <UiDropdownMenuContent align="end" class="w-56">
             <UserMenuContent {user} />
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </UiDropdownMenuContent>
+        </UiDropdownMenu>
       </div>
     </div>
   </div>

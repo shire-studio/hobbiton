@@ -1,10 +1,4 @@
 <script lang="ts">
-  import { Form } from '@inertiajs/svelte'
-  import AppHead from '@/components/AppHead.svelte'
-  import TextLink from '@/components/TextLink.svelte'
-  import { Button } from '@/components/ui/button'
-  import { Spinner } from '@/components/ui/spinner'
-  import AuthLayout from '@/layouts/AuthLayout.svelte'
   import { logout } from '@/routes'
   import { send } from '@/routes/verification'
 
@@ -30,10 +24,10 @@
 
   <Form {...send.form()} class="space-y-6 text-center">
     {#snippet children({ processing })}
-      <Button type="submit" disabled={processing} variant="secondary">
-        {#if processing}<Spinner />{/if}
+      <UiButton type="submit" disabled={processing} variant="secondary">
+        {#if processing}<UiSpinner />{/if}
         Resend verification email
-      </Button>
+      </UiButton>
 
       <TextLink href={logout()} as="button" class="mx-auto block text-sm">
         Log out

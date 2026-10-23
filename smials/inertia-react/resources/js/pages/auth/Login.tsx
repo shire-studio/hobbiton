@@ -1,18 +1,7 @@
-import { Form, Head } from '@inertiajs/react'
 import {
   index as loginOptions,
   store as loginStore,
 } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyLoginController'
-import InputError from '@/components/InputError'
-import PasskeyVerify from '@/components/PasskeyVerify'
-import PasswordInput from '@/components/PasswordInput'
-import TextLink from '@/components/TextLink'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Spinner } from '@/components/ui/spinner'
-import AuthLayout from '@/layouts/AuthLayout'
 import { register } from '@/routes'
 import { store } from '@/routes/login'
 import { request } from '@/routes/password'
@@ -57,8 +46,8 @@ export default function Login({
           <>
             <div className="grid gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email address</Label>
-                <Input
+                <UiLabel htmlFor="email">Email address</UiLabel>
+                <UiInput
                   id="email"
                   type="email"
                   name="email"
@@ -74,7 +63,7 @@ export default function Login({
 
               <div className="grid gap-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
+                  <UiLabel htmlFor="password">Password</UiLabel>
                   {canResetPassword && (
                     <TextLink href={request()} className="text-sm" tabIndex={5}>
                       Forgot your password?
@@ -94,25 +83,25 @@ export default function Login({
               </div>
 
               <div className="flex items-center justify-between">
-                <Label
+                <UiLabel
                   htmlFor="remember"
                   className="flex items-center space-x-3"
                 >
-                  <Checkbox id="remember" name="remember" tabIndex={3} />
+                  <UiCheckbox id="remember" name="remember" tabIndex={3} />
                   <span>Remember me</span>
-                </Label>
+                </UiLabel>
               </div>
 
-              <Button
+              <UiButton
                 type="submit"
                 className="mt-4 w-full"
                 tabIndex={4}
                 disabled={processing}
                 data-test="login-button"
               >
-                {processing && <Spinner />}
+                {processing && <UiSpinner />}
                 Log in
-              </Button>
+              </UiButton>
             </div>
 
             {canRegister && (

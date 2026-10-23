@@ -1,7 +1,4 @@
 <script lang="ts">
-  import AppHead from '@/components/AppHead.svelte'
-  import PlaceholderPattern from '@/components/PlaceholderPattern.svelte'
-  import AppLayout from '@/layouts/AppLayout.svelte'
   import { dashboard } from '@/routes'
   import type { BreadcrumbItem } from '@/types'
 

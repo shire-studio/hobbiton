@@ -1,9 +1,5 @@
 <script lang="ts">
-  import { Link } from '@inertiajs/svelte'
   import type { Snippet } from 'svelte'
-  import Heading from '@/components/Heading.svelte'
-  import { Button } from '@/components/ui/button'
-  import { Separator } from '@/components/ui/separator'
   import { cn, toUrl } from '@/lib/utils'
   import { edit as editAppearance } from '@/routes/appearance'
   import { edit as editSecurity } from '@/routes/password'
@@ -40,7 +36,7 @@
     <aside class="w-full max-w-xl lg:w-48">
       <nav class="flex flex-col space-y-1 space-x-0" aria-label="Settings">
         {#each sidebarNavItems as item (toUrl(item.href))}
-          <Button
+          <UiButton
             variant="ghost"
             class={cn('w-full justify-start', {
               'bg-muted': isCurrentOrParentUrl(item.href),
@@ -52,12 +48,12 @@
                 {item.title}
               </Link>
             {/snippet}
-          </Button>
+          </UiButton>
         {/each}
       </nav>
     </aside>
 
-    <Separator class="my-6 lg:hidden" />
+    <UiSeparator class="my-6 lg:hidden" />
 
     <div class="flex-1 md:max-w-2xl">
       <section class="max-w-xl space-y-12">

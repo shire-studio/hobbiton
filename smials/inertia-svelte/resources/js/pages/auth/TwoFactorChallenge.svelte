@@ -1,15 +1,4 @@
 <script lang="ts">
-  import { Form } from '@inertiajs/svelte'
-  import AppHead from '@/components/AppHead.svelte'
-  import InputError from '@/components/InputError.svelte'
-  import { Button } from '@/components/ui/button'
-  import { Input } from '@/components/ui/input'
-  import {
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
-  } from '@/components/ui/input-otp'
-  import AuthLayout from '@/layouts/AuthLayout.svelte'
   import { store } from '@/routes/two-factor/login'
   import type { TwoFactorConfigContent } from '@/types'
 
@@ -61,24 +50,24 @@
           >
             <input type="hidden" name="code" value={code} />
             <div class="flex w-full items-center justify-center">
-              <InputOTP
+              <UiInputOTP
                 id="otp"
                 bind:value={code}
                 maxlength={6}
                 disabled={processing}
                 autofocus
               >
-                <InputOTPGroup>
+                <UiInputOTPGroup>
                   {#each { length: 6 } as _, index (index)}
-                    <InputOTPSlot {index} />
+                    <UiInputOTPSlot {index} />
                   {/each}
-                </InputOTPGroup>
-              </InputOTP>
+                </UiInputOTPGroup>
+              </UiInputOTP>
             </div>
             <InputError message={errors.code} />
           </div>
         {:else}
-          <Input
+          <UiInput
             name="recovery_code"
             type="text"
             placeholder="Enter recovery code"
@@ -88,8 +77,8 @@
           <InputError message={errors.recovery_code} />
         {/if}
 
-        <Button type="submit" class="w-full" disabled={processing}
-          >Continue</Button
+        <UiButton type="submit" class="w-full" disabled={processing}
+          >Continue</UiButton
         >
 
         <div class="text-center text-sm text-muted-foreground">

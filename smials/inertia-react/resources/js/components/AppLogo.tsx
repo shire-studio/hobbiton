@@ -1,5 +1,3 @@
-import AppLogoIcon from '@/components/AppLogoIcon'
-
 export default function AppLogo() {
   const { name } = usePage().props
 

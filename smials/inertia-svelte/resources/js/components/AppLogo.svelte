@@ -1,6 +1,4 @@
 <script lang="ts">
-  import AppLogoIcon from '@/components/AppLogoIcon.svelte'
-
   const name = $derived(page.props.name)
 </script>
 

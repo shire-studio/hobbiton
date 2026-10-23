@@ -1,13 +1,4 @@
 <script lang="ts">
-  import { Form } from '@inertiajs/svelte'
-  import AppHead from '@/components/AppHead.svelte'
-  import InputError from '@/components/InputError.svelte'
-  import PasswordInput from '@/components/PasswordInput.svelte'
-  import { Button } from '@/components/ui/button'
-  import { Input } from '@/components/ui/input'
-  import { Label } from '@/components/ui/label'
-  import { Spinner } from '@/components/ui/spinner'
-  import AuthLayout from '@/layouts/AuthLayout.svelte'
   import { store } from '@/routes/password'
 
   let { token, email }: { token: string; email: string } = $props()
@@ -29,8 +20,8 @@
     {#snippet children({ errors, processing, validate })}
       <div class="grid gap-6">
         <div class="grid gap-2">
-          <Label for="email">Email</Label>
-          <Input
+          <UiLabel for="email">Email</UiLabel>
+          <UiInput
             id="email"
             type="email"
             name="email"
@@ -43,7 +34,7 @@
         </div>
 
         <div class="grid gap-2">
-          <Label for="password">Password</Label>
+          <UiLabel for="password">Password</UiLabel>
           <PasswordInput
             id="password"
             name="password"
@@ -57,7 +48,7 @@
         </div>
 
         <div class="grid gap-2">
-          <Label for="password_confirmation">Confirm password</Label>
+          <UiLabel for="password_confirmation">Confirm password</UiLabel>
           <PasswordInput
             id="password_confirmation"
             name="password_confirmation"
@@ -69,15 +60,15 @@
           <InputError message={errors.password_confirmation} />
         </div>
 
-        <Button
+        <UiButton
           type="submit"
           class="mt-4 w-full"
           disabled={processing}
           data-test="reset-password-button"
         >
-          {#if processing}<Spinner />{/if}
+          {#if processing}<UiSpinner />{/if}
           Reset password
-        </Button>
+        </UiButton>
       </div>
     {/snippet}
   </Form>
