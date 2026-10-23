@@ -48,7 +48,7 @@ The three Inertia kits use the same page names (for example `auth/Login`), so th
 
 ```bash
 composer install
-npm install
+pnpm install
 cp .env.example .env
 php artisan key:generate
 ```
@@ -62,6 +62,8 @@ php artisan key:generate
 | `composer tend -- --react --once` | Copy changes back once, without serving or watching |
 | `composer survey` | Raise every kit and run its full `composer test` |
 | `composer survey -- --api --tend` | Survey only the API kit, then copy lock files and tool fixes back |
+| `composer harvest` | Update the dependencies of every kit and of Hobbiton, then survey every kit |
+| `composer harvest -- --api` | Harvest only the API kit |
 | `composer deliver -- --vue` | Mirror a kit into a local checkout of its repository, without committing |
 
 ### Tending a Kit
@@ -80,17 +82,30 @@ Edit `raised/react` like any Laravel app. Tend copies each change to the most sp
 
 `composer survey` raises each kit into `raised/<kit>`, installs it, migrates it, builds its assets and runs its own `composer test`. Installs are kept between surveys, so only the first survey of a kit is slow.
 
+### Harvesting
+
+`composer harvest` is the weekly dependency update. Run it in a terminal, since Vet asks questions along the way. It works in two phases, so every question comes first and you can walk away while the kits are tested.
+
+1. **Update.** Hobbiton itself (on a full run) and then each kit runs `composer update`, `composer bump` and, for kits with a frontend, taze for patches and minors followed by `pnpm update`. Each kit is updated in `raised/<kit>` and tended back into `smials/`.
+2. **Survey.** Every updated kit is surveyed with `--tend`, and Hobbiton's own `composer test` runs on a full run.
+
+Vet asks about each new release once per run. A release you trust in one kit is trusted in every later kit that installs it. A release you leave unticked is held at its current version in every kit for the rest of the run, and the rest of the update goes ahead.
+
+Nothing that needs a decision is applied. At the end, harvest lists the majors (including a minor of a `0.x` package), the deliberate holds such as `laravel/framework ~13.34.0` and the `vite-plus` catalog pin with what is available, the releases you declined, any difference between the Inertia kits' PHP versions, and `minimumReleaseAgeExclude` entries that no longer match a locked version. Upgrade those by hand.
+
+Harvest refuses to start when a kit in `raised/` has changes that are not yet in `smials/`, since raising would destroy them. It never commits, so review the changes and commit them yourself.
+
 ### Delivering
 
 `composer deliver -- --vue` mirrors the Vue kit into `../laravel-starter-kit-vue` (or the folder in `HOBBITON_DELIVER_DIR`). It keeps that checkout's `.git`, `.env`, `vendor` and `node_modules`, and never commits or pushes.
 
 ## Lock Files and Vet
 
-Each kit keeps its own `composer.lock`, `pnpm-lock.yaml` and `vet.json` in its top smial, since the kits resolve different packages. The Inertia kits share `vet.json` in `inertia` because their PHP dependencies are identical. After changing a `composer.json` or `package.json`, run `composer survey -- --tend` to refresh the lock files.
+Each kit keeps its own `composer.lock`, `pnpm-lock.yaml` and `vet.json` in its top smial, since the kits resolve different packages. The Inertia kits share `vet.json` in `inertia` because their PHP dependencies are identical. Run `composer harvest` for the routine update. After changing a `composer.json` or `package.json` by hand, run `composer survey -- --tend` to refresh the lock files.
 
 ## Artwork
 
-Every kit has its own README header in `art/` of its top smial. `header.html` is the source, and `header-light.png` and `header-dark.png` are screenshots of it at 2400 by 800 with a transparent background. Open `header.html#light` or `header.html#dark` in a 1200 by 400 viewport at 2x scale to render them again after changing the tagline or the chips. Hobbiton's own header lives in `art/` at the root and follows the same rules, with a smial in place of the rocket.
+Every kit has its own README header in `art/` of its top smial, and Hobbiton's own header lives in `art/` at the root. `header-light.png` and `header-dark.png` are 2400 by 800 renders with a transparent background, painted with the layered landscape from the website hero: the afternoon painting for light and the moonlit one for dark. They are rendered outside this repository, so replace both files together when a tagline or the chips change.
 
 ## The Quick Post
 
