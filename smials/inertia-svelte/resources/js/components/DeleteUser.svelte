@@ -1,19 +1,4 @@
 <script lang="ts">
-  import { Form } from '@inertiajs/svelte'
-  import Heading from '@/components/Heading.svelte'
-  import InputError from '@/components/InputError.svelte'
-  import PasswordInput from '@/components/PasswordInput.svelte'
-  import { Button } from '@/components/ui/button'
-  import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogTitle,
-    DialogTrigger,
-  } from '@/components/ui/dialog'
-  import { Label } from '@/components/ui/label'
   import { destroy } from '@/routes/user'
 
   let passwordInput = $state<HTMLInputElement>()
@@ -32,17 +17,17 @@
       <p class="font-medium">Warning</p>
       <p class="text-sm">Please proceed with caution, this cannot be undone.</p>
     </div>
-    <Dialog>
-      <DialogTrigger asChild>
+    <UiDialog>
+      <UiDialogTrigger asChild>
         {#snippet children(props)}
-          <Button
+          <UiButton
             variant="destructive"
             data-test="delete-user-button"
-            onclick={props.onClick}>Delete account</Button
+            onclick={props.onClick}>Delete account</UiButton
           >
         {/snippet}
-      </DialogTrigger>
-      <DialogContent>
+      </UiDialogTrigger>
+      <UiDialogContent>
         <Form
           {...destroy.form()}
           resetOnSuccess
@@ -60,18 +45,18 @@
             validate,
           })}
             <div class="space-y-3">
-              <DialogTitle
-                >Are you sure you want to delete your account?</DialogTitle
+              <UiDialogTitle
+                >Are you sure you want to delete your account?</UiDialogTitle
               >
-              <DialogDescription>
+              <UiDialogDescription>
                 Once your account is deleted, all of its resources and data will
                 also be permanently deleted. Please enter your password to
                 confirm you would like to permanently delete your account.
-              </DialogDescription>
+              </UiDialogDescription>
             </div>
 
             <div class="grid gap-2">
-              <Label for="password" class="sr-only">Password</Label>
+              <UiLabel for="password" class="sr-only">Password</UiLabel>
               <PasswordInput
                 id="password"
                 name="password"
@@ -82,10 +67,10 @@
               <InputError message={errors.password} />
             </div>
 
-            <DialogFooter class="gap-2">
-              <DialogClose asChild>
+            <UiDialogFooter class="gap-2">
+              <UiDialogClose asChild>
                 {#snippet children(props)}
-                  <Button
+                  <UiButton
                     variant="secondary"
                     onclick={() => {
                       clearErrors()
@@ -94,22 +79,22 @@
                     }}
                   >
                     Cancel
-                  </Button>
+                  </UiButton>
                 {/snippet}
-              </DialogClose>
+              </UiDialogClose>
 
-              <Button
+              <UiButton
                 type="submit"
                 variant="destructive"
                 disabled={processing}
                 data-test="confirm-delete-user-button"
               >
                 Delete account
-              </Button>
-            </DialogFooter>
+              </UiButton>
+            </UiDialogFooter>
           {/snippet}
         </Form>
-      </DialogContent>
-    </Dialog>
+      </UiDialogContent>
+    </UiDialog>
   </div>
 </div>

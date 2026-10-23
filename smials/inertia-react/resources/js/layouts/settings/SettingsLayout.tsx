@@ -1,8 +1,4 @@
-import { Link } from '@inertiajs/react'
 import type { ReactNode } from 'react'
-import Heading from '@/components/Heading'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { cn, toUrl } from '@/lib/utils'
 import { edit as editAppearance } from '@/routes/appearance'
 import { edit as editSecurity } from '@/routes/password'
@@ -45,7 +41,7 @@ export default function SettingsLayout({ children }: Props) {
             aria-label="Settings"
           >
             {sidebarNavItems.map((item) => (
-              <Button
+              <UiButton
                 key={toUrl(item.href)}
                 variant="ghost"
                 className={cn('w-full justify-start', {
@@ -54,12 +50,12 @@ export default function SettingsLayout({ children }: Props) {
                 asChild
               >
                 <Link href={item.href}>{item.title}</Link>
-              </Button>
+              </UiButton>
             ))}
           </nav>
         </aside>
 
-        <Separator className="my-6 lg:hidden" />
+        <UiSeparator className="my-6 lg:hidden" />
 
         <div className="flex-1 md:max-w-2xl">
           <section className="max-w-xl space-y-12">{children}</section>

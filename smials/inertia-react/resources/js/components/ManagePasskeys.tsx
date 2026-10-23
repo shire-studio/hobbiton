@@ -1,8 +1,5 @@
 import { KeyRound } from 'lucide-react'
 import { destroy } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyRegistrationController'
-import Heading from '@/components/Heading'
-import PasskeyItem from '@/components/PasskeyItem'
-import PasskeyRegister from '@/components/PasskeyRegister'
 
 type Props = {
   canManagePasskeys: boolean

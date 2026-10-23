@@ -1,14 +1,4 @@
-import { Form, Head } from '@inertiajs/react'
 import { REGEXP_ONLY_DIGITS } from 'input-otp'
-import InputError from '@/components/InputError'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from '@/components/ui/input-otp'
-import AuthLayout from '@/layouts/AuthLayout'
 import { store } from '@/routes/two-factor/login'
 import type { TwoFactorConfigContent } from '@/types'
 
@@ -56,7 +46,7 @@ export default function TwoFactorChallenge() {
                 <div className="flex flex-col items-center justify-center space-y-3 text-center">
                   <input type="hidden" name="code" value={code} />
                   <div className="flex w-full items-center justify-center">
-                    <InputOTP
+                    <UiInputOTP
                       id="otp"
                       value={code}
                       onChange={setCode}
@@ -65,18 +55,18 @@ export default function TwoFactorChallenge() {
                       pattern={REGEXP_ONLY_DIGITS}
                       autoFocus
                     >
-                      <InputOTPGroup>
+                      <UiInputOTPGroup>
                         {Array.from({ length: 6 }, (_, index) => (
-                          <InputOTPSlot key={index} index={index} />
+                          <UiInputOTPSlot key={index} index={index} />
                         ))}
-                      </InputOTPGroup>
-                    </InputOTP>
+                      </UiInputOTPGroup>
+                    </UiInputOTP>
                   </div>
                   <InputError message={errors.code} />
                 </div>
               ) : (
                 <>
-                  <Input
+                  <UiInput
                     name="recovery_code"
                     type="text"
                     placeholder="Enter recovery code"
@@ -87,9 +77,9 @@ export default function TwoFactorChallenge() {
                 </>
               )}
 
-              <Button type="submit" className="w-full" disabled={processing}>
+              <UiButton type="submit" className="w-full" disabled={processing}>
                 Continue
-              </Button>
+              </UiButton>
 
               <div className="text-center text-sm text-muted-foreground">
                 <span>or you can </span>

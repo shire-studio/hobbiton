@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { SidebarInset } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
 import type { AppVariant } from '@/types'
 
@@ -15,7 +14,7 @@ export default function AppContent({
   children,
 }: Props) {
   if (variant === 'sidebar') {
-    return <SidebarInset className={className}>{children}</SidebarInset>
+    return <UiSidebarInset className={className}>{children}</UiSidebarInset>
   }
 
   return (

@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Snippet } from 'svelte'
-  import { SidebarInset } from '@/components/ui/sidebar'
   import { cn } from '@/lib/utils'
   import type { AppVariant } from '@/types'
 
@@ -16,9 +15,9 @@
 </script>
 
 {#if variant === 'sidebar'}
-  <SidebarInset class={className}>
+  <UiSidebarInset class={className}>
     {@render children?.()}
-  </SidebarInset>
+  </UiSidebarInset>
 {:else}
   <main
     class={cn(

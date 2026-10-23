@@ -1,20 +1,8 @@
 <script lang="ts">
-  import { Form } from '@inertiajs/svelte'
   import {
     index as loginOptions,
     store as loginStore,
   } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyLoginController'
-  import AppHead from '@/components/AppHead.svelte'
-  import InputError from '@/components/InputError.svelte'
-  import PasskeyVerify from '@/components/PasskeyVerify.svelte'
-  import PasswordInput from '@/components/PasswordInput.svelte'
-  import TextLink from '@/components/TextLink.svelte'
-  import { Button } from '@/components/ui/button'
-  import { Checkbox } from '@/components/ui/checkbox'
-  import { Input } from '@/components/ui/input'
-  import { Label } from '@/components/ui/label'
-  import { Spinner } from '@/components/ui/spinner'
-  import AuthLayout from '@/layouts/AuthLayout.svelte'
   import { register } from '@/routes'
   import { store } from '@/routes/login'
   import { request } from '@/routes/password'
@@ -57,8 +45,8 @@
     {#snippet children({ errors, processing, validate })}
       <div class="grid gap-6">
         <div class="grid gap-2">
-          <Label for="email">Email address</Label>
-          <Input
+          <UiLabel for="email">Email address</UiLabel>
+          <UiInput
             id="email"
             type="email"
             name="email"
@@ -74,7 +62,7 @@
 
         <div class="grid gap-2">
           <div class="flex items-center justify-between">
-            <Label for="password">Password</Label>
+            <UiLabel for="password">Password</UiLabel>
             {#if canResetPassword}
               <TextLink href={request()} class="text-sm" tabindex={5}>
                 Forgot your password?
@@ -94,22 +82,22 @@
         </div>
 
         <div class="flex items-center justify-between">
-          <Label for="remember" class="flex items-center space-x-3">
-            <Checkbox id="remember" name="remember" tabindex={3} />
+          <UiLabel for="remember" class="flex items-center space-x-3">
+            <UiCheckbox id="remember" name="remember" tabindex={3} />
             <span>Remember me</span>
-          </Label>
+          </UiLabel>
         </div>
 
-        <Button
+        <UiButton
           type="submit"
           class="mt-4 w-full"
           tabindex={4}
           disabled={processing}
           data-test="login-button"
         >
-          {#if processing}<Spinner />{/if}
+          {#if processing}<UiSpinner />{/if}
           Log in
-        </Button>
+        </UiButton>
       </div>
 
       {#if canRegister}

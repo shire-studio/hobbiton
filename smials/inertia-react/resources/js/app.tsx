@@ -1,6 +1,5 @@
 import { createInertiaApp } from '@inertiajs/react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
-import { TooltipProvider } from '@/components/ui/tooltip'
 import { initializeFlashToast } from '@/lib/flashToast'
 import { pageTitle, resolvePage } from '@/lib/inertiaApp'
 
@@ -9,9 +8,9 @@ void createInertiaApp({
   resolve: resolvePage,
   setup({ el, App, props }) {
     const app = (
-      <TooltipProvider delayDuration={0}>
+      <UiTooltipProvider delayDuration={0}>
         <App {...props} />
-      </TooltipProvider>
+      </UiTooltipProvider>
     )
 
     if (el.hasChildNodes()) {

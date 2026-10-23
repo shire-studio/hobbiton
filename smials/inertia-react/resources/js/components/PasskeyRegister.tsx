@@ -4,10 +4,6 @@ import {
   index as registerOptions,
   store as registerStore,
 } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyRegistrationController'
-import InputError from '@/components/InputError'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 
 type Props = {
   onSuccess: () => void
@@ -76,9 +72,9 @@ export default function PasskeyRegister({ onSuccess }: Props) {
 
   if (!showForm) {
     return (
-      <Button variant="outline" onClick={() => setShowForm(true)}>
+      <UiButton variant="outline" onClick={() => setShowForm(true)}>
         Add passkey
-      </Button>
+      </UiButton>
     )
   }
 
@@ -88,8 +84,8 @@ export default function PasskeyRegister({ onSuccess }: Props) {
       className="space-y-4 rounded-lg border border-border bg-muted/50 p-4"
     >
       <div className="grid gap-2">
-        <Label htmlFor="passkey-name">Passkey name</Label>
-        <Input
+        <UiLabel htmlFor="passkey-name">Passkey name</UiLabel>
+        <UiInput
           id="passkey-name"
           type="text"
           value={name}
@@ -106,12 +102,12 @@ export default function PasskeyRegister({ onSuccess }: Props) {
       {error && <InputError message={error} />}
 
       <div className="flex gap-2">
-        <Button type="submit" disabled={isLoading || !name.trim()}>
+        <UiButton type="submit" disabled={isLoading || !name.trim()}>
           {isLoading ? 'Registering...' : 'Register passkey'}
-        </Button>
-        <Button type="button" variant="ghost" onClick={handleCancel}>
+        </UiButton>
+        <UiButton type="button" variant="ghost" onClick={handleCancel}>
           Cancel
-        </Button>
+        </UiButton>
       </div>
     </form>
   )

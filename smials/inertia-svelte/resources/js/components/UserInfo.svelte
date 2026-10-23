@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Avatar, AvatarFallback } from '@/components/ui/avatar'
   import type { User } from '@/types'
 
   let { user, showEmail = false }: { user: User; showEmail?: boolean } =
@@ -9,11 +8,11 @@
 </script>
 
 <div class="flex flex-1 items-center gap-2">
-  <Avatar class="h-8 w-8 overflow-hidden rounded-lg">
-    <AvatarFallback class="rounded-lg text-black dark:text-white">
+  <UiAvatar class="h-8 w-8 overflow-hidden rounded-lg">
+    <UiAvatarFallback class="rounded-lg text-black dark:text-white">
       {initials}
-    </AvatarFallback>
-  </Avatar>
+    </UiAvatarFallback>
+  </UiAvatar>
 
   <div class="grid flex-1 text-left text-sm leading-tight">
     <span class="truncate font-medium">{user.name}</span>

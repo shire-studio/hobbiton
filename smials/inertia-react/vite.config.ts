@@ -1,3 +1,5 @@
+import { globSync, readFileSync } from 'fs'
+import { basename, join } from 'path'
 import { fileURLToPath } from 'url'
 import { wayfinder } from '@laravel/vite-plugin-wayfinder'
 import babel from '@rolldown/plugin-babel'
@@ -8,6 +10,28 @@ import { bunny } from 'laravel-vite-plugin/fonts'
 import AutoImport from 'unplugin-auto-import/vite'
 import { watch } from 'vite-plugin-watch'
 import { defineConfig } from 'vite-plus'
+
+const uiDir = fileURLToPath(
+  new URL('./resources/js/components/ui', import.meta.url),
+)
+
+/**
+ * Auto import every shadcn/ui component with a Ui prefix, so names match the Vue kit.
+ */
+function uiComponents() {
+  return globSync('*.tsx', { cwd: uiDir }).map((file) => ({
+    from: `@/components/ui/${basename(file, '.tsx')}`,
+    imports: [
+      ...readFileSync(join(uiDir, file), 'utf-8').matchAll(
+        /export \{([^}]*)\}/g,
+      ),
+    ]
+      .flatMap(([, names]) => names.split(','))
+      .map((name) => name.trim())
+      .filter((name) => /^[A-Z]/.test(name))
+      .map((name): [string, string] => [name, `Ui${name}`]),
+  }))
+}
 
 export default defineConfig({
   fmt: {
@@ -39,6 +63,10 @@ export default defineConfig({
     plugins: ['eslint', 'react', 'typescript', 'unicorn', 'oxc'],
     categories: {
       correctness: 'warn',
+    },
+    rules: {
+      // Components are auto imported, and TypeScript checks them through auto-imports.d.ts.
+      'react/jsx-no-undef': 'off',
     },
     ignorePatterns: [
       'vendor',
@@ -93,10 +121,20 @@ export default defineConfig({
             'useRemember',
             'usePrefetch',
             'router',
+            'Link',
+            'Form',
+            'Head',
+            'Deferred',
           ],
         },
+        ...uiComponents(),
       ],
-      dirs: ['resources/js/composables'],
+      dirs: [
+        'resources/js/composables',
+        'resources/js/components',
+        'resources/js/layouts/**',
+      ],
+      defaultExportByFilename: true,
     }),
     watch({
       pattern: 'app/{Data,Enums}/**/*.php',

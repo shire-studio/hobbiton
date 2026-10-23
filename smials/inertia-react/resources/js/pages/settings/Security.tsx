@@ -1,13 +1,3 @@
-import { Form, Head } from '@inertiajs/react'
-import Heading from '@/components/Heading'
-import InputError from '@/components/InputError'
-import ManagePasskeys from '@/components/ManagePasskeys'
-import ManageTwoFactor from '@/components/ManageTwoFactor'
-import PasswordInput from '@/components/PasswordInput'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import AppLayout from '@/layouts/AppLayout'
-import SettingsLayout from '@/layouts/settings/Layout'
 import { edit, update } from '@/routes/password'
 import type { BreadcrumbItem } from '@/types'
 
@@ -63,7 +53,7 @@ export default function Security({
             {({ errors, processing }) => (
               <>
                 <div className="grid gap-2">
-                  <Label htmlFor="current_password">Current password</Label>
+                  <UiLabel htmlFor="current_password">Current password</UiLabel>
                   <PasswordInput
                     id="current_password"
                     name="current_password"
@@ -75,7 +65,7 @@ export default function Security({
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="password">New password</Label>
+                  <UiLabel htmlFor="password">New password</UiLabel>
                   <PasswordInput
                     id="password"
                     name="password"
@@ -87,9 +77,9 @@ export default function Security({
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="password_confirmation">
+                  <UiLabel htmlFor="password_confirmation">
                     Confirm password
-                  </Label>
+                  </UiLabel>
                   <PasswordInput
                     id="password_confirmation"
                     name="password_confirmation"
@@ -101,12 +91,12 @@ export default function Security({
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <Button
+                  <UiButton
                     disabled={processing}
                     data-test="update-password-button"
                   >
                     Save
-                  </Button>
+                  </UiButton>
                 </div>
               </>
             )}

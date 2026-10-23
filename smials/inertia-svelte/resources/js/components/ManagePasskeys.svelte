@@ -1,9 +1,6 @@
 <script lang="ts">
   import { KeyRound } from '@lucide/svelte'
   import { destroy } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyRegistrationController'
-  import Heading from '@/components/Heading.svelte'
-  import PasskeyItem from '@/components/PasskeyItem.svelte'
-  import PasskeyRegister from '@/components/PasskeyRegister.svelte'
 
   let {
     canManagePasskeys,

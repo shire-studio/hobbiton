@@ -1,15 +1,5 @@
 <script lang="ts">
-  import { Form } from '@inertiajs/svelte'
   import { Eye, EyeOff, LockKeyhole, RefreshCw } from '@lucide/svelte'
-  import AlertError from '@/components/AlertError.svelte'
-  import { Button } from '@/components/ui/button'
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from '@/components/ui/card'
   import { cn } from '@/lib/utils'
   import { regenerateRecoveryCodes } from '@/routes/two-factor'
 
@@ -37,28 +27,28 @@
   })
 </script>
 
-<Card class="w-full">
-  <CardHeader>
-    <CardTitle class="flex gap-3">
+<UiCard class="w-full">
+  <UiCardHeader>
+    <UiCardTitle class="flex gap-3">
       <LockKeyhole class="size-4" />2FA recovery codes
-    </CardTitle>
-    <CardDescription>
+    </UiCardTitle>
+    <UiCardDescription>
       Recovery codes let you regain access if you lose your 2FA device. Store
       them in a secure password manager.
-    </CardDescription>
-  </CardHeader>
-  <CardContent>
+    </UiCardDescription>
+  </UiCardHeader>
+  <UiCardContent>
     <div
       class="flex flex-col gap-3 select-none sm:flex-row sm:items-center sm:justify-between"
     >
-      <Button onclick={toggleRecoveryCodesVisibility} class="w-fit">
+      <UiButton onclick={toggleRecoveryCodesVisibility} class="w-fit">
         {#if isRecoveryCodesVisible}
           <EyeOff class="size-4" />
         {:else}
           <Eye class="size-4" />
         {/if}
         {isRecoveryCodesVisible ? 'Hide' : 'View'} recovery codes
-      </Button>
+      </UiButton>
 
       {#if isRecoveryCodesVisible && recoveryCodesList.value.length}
         <Form
@@ -67,9 +57,9 @@
           onSuccess={fetchRecoveryCodes}
         >
           {#snippet children({ processing })}
-            <Button variant="secondary" type="submit" disabled={processing}>
+            <UiButton variant="secondary" type="submit" disabled={processing}>
               <RefreshCw /> Regenerate codes
-            </Button>
+            </UiButton>
           {/snippet}
         </Form>
       {/if}
@@ -112,5 +102,5 @@
         </div>
       {/if}
     </div>
-  </CardContent>
-</Card>
+  </UiCardContent>
+</UiCard>

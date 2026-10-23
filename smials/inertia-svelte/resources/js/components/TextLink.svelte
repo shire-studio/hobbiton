@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { LinkComponentBaseProps, Method } from '@inertiajs/core'
-  import { Link } from '@inertiajs/svelte'
   import type { Snippet } from 'svelte'
 
   let {

@@ -1,9 +1,4 @@
-import { Form } from '@inertiajs/react'
 import { ShieldCheck } from 'lucide-react'
-import Heading from '@/components/Heading'
-import TwoFactorRecoveryCodes from '@/components/TwoFactorRecoveryCodes'
-import TwoFactorSetupModal from '@/components/TwoFactorSetupModal'
-import { Button } from '@/components/ui/button'
 import { disable, enable } from '@/routes/two-factor'
 
 type Props = {
@@ -44,19 +39,19 @@ export default function ManageTwoFactor({
 
           <div>
             {hasSetupData ? (
-              <Button onClick={() => setShowSetupModal(true)}>
+              <UiButton onClick={() => setShowSetupModal(true)}>
                 <ShieldCheck />
                 Continue setup
-              </Button>
+              </UiButton>
             ) : (
               <Form
                 {...enable.form()}
                 onSuccess={() => setShowSetupModal(true)}
               >
                 {({ processing }) => (
-                  <Button type="submit" disabled={processing}>
+                  <UiButton type="submit" disabled={processing}>
                     Enable 2FA
-                  </Button>
+                  </UiButton>
                 )}
               </Form>
             )}
@@ -72,13 +67,13 @@ export default function ManageTwoFactor({
           <div className="relative inline">
             <Form {...disable.form()}>
               {({ processing }) => (
-                <Button
+                <UiButton
                   variant="destructive"
                   type="submit"
                   disabled={processing}
                 >
                   Disable 2FA
-                </Button>
+                </UiButton>
               )}
             </Form>
           </div>

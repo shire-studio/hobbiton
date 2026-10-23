@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { Link } from '@inertiajs/svelte'
   import type { Snippet } from 'svelte'
-  import AppLogoIcon from '@/components/AppLogoIcon.svelte'
   import { home } from '@/routes'
 
   let {

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Eye, EyeOff } from '@lucide/svelte'
   import type { HTMLInputAttributes } from 'svelte/elements'
-  import { Input } from '@/components/ui/input'
   import { cn } from '@/lib/utils'
 
   let {
@@ -14,7 +13,7 @@
 </script>
 
 <div class="relative">
-  <Input
+  <UiInput
     bind:ref
     type={showPassword ? 'text' : 'password'}
     class={cn('pr-10', className)}

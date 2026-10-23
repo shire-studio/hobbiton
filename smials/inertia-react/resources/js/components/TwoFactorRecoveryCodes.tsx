@@ -1,14 +1,4 @@
-import { Form } from '@inertiajs/react'
 import { Eye, EyeOff, LockKeyhole, RefreshCw } from 'lucide-react'
-import AlertError from '@/components/AlertError'
-import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { regenerateRecoveryCodes } from '@/routes/two-factor'
 
@@ -43,23 +33,23 @@ export default function TwoFactorRecoveryCodes() {
   const VisibilityIcon = isRecoveryCodesVisible ? EyeOff : Eye
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex gap-3">
+    <UiCard className="w-full">
+      <UiCardHeader>
+        <UiCardTitle className="flex gap-3">
           <LockKeyhole className="size-4" />
           2FA recovery codes
-        </CardTitle>
-        <CardDescription>
+        </UiCardTitle>
+        <UiCardDescription>
           Recovery codes let you regain access if you lose your 2FA device.
           Store them in a secure password manager.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+        </UiCardDescription>
+      </UiCardHeader>
+      <UiCardContent>
         <div className="flex flex-col gap-3 select-none sm:flex-row sm:items-center sm:justify-between">
-          <Button onClick={toggleRecoveryCodesVisibility} className="w-fit">
+          <UiButton onClick={toggleRecoveryCodesVisibility} className="w-fit">
             <VisibilityIcon className="size-4" />
             {isRecoveryCodesVisible ? 'Hide' : 'View'} recovery codes
-          </Button>
+          </UiButton>
 
           {isRecoveryCodesVisible && recoveryCodesList.length > 0 && (
             <Form
@@ -68,9 +58,13 @@ export default function TwoFactorRecoveryCodes() {
               onSuccess={() => void fetchRecoveryCodes()}
             >
               {({ processing }) => (
-                <Button variant="secondary" type="submit" disabled={processing}>
+                <UiButton
+                  variant="secondary"
+                  type="submit"
+                  disabled={processing}
+                >
                   <RefreshCw /> Regenerate codes
-                </Button>
+                </UiButton>
               )}
             </Form>
           )}
@@ -114,7 +108,7 @@ export default function TwoFactorRecoveryCodes() {
             </div>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </UiCardContent>
+    </UiCard>
   )
 }

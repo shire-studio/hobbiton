@@ -1,13 +1,3 @@
-import { Form, Head } from '@inertiajs/react'
-import DeleteUser from '@/components/DeleteUser'
-import Heading from '@/components/Heading'
-import InputError from '@/components/InputError'
-import TextLink from '@/components/TextLink'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import AppLayout from '@/layouts/AppLayout'
-import SettingsLayout from '@/layouts/settings/Layout'
 import { edit, update } from '@/routes/user-profile'
 import { send } from '@/routes/verification'
 import type { BreadcrumbItem } from '@/types'
@@ -46,8 +36,8 @@ export default function Profile({ status }: Props) {
             {({ errors, processing, validate }) => (
               <>
                 <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
+                  <UiLabel htmlFor="name">Name</UiLabel>
+                  <UiInput
                     id="name"
                     className="mt-1 block w-full"
                     name="name"
@@ -61,8 +51,8 @@ export default function Profile({ status }: Props) {
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email address</Label>
-                  <Input
+                  <UiLabel htmlFor="email">Email address</UiLabel>
+                  <UiInput
                     id="email"
                     type="email"
                     className="mt-1 block w-full"
@@ -95,12 +85,12 @@ export default function Profile({ status }: Props) {
                 )}
 
                 <div className="flex items-center gap-4">
-                  <Button
+                  <UiButton
                     disabled={processing}
                     data-test="update-profile-button"
                   >
                     Save
-                  </Button>
+                  </UiButton>
                 </div>
               </>
             )}

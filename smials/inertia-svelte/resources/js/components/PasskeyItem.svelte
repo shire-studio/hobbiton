@@ -1,15 +1,5 @@
 <script lang="ts">
   import { KeyRound, Trash2 } from '@lucide/svelte'
-  import { Button } from '@/components/ui/button'
-  import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogTitle,
-    DialogTrigger,
-  } from '@/components/ui/dialog'
 
   let {
     passkey,
@@ -57,10 +47,10 @@
     </div>
   </div>
 
-  <Dialog>
-    <DialogTrigger asChild>
+  <UiDialog>
+    <UiDialogTrigger asChild>
       {#snippet children(props)}
-        <Button
+        <UiButton
           variant="ghost"
           size="sm"
           class="text-destructive hover:bg-destructive/10 hover:text-destructive"
@@ -68,30 +58,32 @@
         >
           <Trash2 class="h-4 w-4" />
           <span class="sr-only">Remove</span>
-        </Button>
+        </UiButton>
       {/snippet}
-    </DialogTrigger>
+    </UiDialogTrigger>
 
-    <DialogContent>
-      <DialogTitle>Remove passkey</DialogTitle>
-      <DialogDescription>
+    <UiDialogContent>
+      <UiDialogTitle>Remove passkey</UiDialogTitle>
+      <UiDialogDescription>
         Are you sure you want to remove the "{passkey.name}" passkey? You will
         no longer be able to use it to sign in.
-      </DialogDescription>
-      <DialogFooter class="gap-2">
-        <DialogClose asChild>
+      </UiDialogDescription>
+      <UiDialogFooter class="gap-2">
+        <UiDialogClose asChild>
           {#snippet children(props)}
-            <Button variant="secondary" onclick={props.onClick}>Cancel</Button>
+            <UiButton variant="secondary" onclick={props.onClick}
+              >Cancel</UiButton
+            >
           {/snippet}
-        </DialogClose>
-        <Button
+        </UiDialogClose>
+        <UiButton
           variant="destructive"
           disabled={isDeleting}
           onclick={handleDelete}
         >
           {isDeleting ? 'Removing...' : 'Remove passkey'}
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
+        </UiButton>
+      </UiDialogFooter>
+    </UiDialogContent>
+  </UiDialog>
 </div>

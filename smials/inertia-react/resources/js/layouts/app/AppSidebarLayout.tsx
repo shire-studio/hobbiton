@@ -1,9 +1,4 @@
 import type { ReactNode } from 'react'
-import AppContent from '@/components/AppContent'
-import AppShell from '@/components/AppShell'
-import AppSidebar from '@/components/AppSidebar'
-import AppSidebarHeader from '@/components/AppSidebarHeader'
-import { Toaster } from '@/components/ui/sonner'
 import type { BreadcrumbItem } from '@/types'
 
 type Props = {
@@ -22,7 +17,7 @@ export default function AppSidebarLayout({
         <AppSidebarHeader breadcrumbs={breadcrumbs} />
         {children}
       </AppContent>
-      <Toaster />
+      <UiToaster />
     </AppShell>
   )
 }

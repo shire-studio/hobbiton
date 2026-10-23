@@ -1,12 +1,4 @@
 <script lang="ts">
-  import { Link } from '@inertiajs/svelte'
-  import {
-    SidebarGroup,
-    SidebarGroupLabel,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-  } from '@/components/ui/sidebar'
   import type { NavItem } from '@/types'
 
   let { items }: { items: NavItem[] } = $props()
@@ -14,12 +6,12 @@
   const { isCurrentUrl } = useCurrentUrl()
 </script>
 
-<SidebarGroup class="px-2 py-0">
-  <SidebarGroupLabel>Platform</SidebarGroupLabel>
-  <SidebarMenu>
+<UiSidebarGroup class="px-2 py-0">
+  <UiSidebarGroupLabel>Platform</UiSidebarGroupLabel>
+  <UiSidebarMenu>
     {#each items as item (item.title)}
-      <SidebarMenuItem>
-        <SidebarMenuButton
+      <UiSidebarMenuItem>
+        <UiSidebarMenuButton
           asChild
           isActive={isCurrentUrl(item.href)}
           tooltip={item.title}
@@ -32,8 +24,8 @@
               <span>{item.title}</span>
             </Link>
           {/snippet}
-        </SidebarMenuButton>
-      </SidebarMenuItem>
+        </UiSidebarMenuButton>
+      </UiSidebarMenuItem>
     {/each}
-  </SidebarMenu>
-</SidebarGroup>
+  </UiSidebarMenu>
+</UiSidebarGroup>

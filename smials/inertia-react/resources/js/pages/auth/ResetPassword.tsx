@@ -1,11 +1,3 @@
-import { Form, Head } from '@inertiajs/react'
-import InputError from '@/components/InputError'
-import PasswordInput from '@/components/PasswordInput'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Spinner } from '@/components/ui/spinner'
-import AuthLayout from '@/layouts/AuthLayout'
 import { store } from '@/routes/password'
 
 type Props = {
@@ -31,8 +23,8 @@ export default function ResetPassword({ token, email }: Props) {
         {({ errors, processing, validate }) => (
           <div className="grid gap-6">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
+              <UiLabel htmlFor="email">Email</UiLabel>
+              <UiInput
                 id="email"
                 type="email"
                 name="email"
@@ -46,7 +38,7 @@ export default function ResetPassword({ token, email }: Props) {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <UiLabel htmlFor="password">Password</UiLabel>
               <PasswordInput
                 id="password"
                 name="password"
@@ -60,7 +52,9 @@ export default function ResetPassword({ token, email }: Props) {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="password_confirmation">Confirm password</Label>
+              <UiLabel htmlFor="password_confirmation">
+                Confirm password
+              </UiLabel>
               <PasswordInput
                 id="password_confirmation"
                 name="password_confirmation"
@@ -72,15 +66,15 @@ export default function ResetPassword({ token, email }: Props) {
               <InputError message={errors.password_confirmation} />
             </div>
 
-            <Button
+            <UiButton
               type="submit"
               className="mt-4 w-full"
               disabled={processing}
               data-test="reset-password-button"
             >
-              {processing && <Spinner />}
+              {processing && <UiSpinner />}
               Reset password
-            </Button>
+            </UiButton>
           </div>
         )}
       </Form>

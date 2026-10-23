@@ -1,10 +1,5 @@
 <script lang="ts">
-  import { Form } from '@inertiajs/svelte'
   import { ShieldCheck } from '@lucide/svelte'
-  import Heading from '@/components/Heading.svelte'
-  import TwoFactorRecoveryCodes from '@/components/TwoFactorRecoveryCodes.svelte'
-  import TwoFactorSetupModal from '@/components/TwoFactorSetupModal.svelte'
-  import { Button } from '@/components/ui/button'
   import { disable, enable } from '@/routes/two-factor'
 
   let {
@@ -41,13 +36,15 @@
 
         <div>
           {#if hasSetupData.value}
-            <Button onclick={() => (showSetupModal = true)}>
+            <UiButton onclick={() => (showSetupModal = true)}>
               <ShieldCheck />Continue setup
-            </Button>
+            </UiButton>
           {:else}
             <Form {...enable.form()} onSuccess={() => (showSetupModal = true)}>
               {#snippet children({ processing })}
-                <Button type="submit" disabled={processing}>Enable 2FA</Button>
+                <UiButton type="submit" disabled={processing}
+                  >Enable 2FA</UiButton
+                >
               {/snippet}
             </Form>
           {/if}
@@ -63,9 +60,13 @@
         <div class="relative inline">
           <Form {...disable.form()}>
             {#snippet children({ processing })}
-              <Button variant="destructive" type="submit" disabled={processing}>
+              <UiButton
+                variant="destructive"
+                type="submit"
+                disabled={processing}
+              >
                 Disable 2FA
-              </Button>
+              </UiButton>
             {/snippet}
           </Form>
         </div>

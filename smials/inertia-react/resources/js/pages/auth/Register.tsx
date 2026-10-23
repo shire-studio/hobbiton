@@ -1,12 +1,3 @@
-import { Form, Head } from '@inertiajs/react'
-import InputError from '@/components/InputError'
-import PasswordInput from '@/components/PasswordInput'
-import TextLink from '@/components/TextLink'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Spinner } from '@/components/ui/spinner'
-import AuthLayout from '@/layouts/AuthLayout'
 import { login } from '@/routes'
 import { store } from '@/routes/register'
 
@@ -27,8 +18,8 @@ export default function Register() {
           <>
             <div className="grid gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
+                <UiLabel htmlFor="name">Name</UiLabel>
+                <UiInput
                   id="name"
                   type="text"
                   required
@@ -43,8 +34,8 @@ export default function Register() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="email">Email address</Label>
-                <Input
+                <UiLabel htmlFor="email">Email address</UiLabel>
+                <UiInput
                   id="email"
                   type="email"
                   required
@@ -58,7 +49,7 @@ export default function Register() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
+                <UiLabel htmlFor="password">Password</UiLabel>
                 <PasswordInput
                   id="password"
                   required
@@ -72,7 +63,9 @@ export default function Register() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="password_confirmation">Confirm password</Label>
+                <UiLabel htmlFor="password_confirmation">
+                  Confirm password
+                </UiLabel>
                 <PasswordInput
                   id="password_confirmation"
                   required
@@ -85,16 +78,16 @@ export default function Register() {
                 <InputError message={errors.password_confirmation} />
               </div>
 
-              <Button
+              <UiButton
                 type="submit"
                 className="mt-2 w-full"
                 tabIndex={5}
                 disabled={processing}
                 data-test="register-user-button"
               >
-                {processing && <Spinner />}
+                {processing && <UiSpinner />}
                 Create account
-              </Button>
+              </UiButton>
             </div>
 
             <div className="text-center text-sm text-muted-foreground">

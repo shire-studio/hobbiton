@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { User } from '@/types'
 
 type Props = {
@@ -11,11 +10,11 @@ export default function UserInfo({ user, showEmail = false }: Props) {
 
   return (
     <div className="flex flex-1 items-center gap-2">
-      <Avatar className="h-8 w-8 overflow-hidden rounded-lg">
-        <AvatarFallback className="rounded-lg text-black dark:text-white">
+      <UiAvatar className="h-8 w-8 overflow-hidden rounded-lg">
+        <UiAvatarFallback className="rounded-lg text-black dark:text-white">
           {initials}
-        </AvatarFallback>
-      </Avatar>
+        </UiAvatarFallback>
+      </UiAvatar>
 
       <div className="grid flex-1 text-left text-sm leading-tight">
         <span className="truncate font-medium">{user.name}</span>
