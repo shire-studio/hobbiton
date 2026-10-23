@@ -82,6 +82,25 @@ export function restoreReplacements(content, smialFile, replacements) {
     return restored;
 }
 
+/**
+ * Raise a kit into raised/<kit> and install its PHP dependencies. Returns the kit's directory.
+ */
+export async function prepareKit(name) {
+    const dir = path.join(raisedDir, name);
+
+    await run('php', ['artisan', 'raise', `--kit=${name}`], { cwd: rootDir });
+
+    if (!fs.existsSync(path.join(dir, '.env'))) {
+        fs.copyFileSync(path.join(dir, '.env.example'), path.join(dir, '.env'));
+    }
+
+    // The lock's content hash covers composer.json, which raising personalises per kit.
+    await run('composer', ['update', '--lock', '--no-interaction', '--no-progress'], { cwd: dir });
+    await run('composer', ['install', '--no-interaction', '--no-progress'], { cwd: dir });
+
+    return dir;
+}
+
 export function run(command, args, options = {}) {
     return new Promise((resolve, reject) => {
         const child = spawn(command, args, { stdio: 'inherit', ...options });

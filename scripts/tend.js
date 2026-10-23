@@ -4,9 +4,10 @@
  * Tend a raised kit: run it with `composer dev` and copy every change you make in
  * raised/<kit> back to the smial that owns the file. New files go to the kit's top smial.
  *
- * Usage: node scripts/tend.js --react [--once] [--no-serve] [--path=<dir>]
+ * Usage: node scripts/tend.js --react [--once] [--check] [--no-serve] [--path=<dir>]
  *
  *   --once      Sync once and exit, without watching or serving.
+ *   --check     With --once, list files that differ from smials/ and exit 1 if any, without writing.
  *   --no-serve  Watch and sync, but do not start `composer dev`.
  *   --path      Tend a kit raised somewhere other than raised/<kit>.
  */
@@ -30,6 +31,7 @@ if (!kitName) {
 const kit = manifest.kits[kitName];
 const kitDir = option('path') ? path.resolve(option('path')) : path.join(raisedDir, kitName);
 const excluded = new Set(kit.exclude ?? []);
+const checking = args.includes('--once') && args.includes('--check');
 
 if (!fs.existsSync(path.join(kitDir, 'composer.json'))) {
     log(`${kit.label} has not been raised. Run 'php artisan raise --kit=${kitName}' first.`, 'red');
@@ -72,6 +74,12 @@ function syncFile(absolutePath) {
         return false;
     }
 
+    if (checking) {
+        log(`Untended ${relativePath} -> smials/${smial}`, 'yellow');
+
+        return true;
+    }
+
     fs.mkdirSync(path.dirname(destination), { recursive: true });
     fs.writeFileSync(destination, source);
     log(`Tended ${relativePath} -> smials/${smial}`, 'green');
@@ -106,6 +114,13 @@ function walk(dir, files = []) {
     }
 
     return files;
+}
+
+if (checking) {
+    const untended = walk(kitDir).filter(syncFile).length;
+
+    log(`${untended} untended file(s) in raised/${kitName}`, untended > 0 ? 'red' : 'green');
+    process.exit(untended > 0 ? 1 : 0);
 }
 
 log(`Tending ${kit.label}: syncing raised/${kitName} back to smials/...`, 'blue');
