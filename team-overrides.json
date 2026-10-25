@@ -183,6 +183,10 @@
         "base": "inertia",
         "sha1": "e6daa41622ccf7d506b1c3f094f20396b9280c10"
     },
+    "teams-inertia/README.md": {
+        "base": "inertia",
+        "sha1": "500d7bd89fbce1d153f24cca31e3d70446295395"
+    },
     "teams-inertia/routes/web.php": {
         "base": "inertia",
         "sha1": "4b4697ddbb83e9f7e07fd2f6cf8a4b75ec8dd3e0"

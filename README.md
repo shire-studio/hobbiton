@@ -21,6 +21,9 @@ Hobbiton is where every Shire Studio Laravel starter kit is grown. Each kit is r
 | API | Sanctum tokens, JSON resources | [shire-studio/laravel-starter-kit-api](https://github.com/shire-studio/laravel-starter-kit-api) |
 | Blade | Blade views and Tailwind CSS, landing page only | [shire-studio/laravel-starter-kit-blade](https://github.com/shire-studio/laravel-starter-kit-blade) |
 | API Teams | The API kit with teams, delivered as an overlay of the API repository | None, ships with API |
+| Vue Teams | The Vue kit with teams, delivered as an overlay of the Vue repository | None, ships with Vue |
+| React Teams | The React kit with teams, delivered as an overlay of the React repository | None, ships with React |
+| Svelte Teams | The Svelte kit with teams, delivered as an overlay of the Svelte repository | None, ships with Svelte |
 
 Every kit ships the same tooling: Pint (PHP and Blade), Rector, PHPStan at level max, Pest with 100% code and type coverage, Laravel Vet, Boost guidelines and the `.ai` rules. Kits with a frontend add Vite Plus (oxlint and oxfmt) and a TypeScript check.
 
@@ -39,11 +42,14 @@ A smial is a folder under `smials/` holding part of a kit. Raising a kit copies 
 | `api` | JSON controllers, Sanctum, the API tests and the artwork | API |
 | `blade` | The landing page and the artwork | Blade |
 | `teams` | Team models, enums, policy, rules, actions, notification, migrations, factories and their unit tests | Every team kit |
+| `teams-web` | Team controllers, form requests and feature tests that never render a page | Vue Teams, React Teams, Svelte Teams |
+| `teams-inertia` | Team Inertia controllers, routes, middleware, Data classes, feature tests and the shared browser test | Vue Teams, React Teams, Svelte Teams |
+| `teams-inertia-vue`, `teams-inertia-react`, `teams-inertia-svelte` | The team screens, modals, team switcher and sidebar changes of one frontend | One team kit each |
 | `teams-api` | Team JSON controllers, resources, routes and API feature tests | API Teams |
 
 `hobbiton.json` lists every kit with its smials, the files it leaves out and the `{{placeholders}}` it fills in. A team kit also names its `base` kit. `raise`, `tend`, `survey`, `deliver` and both CI workflows read it.
 
-The three Inertia kits use the same page names (for example `auth/Login`), so their `app`, `routes` and `tests/Feature` folders are identical byte for byte. Hobbiton's own test suite checks that.
+The three Inertia kits use the same page names (for example `auth/Login`), so their `app`, `routes` and `tests/Feature` folders are identical byte for byte. The three Inertia team kits do the same with theirs. Hobbiton's own test suite checks both.
 
 ## Getting Started
 
@@ -91,6 +97,14 @@ A team kit is a kit with a `base`, such as `api-teams`, whose base is `api`. It 
 The overlay lives in `.starter-kit/teams/` in the base kit's repository. `manifest.json` holds `{"version": 1, "deleted": [...]}`, and `files/` holds every file the team kit adds or changes. Applying it means copying `files/` over the project, removing the `deleted` paths, then removing `.starter-kit/`. `php artisan pack --kit=api --to=dir` raises the base kit and writes the overlay into it. Packing a team kit is refused, so pack its base kit instead. `raise` never writes the overlay.
 
 Team kits share their base kit's lock files and `vet.json`, because teams add no dependencies.
+
+### Inertia Team Kits
+
+`vue-teams`, `react-teams` and `svelte-teams` add `teams`, `teams-web`, `teams-inertia` and one `teams-inertia-<frontend>` smial to their base kit. Each team smial replaces or adds files, so the base kits raise exactly as before.
+
+Two dashboard routes exist. `GET /dashboard`, named `dashboard`, stays and redirects an authenticated, verified user to the dashboard of their current team, falling back to their personal team. The team dashboard is `GET /{current_team:slug}/dashboard`, named `team.dashboard`. Team settings live under `/settings/teams`.
+
+The three `teams-inertia-*` smials hold the same screens, so a frontend change to teams is made in all three with identical file names, props, copy and `data-test` attributes. `smials/teams-inertia/tests/Browser/TeamsTest.php` is the one browser test that every Inertia team kit runs against its own frontend, so it is the check that the three stay in step.
 
 ### Tending a Team Kit
 
