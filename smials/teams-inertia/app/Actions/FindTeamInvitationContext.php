@@ -6,15 +6,12 @@ namespace App\Actions;
 
 use App\Data\TeamInvitationContextData;
 use App\Models\TeamInvitation;
-use Illuminate\Http\Request;
 
 final readonly class FindTeamInvitationContext
 {
-    public function handle(Request $request): ?TeamInvitationContextData
+    public function handle(?string $code): ?TeamInvitationContextData
     {
-        $code = $request->query->all()['invitation'] ?? null;
-
-        if (! is_string($code)) {
+        if ($code === null) {
             return null;
         }
 
