@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { after, test } from 'node:test';
-import { baseKitNames, deleteTarget, owningSmial, teamKitsIn, teamSmialFor, tendChange, tendTarget, teamKitsFor } from '../../scripts/helpers.js';
+import { baseKitNames, deleteTarget, owningSmial, refusedCount, teamKitsIn, teamSmialFor, tendChange, tendTarget, teamKitsFor } from '../../scripts/helpers.js';
 
 const smials = ['common', 'auth', 'api', 'teams', 'teams-api'];
 const kit = { base: 'api', smials };
@@ -157,4 +157,13 @@ test('baseKitNames leaves out team kits', () => {
 test('teamKitsFor returns the team kit of each base kit that has one', () => {
     assert.deepEqual(teamKitsFor(['vue', 'api'], manifest), ['api-teams']);
     assert.deepEqual(teamKitsFor(['vue'], manifest), []);
+});
+
+test('tend --once exits 1 when it refuses a file', () => {
+    const refused = { changed: true, smial: null };
+    const tended = { changed: true, smial: 'teams' };
+    const unchanged = { changed: false, smial: 'teams' };
+
+    assert.equal(refusedCount([tended, unchanged]), 0);
+    assert.equal(refusedCount([tended, refused, refused]), 2);
 });

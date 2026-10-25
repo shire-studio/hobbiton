@@ -205,6 +205,13 @@ function filesIn(directory) {
  * when its smial is the last in the kit's order to hold the path, and a file with no base copy is new, not an override.
  * Mirrors App\Support\TeamOverrides.
  */
+/**
+ * How many tend changes were refused: a team kit edit to a base smial that not every team kit raises.
+ */
+export function refusedCount(changes) {
+    return changes.filter(change => change.changed && change.smial === null).length;
+}
+
 export function effectiveOverrides(manifest, root = smialsDir) {
     const owners = new Map();
 

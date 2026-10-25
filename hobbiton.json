@@ -152,6 +152,72 @@
                 "{{framework}}": "Blade",
                 "{{components}}": "Blade"
             }
+        },
+        "vue-teams": {
+            "label": "Vue Teams",
+            "base": "vue",
+            "repository": "shire-studio/laravel-starter-kit-vue",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-vue",
+                "teams",
+                "teams-web",
+                "teams-inertia",
+                "teams-inertia-vue"
+            ],
+            "replacements": {
+                "{{kit}}": "vue",
+                "{{framework}}": "Vue 3",
+                "{{components}}": "shadcn-vue"
+            }
+        },
+        "react-teams": {
+            "label": "React Teams",
+            "base": "react",
+            "repository": "shire-studio/laravel-starter-kit-react",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-react",
+                "teams",
+                "teams-web",
+                "teams-inertia",
+                "teams-inertia-react"
+            ],
+            "replacements": {
+                "{{kit}}": "react",
+                "{{framework}}": "React 19",
+                "{{components}}": "shadcn/ui"
+            }
+        },
+        "svelte-teams": {
+            "label": "Svelte Teams",
+            "base": "svelte",
+            "repository": "shire-studio/laravel-starter-kit-svelte",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-svelte",
+                "teams",
+                "teams-web",
+                "teams-inertia",
+                "teams-inertia-svelte"
+            ],
+            "replacements": {
+                "{{kit}}": "svelte",
+                "{{framework}}": "Svelte 5",
+                "{{components}}": "shadcn-svelte"
+            }
         }
     },
     "replacementPaths": [
