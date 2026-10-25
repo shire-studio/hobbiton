@@ -12,5 +12,6 @@ final readonly class SwitchTeam
     public function handle(User $user, Team $team): void
     {
         $user->forceFill(['current_team_id' => $team->id])->save();
+        $user->setRelation('currentTeam', $team);
     }
 }

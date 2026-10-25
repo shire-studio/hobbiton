@@ -43,6 +43,30 @@
         "base": "api",
         "sha1": "5e3f74fa990372261d140a1a4573a679adbb9757"
     },
+    "teams-inertia/app/Http/Controllers/Auth/LoginController.php": {
+        "base": "inertia",
+        "sha1": "bba3719722aaf84c1467d85666aaefc7c5531d86"
+    },
+    "teams-inertia/app/Http/Controllers/Auth/RegisterController.php": {
+        "base": "inertia",
+        "sha1": "5cc3dfc8f678a2de5e8d3cb90c94989ebe40373a"
+    },
+    "teams-inertia/app/Http/Middleware/HandleInertiaRequests.php": {
+        "base": "inertia",
+        "sha1": "6367dfcbb3f5463819dbf9ab3203d05080495cae"
+    },
+    "teams-inertia/bootstrap/app.php": {
+        "base": "inertia",
+        "sha1": "e6daa41622ccf7d506b1c3f094f20396b9280c10"
+    },
+    "teams-inertia/routes/web.php": {
+        "base": "inertia",
+        "sha1": "4b4697ddbb83e9f7e07fd2f6cf8a4b75ec8dd3e0"
+    },
+    "teams-inertia/tests/Unit/Middleware/HandleInertiaRequestsTest.php": {
+        "base": "inertia",
+        "sha1": "d6eda9abf5de434626aea29a74b426885a8068a7"
+    },
     "teams/app/Actions/CreateUser.php": {
         "base": "auth",
         "sha1": "79d0b35e02f6979b9b8b97a27469a1a81f2e6fed"
