@@ -46,7 +46,7 @@ Registering creates a personal team named after the user, which becomes their cu
 
 Every member has a role. Owners can do everything. Admins can rename the team and send or cancel invitations. Members can view the team and leave it. Owners cannot leave their own team. A team page the user is not allowed to see answers `404`, so it never reveals whether the team exists.
 
-Invitations are sent by email and expire after 3 days. The email links to the invitation page, and only the invited email address can accept or decline it. An account that owns a team with other members cannot be deleted until those members are removed or the team is deleted.
+Invitations are sent by email and expire after 3 days. The email links to the login page with `?invitation=` in the URL, which shows which team the invitation is for. Only a user signed in with the invited email address, once it is verified, can accept or decline it. An account that owns a team with other members cannot be deleted until those members are removed or the team is deleted.
 
 ## Local Development
 

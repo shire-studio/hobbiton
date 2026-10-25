@@ -41,8 +41,8 @@ A smial is a folder under `smials/` holding part of a kit. Raising a kit copies 
 | `livewire` | Controllers that return Blade views, Livewire components, Flux views and the artwork | Livewire |
 | `api` | JSON controllers, Sanctum, the API tests and the artwork | API |
 | `blade` | The landing page and the artwork | Blade |
-| `teams` | Team models, enums, policy, rules, actions, notification, migrations, factories and their unit tests | Every team kit |
-| `teams-web` | Team controllers, form requests and feature tests that never render a page | Vue Teams, React Teams, Svelte Teams |
+| `teams` | The team domain (models, enums, policy, rules, actions, notification, migrations and factories), the team form requests every team kit shares, the team aware `User`, `UserFactory`, `CreateUser`, `DeleteUser` and `DeleteUserRequest` that override `auth` (API Teams replaces `User`, `UserFactory` and `DeleteUser` again from `teams-api`), and their unit tests | Every team kit |
+| `teams-web` | The session side of teams: the `EnsureTeamMembership` and `SetTeamUrlDefaults` middleware, `CurrentTeamDashboardController` (the `/dashboard` redirect), the web `CreateTeamInvitationUrl` and their unit tests | Vue Teams, React Teams, Svelte Teams (and later Livewire Teams) |
 | `teams-inertia` | Team Inertia controllers, routes, middleware, Data classes, feature tests and the shared browser test | Vue Teams, React Teams, Svelte Teams |
 | `teams-inertia-vue`, `teams-inertia-react`, `teams-inertia-svelte` | The team screens, modals, team switcher and sidebar changes of one frontend | One team kit each |
 | `teams-api` | Team JSON controllers, resources, routes and API feature tests | API Teams |
