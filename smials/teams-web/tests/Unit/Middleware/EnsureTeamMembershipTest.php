@@ -78,12 +78,15 @@ it('leaves the current team alone when it matches', function (): void {
     $user = User::factory()->create();
     $team = teamWithMember($user, TeamRole::Member);
     $user->forceFill(['current_team_id' => $team->id])->save();
-    $updatedAt = $user->updated_at;
 
-    $this->travel(1)->minutes();
+    $saves = 0;
+    User::saving(function () use (&$saves): void {
+        $saves++;
+    });
+
     runMembership($user, 'current_team', $team);
 
-    expect($user->refresh()->updated_at->equalTo($updatedAt))->toBeTrue();
+    expect($saves)->toBe(0);
 });
 
 it('does not switch teams for team routes', function (): void {
