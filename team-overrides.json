@@ -219,6 +219,10 @@
         "base": "livewire",
         "sha1": "16a906cfc5d5b58614f661bd9ab7625c0ef73b2f"
     },
+    "teams-livewire/README.md": {
+        "base": "livewire",
+        "sha1": "2e9ad9b779491d55018ea2b7fb0c7d483583e47c"
+    },
     "teams-livewire/resources/views/components/desktop-user-menu.blade.php": {
         "base": "livewire",
         "sha1": "6e89956ef28334ce6b6f60c01b6cfa6135493e06"

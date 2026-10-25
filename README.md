@@ -24,6 +24,7 @@ Hobbiton is where every Shire Studio Laravel starter kit is grown. Each kit is r
 | Vue Teams | The Vue kit with teams, delivered as an overlay of the Vue repository | None, ships with Vue |
 | React Teams | The React kit with teams, delivered as an overlay of the React repository | None, ships with React |
 | Svelte Teams | The Svelte kit with teams, delivered as an overlay of the Svelte repository | None, ships with Svelte |
+| Livewire Teams | The Livewire kit with teams, delivered as an overlay of the Livewire repository | None, ships with Livewire |
 
 Every kit ships the same tooling: Pint (PHP and Blade), Rector, PHPStan at level max, Pest with 100% code and type coverage, Laravel Vet, Boost guidelines and the `.ai` rules. Kits with a frontend add Vite Plus (oxlint and oxfmt) and a TypeScript check.
 
@@ -42,9 +43,10 @@ A smial is a folder under `smials/` holding part of a kit. Raising a kit copies 
 | `api` | JSON controllers, Sanctum, the API tests and the artwork | API |
 | `blade` | The landing page and the artwork | Blade |
 | `teams` | The team domain (models, enums, policy, rules, actions, notification, migrations and factories), the team form requests every team kit shares, the team aware `User`, `UserFactory`, `CreateUser`, `DeleteUser` and `DeleteUserRequest` that override `auth` (API Teams replaces `User`, `UserFactory` and `DeleteUser` again from `teams-api`), and their unit tests | Every team kit |
-| `teams-web` | The session side of teams: the `EnsureTeamMembership` and `SetTeamUrlDefaults` middleware, `CurrentTeamDashboardController` (the `/dashboard` redirect), the web `CreateTeamInvitationUrl` and their unit tests | Vue Teams, React Teams, Svelte Teams (and later Livewire Teams) |
-| `teams-inertia` | Team Inertia controllers, routes, middleware, Data classes, feature tests and the shared browser test | Vue Teams, React Teams, Svelte Teams |
+| `teams-web` | The session side of teams: the `EnsureTeamMembership` and `SetTeamUrlDefaults` middleware, `CurrentTeamDashboardController` (the `/dashboard` redirect), the web `CreateTeamInvitationUrl`, `FindTeamInvitationContext`, the shared browser test and their unit tests | Vue Teams, React Teams, Svelte Teams, Livewire Teams |
+| `teams-inertia` | Team Inertia controllers, routes, middleware, Data classes and feature tests | Vue Teams, React Teams, Svelte Teams |
 | `teams-inertia-vue`, `teams-inertia-react`, `teams-inertia-svelte` | The team screens, modals, team switcher and sidebar changes of one frontend | One team kit each |
+| `teams-livewire` | The team controllers that return Blade views, routes, Livewire components, Flux views, the team switcher and layout changes, and their feature tests | Livewire Teams |
 | `teams-api` | Team JSON controllers, resources, routes and API feature tests | API Teams |
 
 `hobbiton.json` lists every kit with its smials, the files it leaves out and the `{{placeholders}}` it fills in. A team kit also names its `base` kit. `raise`, `tend`, `survey`, `deliver` and both CI workflows read it.
@@ -104,7 +106,13 @@ Team kits share their base kit's lock files and `vet.json`, because teams add no
 
 Two dashboard routes exist. `GET /dashboard`, named `dashboard`, stays and redirects an authenticated, verified user to the dashboard of their current team, falling back to their personal team. The team dashboard is `GET /{current_team:slug}/dashboard`, named `team.dashboard`. Team settings live under `/settings/teams`.
 
-The three `teams-inertia-*` smials hold the same screens, so a frontend change to teams is made in all three with identical file names, props, copy and `data-test` attributes. `smials/teams-inertia/tests/Browser/TeamsTest.php` is the one browser test that every Inertia team kit runs against its own frontend, so it is the check that the three stay in step.
+The three `teams-inertia-*` smials hold the same screens, so a frontend change to teams is made in all three with identical file names, props, copy and `data-test` attributes. 
+
+### Livewire Team Kit
+
+`livewire-teams` adds `teams`, `teams-web` and `teams-livewire` to the Livewire kit. It has the same routes, route names, middleware, redirects and toast copy as the Inertia team kits, but its pages are Blade views (`pages.dashboard`, `pages.teams.index` and `pages.teams.edit`) built with Flux, and toasts are flashed to the session.
+
+`smials/teams-web/tests/Browser/TeamsTest.php` is the one browser test that all four web team kits run against their own frontend, unchanged. It is the check that the three Inertia frontends and the Livewire screens stay in step, so the Livewire screens use the same copy and `data-test` attributes as the Inertia ones.
 
 ### Tending a Team Kit
 
