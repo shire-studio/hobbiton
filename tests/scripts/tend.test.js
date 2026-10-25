@@ -2,19 +2,24 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { test } from 'node:test';
-import { deleteTarget, owningSmial, teamSmialFor, tendTarget } from '../../scripts/helpers.js';
+import { after, test } from 'node:test';
+import { deleteTarget, owningSmial, teamSmialFor, tendChange, tendTarget } from '../../scripts/helpers.js';
 
 const smials = ['common', 'auth', 'api', 'teams', 'teams-api'];
 const kit = { base: 'api', smials };
 
+const roots = [];
+
+after(() => roots.forEach(root => fs.rmSync(root, { recursive: true, force: true })));
+
 function buildRoot(files) {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'hobbiton-tend-'));
+    roots.push(root);
 
-    for (const [smial, relativePath] of files) {
+    for (const [smial, relativePath, contents = 'x'] of files) {
         const file = path.join(root, smial, relativePath);
         fs.mkdirSync(path.dirname(file), { recursive: true });
-        fs.writeFileSync(file, 'x');
+        fs.writeFileSync(file, contents);
     }
 
     return root;
@@ -59,4 +64,53 @@ test('deleteTarget refuses base owned files', () => {
 
     assert.equal(deleteTarget('app/Models/User.php', kit, root), null);
     assert.equal(deleteTarget('app/Models/Team.php', kit, root), 'teams');
+});
+
+test('tendChange does not override an unchanged base owned file', () => {
+    const root = buildRoot([['auth', 'app/Models/User.php', 'base']]);
+    const result = tendChange('app/Models/User.php', Buffer.from('base'), kit, { root });
+
+    assert.equal(result.changed, false);
+    assert.equal(result.overrides, 'auth');
+});
+
+test('tendChange overrides a changed base owned file in the team smial', () => {
+    const root = buildRoot([['auth', 'app/Models/User.php', 'base']]);
+    const result = tendChange('app/Models/User.php', Buffer.from('edited'), kit, { root });
+
+    assert.equal(result.changed, true);
+    assert.equal(result.smial, 'teams');
+    assert.equal(result.overrides, 'auth');
+    assert.equal(result.destination, path.join(root, 'teams', 'app/Models/User.php'));
+    assert.equal(result.source.toString(), 'edited');
+});
+
+test('tendChange compares team owned files with the team copy', () => {
+    const root = buildRoot([['auth', 'app/Models/User.php', 'base'], ['teams-api', 'app/Models/User.php', 'team']]);
+
+    assert.equal(tendChange('app/Models/User.php', Buffer.from('team'), kit, { root }).changed, false);
+
+    const changed = tendChange('app/Models/User.php', Buffer.from('base'), kit, { root });
+
+    assert.equal(changed.changed, true);
+    assert.equal(changed.smial, 'teams-api');
+    assert.equal(changed.overrides, null);
+});
+
+test('tendChange treats a new file as changed', () => {
+    const root = buildRoot([]);
+
+    assert.equal(tendChange('app/Models/Team.php', Buffer.from('new'), kit, { root }).changed, true);
+});
+
+test('tendChange restores placeholders from the shadowed base file on a first override', () => {
+    const root = buildRoot([['common', 'composer.json', '"name": "{{kit}}"\n"x": 1']]);
+    const teamKit = { ...kit, replacements: { '{{kit}}': 'api' } };
+
+    const unchanged = tendChange('composer.json', Buffer.from('"name": "api"\n"x": 1'), teamKit, { root, restore: true });
+    const changed = tendChange('composer.json', Buffer.from('"name": "api"\n"x": 2'), teamKit, { root, restore: true });
+
+    assert.equal(unchanged.changed, false);
+    assert.equal(changed.changed, true);
+    assert.equal(changed.source.toString(), '"name": "{{kit}}"\n"x": 2');
 });

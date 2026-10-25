@@ -17,7 +17,7 @@ import chokidar from 'chokidar';
 import { execFileSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { deleteTarget, loadManifest, log, normalizePath, raisedDir, recordOverride, restoreReplacements, rootDir, run, smialsDir, tendTarget } from './helpers.js';
+import { deleteTarget, loadManifest, log, normalizePath, raisedDir, recordOverride, rootDir, run, smialsDir, tendChange, tendTarget } from './helpers.js';
 
 const args = process.argv.slice(2);
 const option = name => args.find(arg => arg.startsWith(`--${name}=`))?.split('=')[1];
@@ -80,15 +80,10 @@ function syncFile(absolutePath) {
         return false;
     }
 
-    const { smial, overrides } = tendTarget(relativePath, kit);
-    const destination = path.join(smialsDir, smial, relativePath);
-    let source = fs.readFileSync(absolutePath);
+    const restore = manifest.replacementPaths.includes(relativePath);
+    const { smial, overrides, destination, source, changed } = tendChange(relativePath, fs.readFileSync(absolutePath), kit, { restore });
 
-    if (manifest.replacementPaths.includes(relativePath)) {
-        source = Buffer.from(restoreReplacements(source.toString('utf-8'), destination, kit.replacements));
-    }
-
-    if (fs.existsSync(destination) && fs.readFileSync(destination).equals(source)) {
+    if (!changed) {
         return false;
     }
 

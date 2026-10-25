@@ -146,6 +146,22 @@ export function restoreReplacements(content, smialFile, replacements) {
 }
 
 /**
+ * What tending an edited kit file would do. The edit is compared with the file the kit currently raises (the
+ * owning smial's copy), so a base owned file the kit left alone is not overridden. A first override has no team copy
+ * yet, so the shadowed base file supplies the {{placeholders}} to restore.
+ */
+export function tendChange(relativePath, edited, kit, { restore = false, root = smialsDir } = {}) {
+    const { smial, overrides } = tendTarget(relativePath, kit, root);
+    const current = path.join(root, owningSmial(relativePath, kit.smials, root), relativePath);
+    const destination = path.join(root, smial, relativePath);
+    const template = fs.existsSync(destination) ? destination : current;
+    const source = restore ? Buffer.from(restoreReplacements(edited.toString('utf-8'), template, kit.replacements)) : edited;
+    const changed = !fs.existsSync(current) || !fs.readFileSync(current).equals(source);
+
+    return { smial, overrides, destination, source, changed };
+}
+
+/**
  * Raise a kit into raised/<kit> and install its PHP dependencies. Returns the kit's directory.
  */
 export async function prepareKit(name) {

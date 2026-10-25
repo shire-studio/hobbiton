@@ -4,9 +4,20 @@ use App\Support\Manifest;
 use App\Support\TeamOverrides;
 use Illuminate\Support\Facades\File;
 
+$GLOBALS['overridesFixtures'] = [];
+
+afterEach(function () {
+    foreach ($GLOBALS['overridesFixtures'] as $path) {
+        File::deleteDirectory($path);
+    }
+
+    $GLOBALS['overridesFixtures'] = [];
+});
+
 function overridesFixture(array $files, array $kits = []): array
 {
     $path = sys_get_temp_dir().'/hobbiton-overrides-'.uniqid();
+    $GLOBALS['overridesFixtures'][] = $path;
 
     foreach ($files as $file => $contents) {
         File::ensureDirectoryExists(dirname("{$path}/{$file}"));
