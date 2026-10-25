@@ -9,6 +9,13 @@ Hobbiton raises six Laravel starter kits (Vue, React, Svelte, Livewire, API, Bla
 - When you change a frontend component, make the same change in `inertia-vue`, `inertia-react` and `inertia-svelte`. File names, props and copy stay identical across the three. `livewire` mirrors the same screens with Flux.
 - `hobbiton.json` defines each kit's smials, excluded files and placeholders. Update it when you add a smial or a kit.
 
+## Team kits
+
+- A team kit (a kit with a `base` in `hobbiton.json`, such as `api-teams`) is its base kit's smials plus team smials. Team code goes in the lowest team smial that every affected team kit shares.
+- Tend a team kit only for team code. Tending a base file from a team kit writes an override into a team smial, which belongs in `team-overrides.json`. A fix for the base kits is made by tending the base kit.
+- Run `composer overrides` after you change a base file that a team smial overrides, and `composer overrides -- --accept` once the team copy is up to date.
+- Survey a team kit with its base kit. Team kits are delivered as an overlay of their base kit (`php artisan pack`), never on their own.
+
 ## Verifying
 
 - `composer test` runs Hobbiton's own tests, including the check that the Inertia kits share identical PHP.

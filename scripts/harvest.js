@@ -5,8 +5,8 @@
  *
  * Phase 1 updates each kit in raised/<kit> and tends it back. Every Vet question comes here, and each
  * release is asked about once per run: approvals are seeded into later kits, and a declined release
- * is held at its current version for the rest of the run. Phase 2 surveys every updated kit, with no
- * questions. Majors and deliberate holds are never applied, only reported.
+ * is held at its current version for the rest of the run. Phase 2 surveys every updated kit and its team
+ * kit, with no questions. Team kits are never updated, since they share their base kit's lock files. Majors and deliberate holds are never applied, only reported.
  *
  * The Inertia kits share composer.json and vet.json, so selecting one harvests all three, and the
  * second and third resolve exactly the versions the first one locked.
@@ -19,7 +19,7 @@ import fs from 'fs';
 import path from 'path';
 import readline from 'readline/promises';
 import { promisify } from 'util';
-import { loadManifest, log, parseArgs, prepareKit, raisedDir, rootDir, run, smialsDir } from './helpers.js';
+import { baseKitNames, loadManifest, log, parseArgs, prepareKit, raisedDir, rootDir, run, smialsDir, teamKitsFor } from './helpers.js';
 import {
     bumpablePackages,
     catalogEntries,
@@ -56,8 +56,16 @@ const ROOT_FILES = ['composer.json', 'composer.lock', 'vet.json', 'package.json'
 
 const manifest = loadManifest();
 const args = process.argv.slice(2);
-const parsed = parseArgs(args, [], manifest).kits;
-const kits = withSiblings(parsed, Object.keys(manifest.kits), INERTIA);
+const bases = baseKitNames(manifest);
+const asked = args.filter(arg => manifest.kits[arg.slice(2)]?.base);
+
+if (asked.length > 0) {
+    log(`${asked.map(arg => arg.slice(2)).join(', ')} shares its base kit's dependencies. Harvest the base kit instead.`, 'red');
+    process.exit(1);
+}
+
+const parsed = parseArgs(args, [], manifest).kits.filter(name => bases.includes(name));
+const kits = withSiblings(parsed, bases, INERTIA);
 const fullRun = !args.some(arg => manifest.kits[arg.slice(2)]);
 
 const pool = new Map();
@@ -128,7 +136,7 @@ function recoverTrust() {
 async function guard() {
     const untended = [];
 
-    for (const name of kits) {
+    for (const name of [...kits, ...teamKitsFor(kits, manifest)]) {
         if (!fs.existsSync(path.join(raisedDir, name, 'composer.json'))) {
             continue;
         }
@@ -435,7 +443,7 @@ try {
 }
 
 if (!stopped) {
-    for (const name of updated) {
+    for (const name of [...updated, ...teamKitsFor(updated, manifest)]) {
         await run('node', [path.join(rootDir, 'scripts', 'survey.js'), `--${name}`, '--tend'], { cwd: rootDir }).catch(() => failures.push(manifest.kits[name].label));
     }
 

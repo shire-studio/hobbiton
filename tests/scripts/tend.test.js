@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { after, test } from 'node:test';
-import { deleteTarget, owningSmial, teamSmialFor, tendChange, tendTarget } from '../../scripts/helpers.js';
+import { baseKitNames, deleteTarget, owningSmial, teamSmialFor, tendChange, tendTarget, teamKitsFor } from '../../scripts/helpers.js';
 
 const smials = ['common', 'auth', 'api', 'teams', 'teams-api'];
 const kit = { base: 'api', smials };
@@ -113,4 +113,15 @@ test('tendChange restores placeholders from the shadowed base file on a first ov
     assert.equal(unchanged.changed, false);
     assert.equal(changed.changed, true);
     assert.equal(changed.source.toString(), '"name": "{{kit}}"\n"x": 2');
+});
+
+const manifest = { kits: { api: {}, vue: {}, 'api-teams': { base: 'api' } } };
+
+test('baseKitNames leaves out team kits', () => {
+    assert.deepEqual(baseKitNames(manifest), ['api', 'vue']);
+});
+
+test('teamKitsFor returns the team kit of each base kit that has one', () => {
+    assert.deepEqual(teamKitsFor(['vue', 'api'], manifest), ['api-teams']);
+    assert.deepEqual(teamKitsFor(['vue'], manifest), []);
 });

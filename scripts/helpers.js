@@ -41,6 +41,20 @@ export function parseArgs(args, flags = [], manifest = loadManifest()) {
     };
 }
 
+/**
+ * Kits without a base, which are the ones with a repository of their own.
+ */
+export function baseKitNames(manifest) {
+    return Object.keys(manifest.kits).filter(name => !manifest.kits[name].base);
+}
+
+/**
+ * The team kit of each given base kit, in the order given. Kits without a team kit add nothing.
+ */
+export function teamKitsFor(names, manifest) {
+    return names.flatMap(name => Object.keys(manifest.kits).filter(kit => manifest.kits[kit].base === name));
+}
+
 export function normalizePath(relativePath) {
     return relativePath.replace(/\\/g, '/');
 }
