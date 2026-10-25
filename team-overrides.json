@@ -1,1 +1,14 @@
-{}
+{
+    "teams-api/app/Models/User.php": {
+        "base": "api",
+        "sha1": "2e0da95715771bec65f7c292eecba044cb9cc1bf"
+    },
+    "teams-api/database/factories/UserFactory.php": {
+        "base": "api",
+        "sha1": "cc979636c316ecf0cce86eb6defcfc16f51f006c"
+    },
+    "teams-api/tests/Unit/Models/UserTest.php": {
+        "base": "api",
+        "sha1": "5e3f74fa990372261d140a1a4573a679adbb9757"
+    }
+}
