@@ -4,7 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-export const rootDir = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+// HOBBITON_ROOT points the scripts at another checkout. Only the tests set it.
+export const rootDir = process.env.HOBBITON_ROOT ?? path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 export const smialsDir = path.join(rootDir, 'smials');
 export const raisedDir = path.join(rootDir, 'raised');
 export const overridesFile = path.join(rootDir, 'team-overrides.json');
@@ -205,13 +206,6 @@ function filesIn(directory) {
  * when its smial is the last in the kit's order to hold the path, and a file with no base copy is new, not an override.
  * Mirrors App\Support\TeamOverrides.
  */
-/**
- * How many tend changes were refused: a team kit edit to a base smial that not every team kit raises.
- */
-export function refusedCount(changes) {
-    return changes.filter(change => change.changed && change.smial === null).length;
-}
-
 export function effectiveOverrides(manifest, root = smialsDir) {
     const owners = new Map();
 

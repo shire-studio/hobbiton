@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { after, test } from 'node:test';
-import { baseKitNames, deleteTarget, owningSmial, refusedCount, teamKitsIn, teamSmialFor, tendChange, tendTarget, teamKitsFor } from '../../scripts/helpers.js';
+import { baseKitNames, rootDir, deleteTarget, owningSmial, teamKitsIn, teamSmialFor, tendChange, tendTarget, teamKitsFor } from '../../scripts/helpers.js';
 
 const smials = ['common', 'auth', 'api', 'teams', 'teams-api'];
 const kit = { base: 'api', smials };
@@ -159,11 +160,38 @@ test('teamKitsFor returns the team kit of each base kit that has one', () => {
     assert.deepEqual(teamKitsFor(['vue'], manifest), []);
 });
 
-test('tend --once exits 1 when it refuses a file', () => {
-    const refused = { changed: true, smial: null };
-    const tended = { changed: true, smial: 'teams' };
-    const unchanged = { changed: false, smial: 'teams' };
+test('tend --once exits 1 when it refuses a file, and writes nothing to smials', () => {
+    // The real manifest never refuses (every team kit lists its teams-<base> smials), so run tend against a fixture checkout
+    // through HOBBITON_ROOT. The web smial is raised by one team kit only, so an edit to its file has nowhere to go.
+    const root = buildRoot([['web', 'routes/web.php', 'base'], ['teams', 'composer.json', '{}']]);
+    const checkout = fs.mkdtempSync(path.join(os.tmpdir(), 'hobbiton-tend-checkout-'));
+    const kitDir = fs.mkdtempSync(path.join(os.tmpdir(), 'hobbiton-tend-kit-'));
+    roots.push(checkout, kitDir);
 
-    assert.equal(refusedCount([tended, unchanged]), 0);
-    assert.equal(refusedCount([tended, refused, refused]), 2);
+    fs.cpSync(root, path.join(checkout, 'smials'), { recursive: true });
+    fs.writeFileSync(path.join(checkout, 'hobbiton.json'), JSON.stringify({
+        kits: {
+            a: { label: 'A', repository: 'x/a', node: false, smials: ['web'] },
+            'a-teams': { label: 'A Teams', base: 'a', repository: 'x/a', node: false, smials: ['web', 'teams'] },
+            b: { label: 'B', repository: 'x/b', node: false, smials: [] },
+            'b-teams': { label: 'B Teams', base: 'b', repository: 'x/b', node: false, smials: ['teams'] },
+        },
+        replacementPaths: [],
+    }));
+    fs.mkdirSync(path.join(kitDir, 'routes'));
+    fs.writeFileSync(path.join(kitDir, 'composer.json'), '{}');
+    fs.writeFileSync(path.join(kitDir, 'routes/web.php'), 'edited by a test');
+
+    const snapshot = () => fs.readdirSync(path.join(checkout, 'smials'), { recursive: true }).sort().join('\n');
+    const before = snapshot();
+    const result = spawnSync('node', [path.join(rootDir, 'scripts/tend.js'), '--a-teams', '--once', `--path=${kitDir}`], {
+        encoding: 'utf-8',
+        env: { ...process.env, HOBBITON_ROOT: checkout },
+    });
+
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /belongs to smials\/web/);
+    assert.equal(snapshot(), before);
+    assert.equal(fs.readFileSync(path.join(checkout, 'smials/web/routes/web.php'), 'utf-8'), 'base');
+    assert.equal(fs.existsSync(path.join(checkout, 'team-overrides.json')), false);
 });

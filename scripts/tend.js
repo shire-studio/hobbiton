@@ -19,7 +19,7 @@ import chokidar from 'chokidar';
 import { execFileSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { deleteTarget, loadManifest, log, normalizePath, raisedDir, recordOverride, refusedCount, rootDir, run, smialsDir, teamKitsIn, tendChange, tendTarget } from './helpers.js';
+import { deleteTarget, loadManifest, log, normalizePath, raisedDir, recordOverride, rootDir, run, smialsDir, teamKitsIn, tendChange, tendTarget } from './helpers.js';
 
 const args = process.argv.slice(2);
 const option = name => args.find(arg => arg.startsWith(`--${name}=`))?.split('=')[1];
@@ -76,7 +76,7 @@ function editedSinceCommit() {
 
 const edited = checking ? editedSinceCommit() : null;
 
-const refusals = [];
+let refused = 0;
 
 function syncFile(absolutePath) {
     const relativePath = normalizePath(path.relative(kitDir, absolutePath));
@@ -107,7 +107,7 @@ function syncFile(absolutePath) {
 
     if (smial === null) {
         log(refusal, 'yellow');
-        refusals.push({ changed, smial });
+        refused++;
 
         return false;
     }
@@ -175,7 +175,7 @@ const synced = walk(kitDir).filter(syncFile).length;
 log(`${synced} file(s) tended`, 'green');
 
 if (args.includes('--once')) {
-    process.exit(refusedCount(refusals) > 0 ? 1 : 0);
+    process.exit(refused > 0 ? 1 : 0);
 }
 
 chokidar
