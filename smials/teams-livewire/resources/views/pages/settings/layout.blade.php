@@ -3,7 +3,12 @@
         <flux:navlist aria-label="{{ __('Settings') }}">
             <flux:navlist.item :href="route('user-profile.edit')" wire:navigate>{{ __('Profile') }}</flux:navlist.item>
             <flux:navlist.item :href="route('password.edit')" wire:navigate>{{ __('Security') }}</flux:navlist.item>
-            <flux:navlist.item :href="route('teams.index')" wire:navigate>{{ __('Teams') }}</flux:navlist.item>
+            <flux:navlist.item
+                :href="route('teams.index')"
+                :current="request()->routeIs('teams.*')"
+                wire:navigate
+            >
+                {{ __('Teams') }}</flux:navlist.item>
             <flux:navlist.item :href="route('appearance.edit')" wire:navigate>{{ __('Appearance') }}</flux:navlist.item>
         </flux:navlist>
     </div>

@@ -15,7 +15,7 @@ it('keeps the current team on livewire update requests', function (): void {
     $team->members()->attach($user, ['role' => TeamRole::Member->value]);
     $user->forceFill(['current_team_id' => $team->id])->save();
 
-    URL::defaults(['current_team' => null, 'team' => null]);
+    URL::defaults(['current_team' => null, 'current_team:slug' => null, 'team' => null, 'team:slug' => null]);
 
     $component = Livewire::actingAs($user)->test(ManageTwoFactor::class);
 
@@ -29,6 +29,6 @@ it('keeps the current team on livewire update requests', function (): void {
         ], ['X-Livewire' => 'true'])
         ->assertOk();
 
-    expect($user->refresh()->current_team_id)->toBe($team->id)
-        ->and(URL::getDefaultParameters())->toMatchArray(['current_team' => $team->slug, 'team' => $team->slug]);
+    expect(route('team.dashboard'))->toBe(url("/{$team->slug}/dashboard"))
+        ->and(route('teams.switch'))->toBe(url("/settings/teams/{$team->slug}/switch"));
 });

@@ -1,4 +1,5 @@
 @php($currentTeam = auth()->user()->currentTeamOrPersonal())
+@php($dashboardUrl = $currentTeam ? route('team.dashboard', ['current_team' => $currentTeam->slug]) : route('dashboard'))
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
@@ -11,11 +12,7 @@
         class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900"
     >
         <flux:sidebar.header>
-            <x-app-logo
-                :sidebar="true"
-                href="{{ route('team.dashboard', ['current_team' => $currentTeam?->slug]) }}"
-                wire:navigate
-            />
+            <x-app-logo :sidebar="true" href="{{ $dashboardUrl }}" wire:navigate />
             <flux:sidebar.collapse class="lg:hidden" />
         </flux:sidebar.header>
 
@@ -25,7 +22,7 @@
             <flux:sidebar.group :heading="__('Platform')" class="grid">
                 <flux:sidebar.item
                     icon="layout-grid"
-                    :href="route('team.dashboard', ['current_team' => $currentTeam?->slug])"
+                    :href="$dashboardUrl"
                     :current="request()->routeIs('team.dashboard')"
                     data-test="dashboard-link"
                     wire:navigate

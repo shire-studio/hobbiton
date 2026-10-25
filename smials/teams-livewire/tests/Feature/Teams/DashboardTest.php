@@ -72,7 +72,8 @@ it('switches the current team from the url', function (): void {
     $this->actingAs($user)
         ->get(route('team.dashboard', ['current_team' => $team->slug]))
         ->assertOk()
-        ->assertSee('Acme');
+        ->assertSeeHtml('data-test="team-switcher"')
+        ->assertSeeHtml(url("/{$team->slug}/dashboard"));
 
     expect($user->refresh()->current_team_id)->toBe($team->id);
 });
@@ -105,13 +106,53 @@ it('renders the team switcher in the header layout', function (): void {
         ->toContain(e("Jane's Team"));
 });
 
-it('shows the current team under the user', function (): void {
-    $user = User::factory()->create(['name' => 'Jane']);
+it('shows the current team under the user in the user menu', function (): void {
+    $user = User::factory()->create(['name' => 'Jane', 'email' => 'jane@example.com']);
+    $team = Team::factory()->create(['name' => 'Acme']);
+    $team->members()->attach($user, ['role' => TeamRole::Member->value]);
+
+    $html = $this->actingAs($user)
+        ->get(route('team.dashboard', ['current_team' => $team->slug]))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toMatch('/data-test="current-team-name"[^>]*>\s*Acme\s*</')
+        ->and($html)->toContain('jane@example.com');
+});
+
+it('falls back to the plain dashboard link for a user without a team', function (): void {
+    $user = User::factory()->create();
+    $user->teams()->detach();
+    $user->forceFill(['current_team_id' => null])->save();
+
+    $this->actingAs($user);
+    view()->share('errors', new ViewErrorBag());
+
+    foreach (['sidebar', 'header'] as $layout) {
+        expect(Blade::render("<x-layouts::app.{$layout}>content</x-layouts::app.{$layout}>"))
+            ->toContain('href="'.route('dashboard').'"');
+    }
+});
+
+it('reopens the create team modal after its own validation error', function (): void {
+    $user = User::factory()->create();
+    $errors = new ViewErrorBag()->put('default', new MessageBag(['name' => 'The name field is required.']));
 
     $this->actingAs($user)
+        ->withSession(['errors' => $errors, '_old_input' => ['form' => 'create-team']])
         ->get(route('team.dashboard', ['current_team' => $user->personalTeam()?->slug]))
-        ->assertSeeHtml('data-test="sidebar-menu-button"')
-        ->assertSee("Jane's Team");
+        ->assertSeeHtml('name="form" value="create-team"')
+        ->assertSeeHtml('data-test="create-team-reopen"');
+});
+
+it('keeps the create team modal closed for name errors from other forms', function (): void {
+    $user = User::factory()->create();
+    $errors = new ViewErrorBag()->put('default', new MessageBag(['name' => 'The name field is required.']));
+
+    $this->actingAs($user)
+        ->withSession(['errors' => $errors])
+        ->get(route('team.dashboard', ['current_team' => $user->personalTeam()?->slug]))
+        ->assertDontSeeHtml('data-test="create-team-reopen"');
 });
 
 it("lists pending invitations for the user's email", function (): void {
