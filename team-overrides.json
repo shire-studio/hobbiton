@@ -43,6 +43,46 @@
         "base": "api",
         "sha1": "5e3f74fa990372261d140a1a4573a679adbb9757"
     },
+    "teams-inertia-vue/resources/js/components/AppHeader.vue": {
+        "base": "inertia-vue",
+        "sha1": "4c10beb08d8536e83339c378f9fa08b9d49e0ff3"
+    },
+    "teams-inertia-vue/resources/js/components/AppSidebar.vue": {
+        "base": "inertia-vue",
+        "sha1": "dbb4b42532ec220e253c4fa7e470f76b6537946e"
+    },
+    "teams-inertia-vue/resources/js/components/NavUser.vue": {
+        "base": "inertia-vue",
+        "sha1": "e1c8a0d4a917f9e3727c27185d5637ea98c55a87"
+    },
+    "teams-inertia-vue/resources/js/components/UserInfo.vue": {
+        "base": "inertia-vue",
+        "sha1": "c5d35d4f0f94df40fd86a68902c4005713874d75"
+    },
+    "teams-inertia-vue/resources/js/layouts/settings/SettingsLayout.vue": {
+        "base": "inertia-vue",
+        "sha1": "c78c3fa3544da61ff870600325b778b99e555d7c"
+    },
+    "teams-inertia-vue/resources/js/lib/navigation.ts": {
+        "base": "inertia-vue",
+        "sha1": "591e0eddd5e3c7599f8884f7a7cb8081f032fa71"
+    },
+    "teams-inertia-vue/resources/js/pages/auth/Login.vue": {
+        "base": "inertia-vue",
+        "sha1": "363be556de7b738a8834bc5a3120477fcf13f95b"
+    },
+    "teams-inertia-vue/resources/js/pages/auth/Register.vue": {
+        "base": "inertia-vue",
+        "sha1": "db93dfb18e32b6c35668af5b797e5f03771d35cc"
+    },
+    "teams-inertia-vue/resources/js/pages/Dashboard.vue": {
+        "base": "inertia-vue",
+        "sha1": "2db0f73721ee1271485967fc73f6e991db779888"
+    },
+    "teams-inertia-vue/resources/js/types/global.d.ts": {
+        "base": "inertia-vue",
+        "sha1": "7de91c2a3a676802572d516cd3b40cf986edc64c"
+    },
     "teams-inertia/app/Http/Controllers/Auth/LoginController.php": {
         "base": "inertia",
         "sha1": "bba3719722aaf84c1467d85666aaefc7c5531d86"
