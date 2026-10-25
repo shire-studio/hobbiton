@@ -8,6 +8,7 @@ use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 it('shares app name from config', function (): void {
     $middleware = new HandleInertiaRequests();
@@ -102,7 +103,7 @@ it('shares null current team and no teams for guests', function (): void {
 });
 
 it('shares the current team and teams for a signed in user', function (): void {
-    $user = User::factory()->create();
+    $user = User::factory()->create(['name' => 'Zed']);
     $team = Team::factory()->create(['name' => 'Acme']);
     $team->members()->attach($user, ['role' => 'member']);
 
@@ -114,7 +115,8 @@ it('shares the current team and teams for a signed in user', function (): void {
     expect(value($shared['currentTeam']))->toBeInstanceOf(TeamData::class)
         ->and(value($shared['currentTeam'])->slug)->toBe($user->personalTeam()?->slug)
         ->and(value($shared['teams']))->toHaveCount(2)
-        ->and(value($shared['teams'])[0]->name)->toBe('Acme');
+        ->and(value($shared['teams'])[0]->name)->toBe('Acme')
+        ->and(value($shared['teams'])[0]->role)->toBe('member');
 });
 
 it('shares null current team when the user has no team', function (): void {
@@ -126,4 +128,26 @@ it('shares null current team when the user has no team', function (): void {
     $request->setUserResolver(fn () => $user->refresh());
 
     expect(value(new HandleInertiaRequests()->share($request)['currentTeam']))->toBeNull();
+});
+
+it('loads the teams prop in a constant number of queries', function (): void {
+    $user = User::factory()->create();
+    $request = Request::create('/', 'GET');
+    $request->setUserResolver(fn () => $user);
+
+    $count = function () use ($request): int {
+        DB::flushQueryLog();
+        DB::enableQueryLog();
+        value(new HandleInertiaRequests()->share($request)['teams']);
+
+        return count(DB::getQueryLog());
+    };
+
+    $before = $count();
+
+    Team::factory()->count(4)->create()->each(
+        fn (Team $team) => $team->members()->attach($user, ['role' => 'member']),
+    );
+
+    expect($count())->toBe($before);
 });

@@ -10,6 +10,7 @@ use App\Models\Team;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 
 final readonly class EnsureTeamMembership
@@ -34,6 +35,7 @@ final readonly class EnsureTeamMembership
 
         if ($request->route('current_team') instanceof Team && ! $user->isCurrentTeam($team)) {
             $this->switchTeam->handle($user, $team);
+            URL::defaults(['current_team' => $team->slug, 'team' => $team->slug]);
         }
 
         return $next($request);

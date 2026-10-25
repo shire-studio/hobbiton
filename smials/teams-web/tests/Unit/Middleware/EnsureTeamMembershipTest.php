@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -96,4 +97,14 @@ it('does not switch teams for team routes', function (): void {
     runMembership($user, 'team', teamWithMember($user, TeamRole::Admin));
 
     expect($user->refresh()->current_team_id)->toBe($before);
+});
+
+it('refreshes the url defaults after switching teams', function (): void {
+    $user = User::factory()->create();
+    $team = teamWithMember($user, TeamRole::Member);
+    URL::defaults(['current_team' => 'old-slug', 'team' => 'old-slug']);
+
+    runMembership($user, 'current_team', $team);
+
+    expect(URL::getDefaultParameters())->toMatchArray(['current_team' => $team->slug, 'team' => $team->slug]);
 });

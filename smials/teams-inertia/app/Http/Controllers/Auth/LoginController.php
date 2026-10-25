@@ -23,7 +23,7 @@ final readonly class LoginController
             'canResetPassword' => Route::has('password.request'),
             'canRegister' => true,
             'status' => is_string($status) ? $status : null,
-            'teamInvitation' => $findTeamInvitationContext->handle($request->query('invitation')),
+            'teamInvitation' => $findTeamInvitationContext->handle($request),
         ]);
     }
 

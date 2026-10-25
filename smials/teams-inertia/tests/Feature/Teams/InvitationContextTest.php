@@ -49,3 +49,13 @@ it('ignores an unknown invitation code', function (): void {
     $this->get(route('register'))
         ->assertInertia(fn ($page) => $page->where('teamInvitation', null));
 });
+
+it('ignores an accepted invitation code', function (): void {
+    $invitation = TeamInvitation::factory()->accepted()->create();
+
+    $this->get(route('login', ['invitation' => $invitation->code]))
+        ->assertInertia(fn ($page) => $page->where('teamInvitation', null));
+
+    $this->get(route('register', ['invitation' => $invitation->code]))
+        ->assertInertia(fn ($page) => $page->where('teamInvitation', null));
+});

@@ -19,7 +19,7 @@ final readonly class RegisterController
     public function index(Request $request, FindTeamInvitationContext $findTeamInvitationContext): Response
     {
         return Inertia::render('auth/Register', [
-            'teamInvitation' => $findTeamInvitationContext->handle($request->query('invitation')),
+            'teamInvitation' => $findTeamInvitationContext->handle($request),
         ]);
     }
 

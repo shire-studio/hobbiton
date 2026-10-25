@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Data;
 
+use App\Enums\TeamRole;
 use App\Models\Team;
 use App\Models\User;
 use Spatie\LaravelData\Data;
@@ -20,9 +21,9 @@ final class TeamData extends Data
         public readonly bool $is_current,
     ) {}
 
-    public static function fromTeam(Team $team, User $viewer): self
+    public static function fromTeam(Team $team, User $viewer, ?TeamRole $role = null): self
     {
-        $role = $viewer->teamRole($team);
+        $role ??= $viewer->teamRole($team);
 
         return new self(
             id: $team->id,
