@@ -66,7 +66,9 @@ trait HasTeams
 
     public function currentTeamOrPersonal(): ?Team
     {
-        return $this->currentTeam ?? $this->personalTeam();
+        $team = $this->currentTeam ?? null;
+
+        return $team instanceof Team && $this->belongsToTeam($team) ? $team : $this->personalTeam();
     }
 
     public function belongsToTeam(Team $team): bool

@@ -84,3 +84,13 @@ it('falls back to the personal team when no current team is set', function (): v
 
     expect($user->currentTeamOrPersonal()?->is($other))->toBeTrue();
 });
+
+it('falls back to the personal team when the user no longer belongs to the current team', function (): void {
+    $user = User::factory()->create();
+    $personal = $user->personalTeam();
+    $other = Team::factory()->create();
+    $user->forceFill(['current_team_id' => $other->id])->save();
+    $user->unsetRelation('currentTeam');
+
+    expect($user->currentTeamOrPersonal()?->is($personal))->toBeTrue();
+});
