@@ -46,7 +46,7 @@ A smial is a folder under `smials/` holding part of a kit. Raising a kit copies 
 | `teams-web` | The session side of teams: the `EnsureTeamMembership` and `SetTeamUrlDefaults` middleware, `CurrentTeamDashboardController` (the `/dashboard` redirect), the web `CreateTeamInvitationUrl`, `FindTeamInvitationContext`, the shared browser test and their unit tests | Vue Teams, React Teams, Svelte Teams, Livewire Teams |
 | `teams-inertia` | Team Inertia controllers, routes, middleware, Data classes and feature tests | Vue Teams, React Teams, Svelte Teams |
 | `teams-inertia-vue`, `teams-inertia-react`, `teams-inertia-svelte` | The team screens, modals, team switcher and sidebar changes of one frontend | One team kit each |
-| `teams-livewire` | The team controllers that return Blade views, routes, Livewire components, Flux views, the team switcher and layout changes, and their feature tests | Livewire Teams |
+| `teams-livewire` | The team controllers that return Blade views, routes, Flux views, the team switcher (a Blade view component) and layout changes, and their feature tests | Livewire Teams |
 | `teams-api` | Team JSON controllers, resources, routes and API feature tests | API Teams |
 
 `hobbiton.json` lists every kit with its smials, the files it leaves out and the `{{placeholders}}` it fills in. A team kit also names its `base` kit. `raise`, `tend`, `survey`, `deliver` and both CI workflows read it.
@@ -106,7 +106,7 @@ Team kits share their base kit's lock files and `vet.json`, because teams add no
 
 Two dashboard routes exist. `GET /dashboard`, named `dashboard`, stays and redirects an authenticated, verified user to the dashboard of their current team, falling back to their personal team. The team dashboard is `GET /{current_team:slug}/dashboard`, named `team.dashboard`. Team settings live under `/settings/teams`.
 
-The three `teams-inertia-*` smials hold the same screens, so a frontend change to teams is made in all three with identical file names, props, copy and `data-test` attributes. 
+The three `teams-inertia-*` smials hold the same screens, so a frontend change to teams is made in all three with identical file names, props, copy and `data-test` attributes.
 
 ### Livewire Team Kit
 
