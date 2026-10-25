@@ -207,6 +207,54 @@
         "base": "inertia",
         "sha1": "d6eda9abf5de434626aea29a74b426885a8068a7"
     },
+    "teams-livewire/app/Http/Controllers/Auth/LoginController.php": {
+        "base": "livewire",
+        "sha1": "f396c55b50b7a6ca41de03a65c14c6c08e998f2e"
+    },
+    "teams-livewire/app/Http/Controllers/Auth/RegisterController.php": {
+        "base": "livewire",
+        "sha1": "a949284cd19dadc013adf955f208284ac0659a89"
+    },
+    "teams-livewire/bootstrap/app.php": {
+        "base": "livewire",
+        "sha1": "16a906cfc5d5b58614f661bd9ab7625c0ef73b2f"
+    },
+    "teams-livewire/resources/views/components/desktop-user-menu.blade.php": {
+        "base": "livewire",
+        "sha1": "6e89956ef28334ce6b6f60c01b6cfa6135493e06"
+    },
+    "teams-livewire/resources/views/layouts/app/header.blade.php": {
+        "base": "livewire",
+        "sha1": "59bc8140aaafe12bf7af1f7cea44b1abc41ae9f6"
+    },
+    "teams-livewire/resources/views/layouts/app/sidebar.blade.php": {
+        "base": "livewire",
+        "sha1": "09dec98412549c9acc56b6a62680915228eed37a"
+    },
+    "teams-livewire/resources/views/pages/auth/login.blade.php": {
+        "base": "livewire",
+        "sha1": "96b55b40b6a5ab8d09e3e28e26f2540a753b874c"
+    },
+    "teams-livewire/resources/views/pages/auth/register.blade.php": {
+        "base": "livewire",
+        "sha1": "79c86995f9b790ae3d5aea75e886cdb1b61b9c3c"
+    },
+    "teams-livewire/resources/views/pages/dashboard.blade.php": {
+        "base": "livewire",
+        "sha1": "1aa9500b925a4d4ce371dfe2bdb2ff08ddc6d594"
+    },
+    "teams-livewire/resources/views/pages/settings/layout.blade.php": {
+        "base": "livewire",
+        "sha1": "7c8fea314c52282657ac9d2dbf55cf33a2cee9ea"
+    },
+    "teams-livewire/routes/web.php": {
+        "base": "livewire",
+        "sha1": "a1f1c9d7056bdb18c1b0f13be092bd879e79c130"
+    },
+    "teams-livewire/tests/Feature/PagesTest.php": {
+        "base": "livewire",
+        "sha1": "2e121845e9c1845a44df062515eaa4098aec57dd"
+    },
     "teams/app/Actions/CreateUser.php": {
         "base": "auth",
         "sha1": "79d0b35e02f6979b9b8b97a27469a1a81f2e6fed"
