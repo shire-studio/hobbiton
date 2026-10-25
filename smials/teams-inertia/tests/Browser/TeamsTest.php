@@ -24,6 +24,15 @@ it('creates a team and switches between teams', function (): void {
     expect($user->refresh()->currentTeam?->slug)->toBe('acme');
 
     $page->click('@team-switcher')
+        ->click('@team-switcher-new-team')
+        ->type('@create-team-name', 'Globex')
+        ->click('@create-team-submit')
+        ->assertPathIs('/settings/teams/globex')
+        ->assertValue('@team-name', 'Globex');
+
+    expect($user->refresh()->currentTeam?->slug)->toBe('globex');
+
+    $page->click('@team-switcher')
         ->click('[data-test="team-switcher-item"]:has-text("Jane\'s Team")')
         ->assertPathIs('/'.$personal?->slug.'/dashboard');
 
@@ -101,9 +110,87 @@ it('accepts a pending invitation from the dashboard', function (): void {
     $page->assertSee('Pending team invitations')
         ->assertSee('Acme')
         ->click('@accept-invitation')
+        ->assertPathIs('/'.$team->slug.'/dashboard')
         ->assertDontSee('Pending team invitations');
 
     expect($user->teams()->whereKey($team->id)->exists())->toBeTrue();
+});
+
+it('declines a pending invitation and shows invitation errors on the dashboard', function (): void {
+    $user = User::factory()->create();
+    $acme = Team::factory()->create(['name' => 'Acme']);
+    $globex = Team::factory()->create(['name' => 'Globex']);
+    $initech = Team::factory()->create(['name' => 'Initech']);
+    $declined = TeamInvitation::factory()->create([
+        'team_id' => $globex->id,
+        'email' => $user->email,
+        'role' => TeamRole::Member,
+    ]);
+    $expiring = TeamInvitation::factory()->create([
+        'team_id' => $initech->id,
+        'email' => $user->email,
+        'role' => TeamRole::Member,
+    ]);
+    TeamInvitation::factory()->create([
+        'team_id' => $acme->id,
+        'email' => $user->email,
+        'role' => TeamRole::Member,
+    ]);
+
+    $this->actingAs($user);
+
+    $page = visit('/dashboard')->assertSeeIn('@pending-invitation', 'Initech');
+
+    $expiring->forceFill(['expires_at' => now()->subMinute()])->save();
+
+    $page->click('[data-test="pending-invitation"]:has-text("Initech") [data-test="accept-invitation"]')
+        ->assertSee('This invitation is invalid or has expired.')
+        ->assertDontSee('Initech');
+
+    expect($user->belongsToTeam($initech))->toBeFalse();
+
+    $page->click('[data-test="pending-invitation"]:has-text("Globex") [data-test="decline-invitation"]')
+        ->assertSeeIn('@pending-invitation', 'Acme')
+        ->assertDontSee('Globex');
+
+    expect(TeamInvitation::query()->whereKey($declined->id)->exists())->toBeFalse()
+        ->and($user->belongsToTeam($globex))->toBeFalse();
+});
+
+it('changes a member role, removes a member and leaves a team', function (): void {
+    $owner = User::factory()->create();
+    $member = User::factory()->create(['email' => 'sam@example.com']);
+    $team = Team::factory()->create(['name' => 'Acme']);
+    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+    $other = Team::factory()->create(['name' => 'Globex']);
+    $other->members()->attach($owner, ['role' => TeamRole::Member->value]);
+
+    $this->actingAs($owner);
+
+    $row = '[data-test="member-row"]:has-text("sam@example.com")';
+
+    $page = visit('/settings/teams/'.$team->slug);
+
+    $page->click($row.' [data-test="member-role"]')
+        ->click('[data-test="member-role-option"]:has-text("Admin")')
+        ->assertSeeIn($row.' [data-test="member-role"]', 'Admin');
+
+    expect($member->teamRole($team))->toBe(TeamRole::Admin);
+
+    $page->click($row.' [data-test="remove-member"]')
+        ->click('@remove-member-confirm')
+        ->assertDontSee('sam@example.com');
+
+    expect($member->belongsToTeam($team))->toBeFalse();
+
+    $page->navigate('/settings/teams')
+        ->click('@leave-team')
+        ->click('@leave-team-confirm')
+        ->assertPathIs('/settings/teams')
+        ->assertDontSee('Globex');
+
+    expect($owner->belongsToTeam($other))->toBeFalse();
 });
 
 it('deletes a team after confirming its name', function (): void {

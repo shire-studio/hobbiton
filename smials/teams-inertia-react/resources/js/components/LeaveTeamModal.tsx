@@ -37,6 +37,7 @@ export default function LeaveTeamModal({ team, open, onOpenChange }: Props) {
           </UiDialogClose>
 
           <UiButton
+            data-test="leave-team-confirm"
             variant="destructive"
             disabled={processing}
             onClick={leaveTeam}

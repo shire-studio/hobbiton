@@ -73,11 +73,13 @@ const openLeaveTeamDialog = (team: App.Data.TeamData) => {
                 <UiTooltip v-if="canLeaveTeam(team)">
                   <UiTooltipTrigger as-child>
                     <UiButton
+                      data-test="leave-team"
                       variant="ghost"
                       size="sm"
                       @click="openLeaveTeamDialog(team)"
                     >
                       <LogOut class="h-4 w-4" />
+                      <span class="sr-only">Leave team</span>
                     </UiButton>
                   </UiTooltipTrigger>
                   <UiTooltipContent>
@@ -91,6 +93,11 @@ const openLeaveTeamDialog = (team: App.Data.TeamData) => {
                       <Link :href="edit(team.slug)">
                         <Eye v-if="team.role === 'member'" class="h-4 w-4" />
                         <Pencil v-else class="h-4 w-4" />
+                        <span class="sr-only">
+                          {{
+                            team.role === 'member' ? 'View team' : 'Edit team'
+                          }}
+                        </span>
                       </Link>
                     </UiButton>
                   </UiTooltipTrigger>

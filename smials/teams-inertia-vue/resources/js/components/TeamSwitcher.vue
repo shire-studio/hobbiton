@@ -52,7 +52,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <UiDropdownMenu>
+  <UiDropdownMenu :key="currentTeam?.id">
     <UiDropdownMenuTrigger as-child>
       <UiButton
         data-test="team-switcher"
@@ -74,7 +74,7 @@ onUnmounted(() => {
           :class="
             props.inHeader
               ? 'grid flex-1 text-left text-sm leading-tight'
-              : 'grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden'
+              : 'grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:sr-only'
           "
         >
           <span
@@ -118,7 +118,11 @@ onUnmounted(() => {
       </UiDropdownMenuItem>
       <UiDropdownMenuSeparator />
       <CreateTeamModal>
-        <UiDropdownMenuItem :class="teamItemClass" @select.prevent>
+        <UiDropdownMenuItem
+          data-test="team-switcher-new-team"
+          :class="teamItemClass"
+          @select.prevent
+        >
           <Plus :class="plusIconClass" />
           <span class="text-muted-foreground">New team</span>
         </UiDropdownMenuItem>

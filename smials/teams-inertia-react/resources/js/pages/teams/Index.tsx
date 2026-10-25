@@ -73,11 +73,13 @@ export default function Index({ teams }: Props) {
                       <UiTooltip>
                         <UiTooltipTrigger asChild>
                           <UiButton
+                            data-test="leave-team"
                             variant="ghost"
                             size="sm"
                             onClick={() => openLeaveTeamDialog(team)}
                           >
                             <LogOut className="h-4 w-4" />
+                            <span className="sr-only">Leave team</span>
                           </UiButton>
                         </UiTooltipTrigger>
                         <UiTooltipContent>
@@ -95,6 +97,11 @@ export default function Index({ teams }: Props) {
                             ) : (
                               <Pencil className="h-4 w-4" />
                             )}
+                            <span className="sr-only">
+                              {team.role === 'member'
+                                ? 'View team'
+                                : 'Edit team'}
+                            </span>
                           </Link>
                         </UiButton>
                       </UiTooltipTrigger>

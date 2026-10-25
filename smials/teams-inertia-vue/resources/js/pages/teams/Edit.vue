@@ -23,6 +23,7 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => [
   },
 ])
 
+const page = usePage()
 const resolveInitials = getInitials
 
 const inviteDialogOpen = ref(false)
@@ -72,6 +73,7 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
           />
 
           <Form
+            :key="team.id"
             v-bind="update.form(team.slug)"
             class="space-y-6"
             :options="{ preserveScroll: true }"
@@ -130,6 +132,7 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
             <div
               v-for="member in members"
               :key="member.id"
+              data-test="member-row"
               class="flex items-center justify-between rounded-lg border p-4"
             >
               <div class="flex items-center gap-4">
@@ -155,7 +158,11 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
                   "
                 >
                   <UiDropdownMenuTrigger as-child>
-                    <UiButton variant="outline" size="sm">
+                    <UiButton
+                      data-test="member-role"
+                      variant="outline"
+                      size="sm"
+                    >
                       {{ member.role_label }}
                       <ChevronDown class="ml-2 h-4 w-4 opacity-50" />
                     </UiButton>
@@ -164,6 +171,7 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
                     <UiDropdownMenuItem
                       v-for="role in availableRoles"
                       :key="role.value"
+                      data-test="member-role-option"
                       @click="updateMemberRole(member, role.value)"
                     >
                       {{ role.label }}
@@ -182,11 +190,13 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
                   <UiTooltip>
                     <UiTooltipTrigger as-child>
                       <UiButton
+                        data-test="remove-member"
                         variant="ghost"
                         size="sm"
                         @click="confirmRemoveMember(member)"
                       >
                         <X class="h-4 w-4" />
+                        <span class="sr-only">Remove member</span>
                       </UiButton>
                     </UiTooltipTrigger>
                     <UiTooltipContent>
@@ -197,6 +207,8 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
               </div>
             </div>
           </div>
+
+          <InputError :message="page.props.errors.role" />
         </div>
 
         <div v-if="invitations.length > 0" class="space-y-6">
@@ -238,6 +250,7 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
                       @click="confirmCancelInvitation(invitation)"
                     >
                       <X class="h-4 w-4" />
+                      <span class="sr-only">Cancel invitation</span>
                     </UiButton>
                   </UiTooltipTrigger>
                   <UiTooltipContent>

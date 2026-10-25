@@ -73,12 +73,14 @@
                     <UiTooltipTrigger>
                       {#snippet child({ props })}
                         <UiButton
+                          data-test="leave-team"
                           variant="ghost"
                           size="sm"
                           {...props}
                           onclick={() => openLeaveTeamDialog(team)}
                         >
                           <LogOut class="h-4 w-4" />
+                          <span class="sr-only">Leave team</span>
                         </UiButton>
                       {/snippet}
                     </UiTooltipTrigger>
@@ -99,6 +101,11 @@
                             {:else}
                               <Pencil class="h-4 w-4" />
                             {/if}
+                            <span class="sr-only">
+                              {team.role === 'member'
+                                ? 'View team'
+                                : 'Edit team'}
+                            </span>
                           </Link>
                         {/snippet}
                       </UiButton>

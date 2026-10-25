@@ -18,6 +18,7 @@ export default function Edit({
   permissions,
   availableRoles,
 }: Props) {
+  const page = usePage()
   const breadcrumbItems: BreadcrumbItem[] = [
     {
       title: 'Teams',
@@ -82,6 +83,7 @@ export default function Edit({
               />
 
               <Form
+                key={team.id}
                 {...update.form(team.slug)}
                 options={{ preserveScroll: true }}
                 className="space-y-6"
@@ -145,6 +147,7 @@ export default function Edit({
               {members.map((member) => (
                 <div
                   key={member.id}
+                  data-test="member-row"
                   className="flex items-center justify-between rounded-lg border p-4"
                 >
                   <div className="flex items-center gap-4">
@@ -166,7 +169,11 @@ export default function Edit({
                     permissions.can_update_member ? (
                       <UiDropdownMenu>
                         <UiDropdownMenuTrigger asChild>
-                          <UiButton variant="outline" size="sm">
+                          <UiButton
+                            data-test="member-role"
+                            variant="outline"
+                            size="sm"
+                          >
                             {member.role_label}
                             <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
                           </UiButton>
@@ -175,6 +182,7 @@ export default function Edit({
                           {availableRoles.map((role) => (
                             <UiDropdownMenuItem
                               key={role.value}
+                              data-test="member-role-option"
                               onClick={() =>
                                 updateMemberRole(member, role.value)
                               }
@@ -194,11 +202,13 @@ export default function Edit({
                           <UiTooltip>
                             <UiTooltipTrigger asChild>
                               <UiButton
+                                data-test="remove-member"
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => confirmRemoveMember(member)}
                               >
                                 <X className="h-4 w-4" />
+                                <span className="sr-only">Remove member</span>
                               </UiButton>
                             </UiTooltipTrigger>
                             <UiTooltipContent>
@@ -211,6 +221,8 @@ export default function Edit({
                 </div>
               ))}
             </div>
+
+            <InputError message={page.props.errors.role} />
           </div>
 
           {invitations.length > 0 && (
@@ -252,6 +264,7 @@ export default function Edit({
                               }
                             >
                               <X className="h-4 w-4" />
+                              <span className="sr-only">Cancel invitation</span>
                             </UiButton>
                           </UiTooltipTrigger>
                           <UiTooltipContent>

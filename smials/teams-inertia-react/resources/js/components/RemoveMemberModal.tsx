@@ -45,6 +45,7 @@ export default function RemoveMemberModal({
           </UiDialogClose>
 
           <UiButton
+            data-test="remove-member-confirm"
             variant="destructive"
             disabled={processing}
             onClick={removeMember}

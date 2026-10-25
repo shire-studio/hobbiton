@@ -5,6 +5,7 @@ type Props = {
 }
 
 export default function PendingInvitationsModal({ invitations }: Props) {
+  const page = usePage()
   const [open, setOpen] = useState(true)
   const [processingCode, setProcessingCode] = useState<string | null>(null)
 
@@ -30,7 +31,11 @@ export default function PendingInvitationsModal({ invitations }: Props) {
 
         <div className="grid gap-4">
           {invitations.map((invitation) => (
-            <div key={invitation.code} className="rounded-lg border p-4">
+            <div
+              key={invitation.code}
+              data-test="pending-invitation"
+              className="rounded-lg border p-4"
+            >
               <div className="space-y-1">
                 <p className="font-medium">{invitation.team_name}</p>
                 <p className="text-sm text-muted-foreground">
@@ -40,6 +45,7 @@ export default function PendingInvitationsModal({ invitations }: Props) {
 
               <div className="mt-4 flex justify-end gap-2">
                 <UiButton
+                  data-test="decline-invitation"
                   variant="secondary"
                   disabled={processingCode === invitation.code}
                   onClick={() => respond(invitation, decline)}
@@ -57,6 +63,8 @@ export default function PendingInvitationsModal({ invitations }: Props) {
               </div>
             </div>
           ))}
+
+          <InputError message={page.props.errors.invitation} />
         </div>
       </UiDialogContent>
     </UiDialog>

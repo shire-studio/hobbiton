@@ -42,7 +42,12 @@
         {/snippet}
       </UiDialogClose>
 
-      <UiButton variant="destructive" disabled={processing} onclick={leaveTeam}>
+      <UiButton
+        data-test="leave-team-confirm"
+        variant="destructive"
+        disabled={processing}
+        onclick={leaveTeam}
+      >
         Leave team
       </UiButton>
     </UiDialogFooter>

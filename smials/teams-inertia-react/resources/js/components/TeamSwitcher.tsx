@@ -19,7 +19,7 @@ export default function TeamSwitcher({ inHeader = false }: Props) {
   }
 
   return (
-    <UiDropdownMenu>
+    <UiDropdownMenu key={currentTeam?.id}>
       <UiDropdownMenuTrigger asChild>
         <UiButton
           data-test="team-switcher"
@@ -41,7 +41,7 @@ export default function TeamSwitcher({ inHeader = false }: Props) {
             className={
               inHeader
                 ? 'grid flex-1 text-left text-sm leading-tight'
-                : 'grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden'
+                : 'grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:sr-only'
             }
           >
             <span
@@ -95,6 +95,7 @@ export default function TeamSwitcher({ inHeader = false }: Props) {
         <UiDropdownMenuSeparator />
         <CreateTeamModal>
           <UiDropdownMenuItem
+            data-test="team-switcher-new-team"
             className={teamItemClass}
             onSelect={(event) => event.preventDefault()}
           >

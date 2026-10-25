@@ -47,6 +47,7 @@
       </UiDialogClose>
 
       <UiButton
+        data-test="remove-member-confirm"
         variant="destructive"
         disabled={processing}
         onclick={removeMember}

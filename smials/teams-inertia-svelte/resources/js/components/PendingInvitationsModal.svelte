@@ -33,7 +33,7 @@
 
       <div class="grid gap-4">
         {#each invitations as invitation (invitation.code)}
-          <div class="rounded-lg border p-4">
+          <div data-test="pending-invitation" class="rounded-lg border p-4">
             <div class="space-y-1">
               <p class="font-medium">{invitation.team_name}</p>
               <p class="text-sm text-muted-foreground">
@@ -43,6 +43,7 @@
 
             <div class="mt-4 flex justify-end gap-2">
               <UiButton
+                data-test="decline-invitation"
                 variant="secondary"
                 disabled={processingCode === invitation.code}
                 onclick={() => respond(invitation, decline)}
@@ -60,6 +61,8 @@
             </div>
           </div>
         {/each}
+
+        <InputError message={page.props.errors.invitation} />
       </div>
     </div>
   </UiDialogContent>

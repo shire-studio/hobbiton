@@ -5,6 +5,8 @@ defineProps<{
   invitations: App.Data.PendingTeamInvitationData[]
 }>()
 
+const page = usePage()
+
 const open = ref(true)
 const processingCode = ref<string | null>(null)
 
@@ -37,6 +39,7 @@ const declineInvitation = (invitation: App.Data.PendingTeamInvitationData) => {
         <div
           v-for="invitation in invitations"
           :key="invitation.code"
+          data-test="pending-invitation"
           class="rounded-lg border p-4"
         >
           <div class="space-y-1">
@@ -48,6 +51,7 @@ const declineInvitation = (invitation: App.Data.PendingTeamInvitationData) => {
 
           <div class="mt-4 flex justify-end gap-2">
             <UiButton
+              data-test="decline-invitation"
               variant="secondary"
               :disabled="processingCode === invitation.code"
               @click="declineInvitation(invitation)"
@@ -64,6 +68,8 @@ const declineInvitation = (invitation: App.Data.PendingTeamInvitationData) => {
             </UiButton>
           </div>
         </div>
+
+        <InputError :message="page.props.errors.invitation" />
       </div>
     </UiDialogContent>
   </UiDialog>

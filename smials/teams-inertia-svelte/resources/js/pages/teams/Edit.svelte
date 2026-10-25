@@ -76,35 +76,37 @@
             description="Update your team name and settings"
           />
 
-          <Form
-            {...update.form(team.slug)}
-            options={{ preserveScroll: true }}
-            class="space-y-6"
-          >
-            {#snippet children({ errors, processing })}
-              <div class="grid gap-2">
-                <UiLabel for="name">Team name</UiLabel>
-                <UiInput
-                  id="name"
-                  name="name"
-                  data-test="team-name"
-                  value={team.name}
-                  required
-                />
-                <InputError message={errors.name} />
-              </div>
+          {#key team.id}
+            <Form
+              {...update.form(team.slug)}
+              options={{ preserveScroll: true }}
+              class="space-y-6"
+            >
+              {#snippet children({ errors, processing })}
+                <div class="grid gap-2">
+                  <UiLabel for="name">Team name</UiLabel>
+                  <UiInput
+                    id="name"
+                    name="name"
+                    data-test="team-name"
+                    value={team.name}
+                    required
+                  />
+                  <InputError message={errors.name} />
+                </div>
 
-              <div class="flex items-center gap-4">
-                <UiButton
-                  type="submit"
-                  data-test="team-save"
-                  disabled={processing}
-                >
-                  Save
-                </UiButton>
-              </div>
-            {/snippet}
-          </Form>
+                <div class="flex items-center gap-4">
+                  <UiButton
+                    type="submit"
+                    data-test="team-save"
+                    disabled={processing}
+                  >
+                    Save
+                  </UiButton>
+                </div>
+              {/snippet}
+            </Form>
+          {/key}
         </div>
       {:else}
         <div class="space-y-6">
@@ -135,6 +137,7 @@
         <div class="space-y-3">
           {#each members as member (member.id)}
             <div
+              data-test="member-row"
               class="flex items-center justify-between rounded-lg border p-4"
             >
               <div class="flex items-center gap-4">
@@ -158,6 +161,7 @@
                     <UiDropdownMenuTrigger asChild>
                       {#snippet children(props)}
                         <UiButton
+                          data-test="member-role"
                           variant="outline"
                           size="sm"
                           onclick={props.onclick}
@@ -175,6 +179,7 @@
                           {#snippet children(props)}
                             <button
                               type="button"
+                              data-test="member-role-option"
                               class={props.class}
                               onclick={() => {
                                 props.onClick?.()
@@ -200,12 +205,14 @@
                       <UiTooltipTrigger>
                         {#snippet child({ props })}
                           <UiButton
+                            data-test="remove-member"
                             variant="ghost"
                             size="sm"
                             {...props}
                             onclick={() => confirmRemoveMember(member)}
                           >
                             <X class="h-4 w-4" />
+                            <span class="sr-only">Remove member</span>
                           </UiButton>
                         {/snippet}
                       </UiTooltipTrigger>
@@ -219,6 +226,8 @@
             </div>
           {/each}
         </div>
+
+        <InputError message={page.props.errors.role} />
       </div>
 
       {#if invitations.length > 0}
@@ -263,6 +272,7 @@
                             onclick={() => confirmCancelInvitation(invitation)}
                           >
                             <X class="h-4 w-4" />
+                            <span class="sr-only">Cancel invitation</span>
                           </UiButton>
                         {/snippet}
                       </UiTooltipTrigger>
