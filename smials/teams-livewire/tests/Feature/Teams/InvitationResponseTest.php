@@ -72,3 +72,27 @@ it('rejects an expired invitation', function (): void {
 
     expect($invitation->fresh()->accepted_at)->toBeNull();
 });
+
+it('shows the accepted toast on the team dashboard after both redirects', function (): void {
+    $user = User::factory()->create(['email' => 'me@example.com']);
+    $invitation = TeamInvitation::factory()->create(['email' => 'me@example.com']);
+
+    $this->actingAs($user)
+        ->fromRoute('team.dashboard', ['current_team' => $user->personalTeam()?->slug])
+        ->followingRedirects()
+        ->post(route('invitations.accept', $invitation))
+        ->assertOk()
+        ->assertSee('Invitation accepted.');
+});
+
+it('shows the declined toast on the team dashboard after both redirects', function (): void {
+    $user = User::factory()->create(['email' => 'me@example.com']);
+    $invitation = TeamInvitation::factory()->create(['email' => 'me@example.com']);
+
+    $this->actingAs($user)
+        ->fromRoute('team.dashboard', ['current_team' => $user->personalTeam()?->slug])
+        ->followingRedirects()
+        ->delete(route('invitations.decline', $invitation))
+        ->assertOk()
+        ->assertSee('Invitation declined.');
+});
