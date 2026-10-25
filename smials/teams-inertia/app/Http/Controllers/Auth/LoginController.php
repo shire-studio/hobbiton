@@ -6,7 +6,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Actions\FindTeamInvitationContext;
 use App\Actions\LoginUser;
+use App\Data\TeamInvitationContextData;
 use App\Http\Requests\LoginRequest;
+use App\Models\TeamInvitation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +25,9 @@ final readonly class LoginController
             'canResetPassword' => Route::has('password.request'),
             'canRegister' => true,
             'status' => is_string($status) ? $status : null,
-            'teamInvitation' => $findTeamInvitationContext->handle(is_string($code = $request->query('invitation')) ? $code : null),
+            'teamInvitation' => ($invitation = $findTeamInvitationContext->handle(is_string($code = $request->query('invitation')) ? $code : null)) instanceof TeamInvitation
+                ? TeamInvitationContextData::fromInvitation($invitation)
+                : null,
         ]);
     }
 

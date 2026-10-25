@@ -51,6 +51,10 @@
         "base": "inertia-react",
         "sha1": "df2e8e28133770283d16e231ca7e3ea73cd4b03f"
     },
+    "teams-inertia-react/resources/js/components/NavMain.tsx": {
+        "base": "inertia-react",
+        "sha1": "d79049391694351b26fb03289b77e2754918bec9"
+    },
     "teams-inertia-react/resources/js/components/NavUser.tsx": {
         "base": "inertia-react",
         "sha1": "ea55f11f1be642c63e95b4c28ccce7cff78b5abd"
@@ -95,6 +99,10 @@
         "base": "inertia-svelte",
         "sha1": "a9861eb0c4fde1eccf7feef8981ecdf2b9bf8833"
     },
+    "teams-inertia-svelte/resources/js/components/NavMain.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "458b60b4162771c5346c118d52affe8f4410d036"
+    },
     "teams-inertia-svelte/resources/js/components/NavUser.svelte": {
         "base": "inertia-svelte",
         "sha1": "7ce61d0164c5910d9c702925fa1a20d526b2c849"
@@ -134,6 +142,10 @@
     "teams-inertia-vue/resources/js/components/AppSidebar.vue": {
         "base": "inertia-vue",
         "sha1": "dbb4b42532ec220e253c4fa7e470f76b6537946e"
+    },
+    "teams-inertia-vue/resources/js/components/NavMain.vue": {
+        "base": "inertia-vue",
+        "sha1": "ccbe47ef904683ac77ef2db9e894e47d10aefb35"
     },
     "teams-inertia-vue/resources/js/components/NavUser.vue": {
         "base": "inertia-vue",

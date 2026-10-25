@@ -8,7 +8,9 @@ use App\Actions\CreateUser;
 use App\Actions\CreateUserEmailVerificationNotification;
 use App\Actions\FindTeamInvitationContext;
 use App\Actions\LoginUser;
+use App\Data\TeamInvitationContextData;
 use App\Http\Requests\CreateUserRequest;
+use App\Models\TeamInvitation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,7 +21,9 @@ final readonly class RegisterController
     public function index(Request $request, FindTeamInvitationContext $findTeamInvitationContext): Response
     {
         return Inertia::render('auth/Register', [
-            'teamInvitation' => $findTeamInvitationContext->handle(is_string($code = $request->query('invitation')) ? $code : null),
+            'teamInvitation' => ($invitation = $findTeamInvitationContext->handle(is_string($code = $request->query('invitation')) ? $code : null)) instanceof TeamInvitation
+                ? TeamInvitationContextData::fromInvitation($invitation)
+                : null,
         ]);
     }
 

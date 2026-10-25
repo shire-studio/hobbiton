@@ -218,6 +218,26 @@
                 "{{framework}}": "Svelte 5",
                 "{{components}}": "shadcn-svelte"
             }
+        },
+        "livewire-teams": {
+            "label": "Livewire Teams",
+            "base": "livewire",
+            "repository": "shire-studio/laravel-starter-kit-livewire",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "livewire",
+                "teams",
+                "teams-web",
+                "teams-livewire"
+            ],
+            "replacements": {
+                "{{kit}}": "livewire",
+                "{{framework}}": "Livewire 4",
+                "{{components}}": "Flux"
+            }
         }
     },
     "replacementPaths": [

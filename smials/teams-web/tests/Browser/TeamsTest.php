@@ -65,7 +65,7 @@ it('renames a team and keeps navigating', function (): void {
     Auth::forgetGuards();
 
     $page->navigate('/settings/teams/globex')
-        ->click('[data-sidebar="menu-button"][href$="/globex/dashboard"] >> text=Dashboard')
+        ->click('@dashboard-link')
         ->assertPathIs('/globex/dashboard');
 
     expect($team->refresh()->name)->toBe('Globex');

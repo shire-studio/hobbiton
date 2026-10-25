@@ -8,8 +8,8 @@ use App\Models\TeamInvitation;
 it('finds a pending invitation by code', function (): void {
     $invitation = TeamInvitation::factory()->create();
 
-    expect(resolve(FindTeamInvitationContext::class)->handle($invitation->code)?->team_name)
-        ->toBe($invitation->team->name);
+    expect(resolve(FindTeamInvitationContext::class)->handle($invitation->code)?->is($invitation))
+        ->toBeTrue();
 });
 
 it('returns null for missing, empty, unknown, expired and accepted codes', function (): void {
