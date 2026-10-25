@@ -11,7 +11,6 @@ use App\Http\Requests\DeleteTeamRequest;
 use App\Http\Requests\SaveTeamRequest;
 use App\Http\Resources\TeamResource;
 use App\Models\Team;
-use App\Models\TeamInvitation;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Database\Eloquent\Collection;
@@ -41,12 +40,13 @@ final readonly class TeamController
 
     public function show(Team $team): TeamResource
     {
-        Gate::authorize('view', $team);
-
         $team->setRelation('members', $team->members()->orderBy('name')->get());
-        $team->setRelation('invitations', Gate::allows('inviteMember', $team)
-            ? $team->invitations()->with(['team', 'inviter'])->oldest()->get()->filter(fn (TeamInvitation $invitation): bool => $invitation->isPending())->values()
-            : new Collection);
+
+        $invitations = $team->invitations()->with(['team', 'inviter'])->oldest();
+
+        $invitations->scopes('pending');
+
+        $team->setRelation('invitations', Gate::allows('inviteMember', $team) ? $invitations->get() : new Collection);
 
         return new TeamResource($team)->withPermissions([
             'can_update_team' => Gate::allows('update', $team),
@@ -61,8 +61,6 @@ final readonly class TeamController
 
     public function update(Team $team, SaveTeamRequest $request, UpdateTeam $updateTeam): TeamResource
     {
-        Gate::authorize('update', $team);
-
         /** @var array{name: string} $attributes */
         $attributes = $request->validated();
 
@@ -71,8 +69,6 @@ final readonly class TeamController
 
     public function destroy(Team $team, DeleteTeamRequest $request, #[CurrentUser] User $user, DeleteTeam $deleteTeam): Response
     {
-        Gate::authorize('delete', $team);
-
         $deleteTeam->handle($team, $user);
 
         return response()->noContent();

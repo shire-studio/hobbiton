@@ -24,6 +24,7 @@ final class UpdateCurrentTeamRequest extends FormRequest
             'team_id' => [
                 'required',
                 'string',
+                'uuid',
                 Rule::exists(Membership::class, 'team_id')->where('user_id', $user->id),
             ],
         ];

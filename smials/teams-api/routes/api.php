@@ -54,16 +54,24 @@ Route::middleware('auth:sanctum')->group(function (): void {
 
     Route::get('teams', [TeamController::class, 'index'])->name('teams.index');
     Route::post('teams', [TeamController::class, 'store'])->name('teams.store');
-    Route::get('teams/{team}', [TeamController::class, 'show'])->name('teams.show');
-    Route::patch('teams/{team}', [TeamController::class, 'update'])->name('teams.update');
-    Route::delete('teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
-    Route::delete('teams/{team}/leave', LeaveTeamController::class)->name('teams.leave');
+    Route::get('teams/{team}', [TeamController::class, 'show'])->can('view', 'team')
+        ->name('teams.show');
+    Route::patch('teams/{team}', [TeamController::class, 'update'])->can('update', 'team')
+        ->name('teams.update');
+    Route::delete('teams/{team}', [TeamController::class, 'destroy'])->can('delete', 'team')
+        ->name('teams.destroy');
+    Route::delete('teams/{team}/leave', LeaveTeamController::class)->can('leave', 'team')
+        ->name('teams.leave');
 
-    Route::patch('teams/{team}/members/{user}', [TeamMemberController::class, 'update'])->name('teams.members.update');
-    Route::delete('teams/{team}/members/{user}', [TeamMemberController::class, 'destroy'])->name('teams.members.destroy');
+    Route::patch('teams/{team}/members/{user}', [TeamMemberController::class, 'update'])->can('updateMember', 'team')
+        ->name('teams.members.update');
+    Route::delete('teams/{team}/members/{user}', [TeamMemberController::class, 'destroy'])->can('removeMember', 'team')
+        ->name('teams.members.destroy');
 
-    Route::post('teams/{team}/invitations', [TeamInvitationController::class, 'store'])->name('teams.invitations.store');
-    Route::delete('teams/{team}/invitations/{invitation:code}', [TeamInvitationController::class, 'destroy'])->name('teams.invitations.destroy');
+    Route::post('teams/{team}/invitations', [TeamInvitationController::class, 'store'])->can('inviteMember', 'team')
+        ->name('teams.invitations.store');
+    Route::delete('teams/{team}/invitations/{invitation:code}', [TeamInvitationController::class, 'destroy'])->can('cancelInvitation', 'team')
+        ->name('teams.invitations.destroy');
 
     Route::get('invitations', [InvitationController::class, 'index'])->name('invitations.index');
     Route::post('invitations/{invitation:code}/accept', AcceptInvitationController::class)->name('invitations.accept');

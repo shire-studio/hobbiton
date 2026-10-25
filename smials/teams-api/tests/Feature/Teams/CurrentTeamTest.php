@@ -43,6 +43,14 @@ it('requires a team id', function (): void {
         ->assertJsonValidationErrors('team_id');
 });
 
+it('rejects a team id that is not a uuid', function (): void {
+    Sanctum::actingAs(User::factory()->create());
+
+    $this->putJson(route('user.current-team.update'), ['team_id' => 'not-a-uuid'])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('team_id');
+});
+
 it('falls back to the personal team when no current team is set', function (): void {
     $user = User::factory()->create();
     $personal = $user->personalTeam();

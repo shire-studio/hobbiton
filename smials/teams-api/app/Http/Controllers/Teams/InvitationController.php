@@ -14,14 +14,13 @@ final readonly class InvitationController
 {
     public function index(#[CurrentUser] User $user): AnonymousResourceCollection
     {
-        return TeamInvitationResource::collection(
-            TeamInvitation::query()
-                ->whereRaw('LOWER(email) = ?', [mb_strtolower($user->email)])
-                ->with(['team', 'inviter'])
-                ->latest()
-                ->get()
-                ->filter(fn (TeamInvitation $invitation): bool => $invitation->isPending())
-                ->values()
-        );
+        $invitations = TeamInvitation::query()
+            ->whereRaw('LOWER(email) = ?', [mb_strtolower($user->email)])
+            ->with(['team', 'inviter'])
+            ->latest();
+
+        $invitations->scopes('pending');
+
+        return TeamInvitationResource::collection($invitations->get());
     }
 }

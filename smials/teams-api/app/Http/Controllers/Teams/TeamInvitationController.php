@@ -14,14 +14,11 @@ use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Gate;
 
 final readonly class TeamInvitationController
 {
     public function store(Team $team, CreateTeamInvitationRequest $request, #[CurrentUser] User $user, CreateTeamInvitation $createTeamInvitation): JsonResponse
     {
-        Gate::authorize('inviteMember', $team);
-
         /** @var array{email: string, role: string} $attributes */
         $attributes = $request->validated();
 
@@ -34,8 +31,6 @@ final readonly class TeamInvitationController
 
     public function destroy(Team $team, TeamInvitation $invitation, CancelTeamInvitation $cancelTeamInvitation): Response
     {
-        Gate::authorize('cancelInvitation', $team);
-
         $cancelTeamInvitation->handle($invitation);
 
         return response()->noContent();

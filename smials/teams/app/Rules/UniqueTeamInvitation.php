@@ -31,11 +31,13 @@ final readonly class UniqueTeamInvitation implements ValidationRule
             return;
         }
 
-        $hasPendingInvitation = TeamInvitation::query()
+        $invitations = TeamInvitation::query()
             ->where('team_id', $this->team->id)
-            ->whereRaw('LOWER(email) = ?', [$email])
-            ->get()
-            ->contains(fn (TeamInvitation $invitation): bool => $invitation->isPending());
+            ->whereRaw('LOWER(email) = ?', [$email]);
+
+        $invitations->scopes('pending');
+
+        $hasPendingInvitation = $invitations->exists();
 
         if ($hasPendingInvitation) {
             $fail(__('This user has already been invited to the team.'));

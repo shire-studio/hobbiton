@@ -12,14 +12,11 @@ use App\Http\Resources\TeamMemberResource;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Gate;
 
 final readonly class TeamMemberController
 {
     public function update(Team $team, User $user, UpdateTeamMemberRequest $request, UpdateTeamMember $updateTeamMember): TeamMemberResource
     {
-        Gate::authorize('updateMember', $team);
-
         $this->ensureManageable($team, $user);
 
         /** @var array{role: string} $attributes */
@@ -32,8 +29,6 @@ final readonly class TeamMemberController
 
     public function destroy(Team $team, User $user, RemoveTeamMember $removeTeamMember): Response
     {
-        Gate::authorize('removeMember', $team);
-
         $this->ensureManageable($team, $user);
 
         $removeTeamMember->handle($team, $user);
