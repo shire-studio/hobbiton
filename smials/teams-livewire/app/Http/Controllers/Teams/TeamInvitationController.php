@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Teams;
+
+use App\Actions\CancelTeamInvitation;
+use App\Actions\CreateTeamInvitation;
+use App\Http\Requests\CreateTeamInvitationRequest;
+use App\Models\Team;
+use App\Models\TeamInvitation;
+use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Http\RedirectResponse;
+
+final readonly class TeamInvitationController
+{
+    public function store(Team $team, CreateTeamInvitationRequest $request, #[CurrentUser] User $user, CreateTeamInvitation $createTeamInvitation): RedirectResponse
+    {
+        /** @var array{email: string, role: string} $attributes */
+        $attributes = $request->validated();
+
+        $createTeamInvitation->handle($team, $user, $attributes);
+
+        return to_route('teams.edit', ['team' => $team->slug])->with('toast', ['type' => 'success', 'message' => __('Invitation sent.')]);
+    }
+
+    public function destroy(Team $team, TeamInvitation $invitation, CancelTeamInvitation $cancelTeamInvitation): RedirectResponse
+    {
+        $cancelTeamInvitation->handle($invitation);
+
+        return to_route('teams.edit', ['team' => $team->slug])->with('toast', ['type' => 'success', 'message' => __('Invitation cancelled.')]);
+    }
+}

@@ -15,8 +15,11 @@ use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use App\Http\Controllers\Teams\AcceptInvitationController;
 use App\Http\Controllers\Teams\DeclineInvitationController;
+use App\Http\Controllers\Teams\LeaveTeamController;
 use App\Http\Controllers\Teams\SwitchTeamController;
 use App\Http\Controllers\Teams\TeamController;
+use App\Http\Controllers\Teams\TeamInvitationController;
+use App\Http\Controllers\Teams\TeamMemberController;
 use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Support\Facades\Route;
@@ -37,8 +40,28 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::get('settings/teams', [TeamController::class, 'index'])->name('teams.index');
     Route::post('settings/teams', [TeamController::class, 'store'])->name('teams.store');
+    Route::get('settings/teams/{team:slug}', [TeamController::class, 'edit'])->can('view', 'team')
+        ->name('teams.edit');
+    Route::patch('settings/teams/{team:slug}', [TeamController::class, 'update'])->can('update', 'team')
+        ->name('teams.update');
+    Route::delete('settings/teams/{team:slug}', [TeamController::class, 'destroy'])->can('delete', 'team')
+        ->name('teams.destroy');
     Route::post('settings/teams/{team:slug}/switch', SwitchTeamController::class)->can('view', 'team')
         ->name('teams.switch');
+    Route::delete('settings/teams/{team:slug}/leave', LeaveTeamController::class)->can('leave', 'team')
+        ->name('teams.leave');
+
+    Route::patch('settings/teams/{team:slug}/members/{user}', [TeamMemberController::class, 'update'])->can('updateMember', 'team')
+        ->can('manageMember', ['team', 'user'])
+        ->name('teams.members.update');
+    Route::delete('settings/teams/{team:slug}/members/{user}', [TeamMemberController::class, 'destroy'])->can('removeMember', 'team')
+        ->can('manageMember', ['team', 'user'])
+        ->name('teams.members.destroy');
+
+    Route::post('settings/teams/{team:slug}/invitations', [TeamInvitationController::class, 'store'])->can('inviteMember', 'team')
+        ->name('teams.invitations.store');
+    Route::delete('settings/teams/{team:slug}/invitations/{invitation:code}', [TeamInvitationController::class, 'destroy'])->can('cancelInvitation', 'team')
+        ->name('teams.invitations.destroy');
 
     Route::post('invitations/{invitation:code}/accept', AcceptInvitationController::class)->name('invitations.accept');
     Route::delete('invitations/{invitation:code}', DeclineInvitationController::class)->name('invitations.decline');
