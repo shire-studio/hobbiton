@@ -29,6 +29,16 @@ it('rejects an invitation for another email', function (): void {
         ->and($validator->errors()->first('invitation'))->toBe('This invitation is invalid or has expired.');
 });
 
+it('rejects an invitation for a user without a verified email', function (): void {
+    $user = User::factory()->unverified()->create();
+    $invitation = TeamInvitation::factory()->create(['email' => $user->email]);
+
+    $validator = validInvitationValidator($user, $invitation);
+
+    expect($validator->passes())->toBeFalse()
+        ->and($validator->errors()->first('invitation'))->toBe('This invitation is invalid or has expired.');
+});
+
 it('rejects an expired invitation', function (): void {
     $user = User::factory()->create();
     $invitation = TeamInvitation::factory()->expired()->create(['email' => $user->email]);

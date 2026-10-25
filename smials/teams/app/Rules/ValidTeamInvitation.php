@@ -19,7 +19,8 @@ final readonly class ValidTeamInvitation implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $valid = $value instanceof TeamInvitation
+        $valid = $this->user->hasVerifiedEmail()
+            && $value instanceof TeamInvitation
             && $value->isPending()
             && mb_strtolower($value->email) === mb_strtolower($this->user->email);
 
