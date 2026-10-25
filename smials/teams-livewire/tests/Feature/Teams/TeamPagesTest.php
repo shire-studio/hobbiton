@@ -179,3 +179,13 @@ it('reopens the create team modal only for its own errors', function (): void {
         ->assertSeeHtml('data-test="create-team-reopen"')
         ->assertSee('The name field is required.');
 });
+
+it('compares the delete confirmation with the team name as a javascript string', function (): void {
+    $team = ownedTeam();
+    $team->forceFill(['name' => 'Bob\'s "Team"'])->save();
+
+    $content = $this->get(route('teams.edit', $team))->getContent();
+
+    expect($content)->toContain('x-bind:disabled="confirmation !== \'Bob\u0027s \u0022Team\u0022\'"')
+        ->and($content)->not->toContain('@js(');
+});

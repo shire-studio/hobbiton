@@ -44,7 +44,7 @@
             <flux:button
                 variant="danger"
                 type="submit"
-                x-bind:disabled="confirmation !== @js($team->name)"
+                x-bind:disabled="confirmation !== {{ Js::from($team->name) }}"
                 data-test="delete-team-submit"
             >
                 {{ __('Delete team') }}
