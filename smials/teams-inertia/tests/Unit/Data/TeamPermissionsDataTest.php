@@ -6,6 +6,7 @@ use App\Data\TeamPermissionsData;
 use App\Enums\TeamRole;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 it('reflects owner permissions', function (): void {
     $user = User::factory()->create();
@@ -45,4 +46,28 @@ it('gives members no permissions', function (): void {
     $team->members()->attach($user, ['role' => TeamRole::Member->value]);
 
     expect(array_filter(TeamPermissionsData::fromTeam($team, $user)->toArray()))->toBeEmpty();
+});
+
+it('never lets the owner delete a personal team', function (): void {
+    $user = User::factory()->create();
+    $team = $user->personalTeam();
+
+    assert($team instanceof Team);
+
+    $permissions = TeamPermissionsData::fromTeam($team, $user);
+
+    expect($permissions->can_delete_team)->toBeFalse()
+        ->and($permissions->can_update_team)->toBeTrue();
+});
+
+it('resolves the viewer role with a single query', function (): void {
+    $user = User::factory()->create();
+    $team = Team::factory()->create();
+    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
+
+    DB::enableQueryLog();
+
+    TeamPermissionsData::fromTeam($team, $user);
+
+    expect(DB::getQueryLog())->toHaveCount(1);
 });

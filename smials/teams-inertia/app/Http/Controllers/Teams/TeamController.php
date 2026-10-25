@@ -53,7 +53,7 @@ final readonly class TeamController
     {
         $permissions = TeamPermissionsData::fromTeam($team, $user);
 
-        $invitations = $team->invitations()->with(['team', 'inviter'])->oldest();
+        $invitations = $team->invitations()->oldest();
         $invitations->scopes('pending');
 
         return Inertia::render('teams/Edit', [

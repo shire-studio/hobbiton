@@ -23,14 +23,17 @@ final class TeamPermissionsData extends Data
 
     public static function fromTeam(Team $team, User $viewer): self
     {
+        $role = $viewer->teamRole($team);
+        $can = fn (TeamPermission $permission): bool => $role?->hasPermission($permission) ?? false;
+
         return new self(
-            can_update_team: $viewer->hasTeamPermission($team, TeamPermission::UpdateTeam),
-            can_delete_team: $viewer->can('delete', $team),
-            can_add_member: $viewer->hasTeamPermission($team, TeamPermission::AddMember),
-            can_update_member: $viewer->hasTeamPermission($team, TeamPermission::UpdateMember),
-            can_remove_member: $viewer->hasTeamPermission($team, TeamPermission::RemoveMember),
-            can_create_invitation: $viewer->hasTeamPermission($team, TeamPermission::CreateInvitation),
-            can_cancel_invitation: $viewer->hasTeamPermission($team, TeamPermission::CancelInvitation),
+            can_update_team: $can(TeamPermission::UpdateTeam),
+            can_delete_team: ! $team->is_personal && $can(TeamPermission::DeleteTeam),
+            can_add_member: $can(TeamPermission::AddMember),
+            can_update_member: $can(TeamPermission::UpdateMember),
+            can_remove_member: $can(TeamPermission::RemoveMember),
+            can_create_invitation: $can(TeamPermission::CreateInvitation),
+            can_cancel_invitation: $can(TeamPermission::CancelInvitation),
         );
     }
 }
