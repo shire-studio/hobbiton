@@ -1,6 +1,8 @@
 <?php
 
 use App\Support\Manifest;
+use Illuminate\Support\Facades\File;
+use Symfony\Component\Finder\SplFileInfo;
 
 it('lists base kits', function () {
     expect(Manifest::load()->baseKits())->toBe(['vue', 'react', 'svelte', 'livewire', 'api', 'blade']);
@@ -55,5 +57,23 @@ it("gives team kits their base kit's repository, node, exclude and replacements"
         foreach (['repository', 'node', 'exclude', 'replacements'] as $key) {
             expect($team[$key] ?? null)->toBe($base[$key] ?? null);
         }
+    }
+});
+
+it("keeps lock files and vet.json out of team smials, because team kits share their base kit's", function () {
+    $teamSmials = array_filter(
+        array_map('basename', File::directories(base_path('smials'))),
+        fn (string $smial): bool => $smial === 'teams' || str_starts_with($smial, 'teams-'),
+    );
+
+    expect($teamSmials)->not->toBeEmpty();
+
+    foreach ($teamSmials as $smial) {
+        $found = array_filter(
+            File::allFiles(base_path("smials/{$smial}"), hidden: true),
+            fn (SplFileInfo $file): bool => in_array($file->getFilename(), ['composer.lock', 'pnpm-lock.yaml', 'vet.json'], true),
+        );
+
+        expect(array_map(fn (SplFileInfo $file): string => $file->getRelativePathname(), $found))->toBe([], "smials/{$smial} holds a lock file or vet.json");
     }
 });

@@ -230,9 +230,12 @@ export function effectiveOverrides(manifest, root = smialsDir) {
 /**
  * Compare the ledger with the smials. Returns the messages for what is missing or stale and the ledger as accepting
  * would leave it: missing entries added, stale ones refreshed, and entries whose files no longer exist dropped.
+ * `ambiguous` holds the messages accepting cannot resolve, for team files that shadow different base smials in
+ * different kits.
  */
 export function reconcileOverrides(manifest, ledger, root = smialsDir) {
     const messages = [];
+    const ambiguous = [];
     const accepted = {};
 
     for (const [key, entry] of Object.entries(ledger)) {
@@ -250,7 +253,10 @@ export function reconcileOverrides(manifest, ledger, root = smialsDir) {
         const relativePath = key.split('/').slice(1).join('/');
 
         if (bases.size > 1) {
-            messages.push(`${key} has an ambiguous base: ${[...bases].join(', ')}`);
+            const message = `${key} has an ambiguous base: ${[...bases].join(', ')}`;
+
+            messages.push(message);
+            ambiguous.push(message);
 
             continue;
         }
@@ -270,7 +276,35 @@ export function reconcileOverrides(manifest, ledger, root = smialsDir) {
         accepted[key] = { base, sha1: current };
     }
 
-    return { messages, accepted };
+    return { messages, ambiguous, accepted };
+}
+
+/**
+ * What `composer overrides` prints and exits with. Checking fails on any problem. Accepting writes the ledger it
+ * returns, but still fails while a base is ambiguous, because no ledger entry can describe that file.
+ */
+export function overridesOutcome(manifest, ledger, accept, root = smialsDir) {
+    const { messages, ambiguous, accepted } = reconcileOverrides(manifest, ledger, root);
+
+    if (!accept) {
+        return {
+            lines: [...messages.map(message => [message, 'yellow']), [`${messages.length} override problem(s)`, messages.length > 0 ? 'red' : 'green']],
+            ledger: null,
+            code: messages.length > 0 ? 1 : 0,
+        };
+    }
+
+    const resolved = messages.length - ambiguous.length;
+
+    return {
+        lines: [
+            ...ambiguous.map(message => [message, 'yellow']),
+            [`Accepted ${resolved} override(s)`, 'green'],
+            ...(ambiguous.length > 0 ? [[`${ambiguous.length} ambiguous override(s) need a teams-<base> smial`, 'red']] : []),
+        ],
+        ledger: accepted,
+        code: ambiguous.length > 0 ? 1 : 0,
+    };
 }
 
 /**

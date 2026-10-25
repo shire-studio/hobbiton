@@ -61,7 +61,7 @@ jobs:
         run: |
           set -o pipefail
           if [ "$VARIANT" = "teams" ]; then
-            cp -R .starter-kit/teams/files/. .
+            cp -Rp .starter-kit/teams/files/. .
             jq -r '.deleted[]' .starter-kit/teams/manifest.json | while IFS= read -r file; do rm -f -- "$file"; done
           fi
           rm -rf .starter-kit

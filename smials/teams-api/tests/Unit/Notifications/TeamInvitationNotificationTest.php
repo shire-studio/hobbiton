@@ -6,6 +6,8 @@ use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\User;
 use App\Notifications\TeamInvitationNotification;
+use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Notifications\SendQueuedNotifications;
 
 it('mails the invitation', function (): void {
     $inviter = User::factory()->create(['name' => 'Jane Doe']);
@@ -30,4 +32,10 @@ it('is delivered by mail only', function (): void {
     $notification = new TeamInvitationNotification(TeamInvitation::factory()->create());
 
     expect($notification->via(new stdClass()))->toBe(['mail']);
+});
+
+it('is dropped from the queue when its invitation no longer exists', function (): void {
+    $job = new SendQueuedNotifications(new AnonymousNotifiable(), new TeamInvitationNotification(TeamInvitation::factory()->create()));
+
+    expect($job->deleteWhenMissingModels)->toBeTrue();
 });

@@ -8,18 +8,16 @@
  * Usage: node scripts/overrides.js [--accept]
  *
  *   --accept  Add missing entries, rewrite every sha1 to the current base file and drop entries whose files no longer exist.
+ *             Exits 1 while a team file has an ambiguous base, which accepting cannot resolve.
  */
 
-import { loadManifest, loadOverrides, log, reconcileOverrides, saveOverrides } from './helpers.js';
+import { loadManifest, loadOverrides, log, overridesOutcome, saveOverrides } from './helpers.js';
 
-const { messages, accepted } = reconcileOverrides(loadManifest(), loadOverrides());
+const { lines, ledger, code } = overridesOutcome(loadManifest(), loadOverrides(), process.argv.slice(2).includes('--accept'));
 
-if (process.argv.slice(2).includes('--accept')) {
-    saveOverrides(accepted);
-    log(`Accepted ${messages.length} override(s)`, 'green');
-    process.exit(0);
+if (ledger !== null) {
+    saveOverrides(ledger);
 }
 
-messages.forEach(message => log(message, 'yellow'));
-log(`${messages.length} override problem(s)`, messages.length > 0 ? 'red' : 'green');
-process.exit(messages.length > 0 ? 1 : 0);
+lines.forEach(([message, color]) => log(message, color));
+process.exit(code);

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { after, test } from 'node:test';
-import { effectiveOverrides, reconcileOverrides } from '../../scripts/helpers.js';
+import { effectiveOverrides, overridesOutcome, reconcileOverrides } from '../../scripts/helpers.js';
 
 const manifest = {
     kits: {
@@ -78,4 +78,52 @@ test('reconcileOverrides drops an entry whose team file is gone', () => {
 
     assert.equal(messages.length, 1);
     assert.deepEqual(accepted, {});
+});
+
+const sharedManifest = {
+    kits: {
+        a: { smials: ['auth'] },
+        'a-teams': { base: 'a', smials: ['auth', 'teams'] },
+        b: { smials: ['auth', 'web'] },
+        'b-teams': { base: 'b', smials: ['auth', 'web', 'teams'] },
+    },
+};
+
+test('reconcileOverrides reports an ambiguous base and leaves it out of the ledger', () => {
+    const root = buildRoot([['auth', 'a.php', 'auth'], ['web', 'a.php', 'web'], ['teams', 'a.php', 'team']]);
+    const { messages, ambiguous, accepted } = reconcileOverrides(sharedManifest, {}, root);
+
+    assert.deepEqual(ambiguous, ['teams/a.php has an ambiguous base: auth, web']);
+    assert.deepEqual(messages, ambiguous);
+    assert.deepEqual(accepted, {});
+});
+
+test('overridesOutcome fails a check with problems and passes a current ledger', () => {
+    const root = buildRoot([['api', 'a.php', 'api'], ['teams-api', 'a.php', 'team']]);
+
+    assert.equal(overridesOutcome(manifest, {}, false, root).code, 1);
+    assert.equal(overridesOutcome(manifest, {}, false, root).ledger, null);
+    assert.equal(overridesOutcome(manifest, { 'teams-api/a.php': { base: 'api', sha1: sha1('api') } }, false, root).code, 0);
+});
+
+test('overridesOutcome accepts missing entries and exits 0', () => {
+    const root = buildRoot([['api', 'a.php', 'api'], ['teams-api', 'a.php', 'team']]);
+    const outcome = overridesOutcome(manifest, {}, true, root);
+
+    assert.equal(outcome.code, 0);
+    assert.deepEqual(outcome.ledger, { 'teams-api/a.php': { base: 'api', sha1: sha1('api') } });
+    assert.deepEqual(outcome.lines, [['Accepted 1 override(s)', 'green']]);
+});
+
+test('overridesOutcome still fails on an ambiguous base when accepting, but writes the other entries', () => {
+    const root = buildRoot([['auth', 'a.php', 'auth'], ['web', 'a.php', 'web'], ['teams', 'a.php', 'team'], ['auth', 'b.php', 'auth'], ['teams', 'b.php', 'team']]);
+    const outcome = overridesOutcome(sharedManifest, {}, true, root);
+
+    assert.equal(outcome.code, 1);
+    assert.deepEqual(outcome.ledger, { 'teams/b.php': { base: 'auth', sha1: sha1('auth') } });
+    assert.deepEqual(outcome.lines, [
+        ['teams/a.php has an ambiguous base: auth, web', 'yellow'],
+        ['Accepted 1 override(s)', 'green'],
+        ['1 ambiguous override(s) need a teams-<base> smial', 'red'],
+    ]);
 });
