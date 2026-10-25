@@ -3,6 +3,10 @@
         "base": "api",
         "sha1": "d771cd58dc8c42adef7b962c1fee728d49927ac6"
     },
+    "teams-api/app/Http/Resources/UserResource.php": {
+        "base": "api",
+        "sha1": "60bb49cc608b5fa3a02de4f6721e1c960b6d37db"
+    },
     "teams-api/app/Models/User.php": {
         "base": "api",
         "sha1": "2e0da95715771bec65f7c292eecba044cb9cc1bf"
@@ -10,6 +14,18 @@
     "teams-api/database/factories/UserFactory.php": {
         "base": "api",
         "sha1": "cc979636c316ecf0cce86eb6defcfc16f51f006c"
+    },
+    "teams-api/routes/api.php": {
+        "base": "api",
+        "sha1": "bb23f6e3ad2b2ce937e8711e31a85886899a490c"
+    },
+    "teams-api/tests/Feature/Auth/RegisterTest.php": {
+        "base": "api",
+        "sha1": "64c8564402a4a1c0c1776f3dc3dea79af29094c2"
+    },
+    "teams-api/tests/Feature/Settings/ProfileTest.php": {
+        "base": "api",
+        "sha1": "c6eead8ea73d0fc35124d8ab88721ab3e215c421"
     },
     "teams-api/tests/Unit/Actions/DeleteUserTest.php": {
         "base": "api",
