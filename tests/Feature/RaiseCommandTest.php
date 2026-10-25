@@ -79,3 +79,12 @@ it('keeps installs and local state when raising again', function () {
 it('rejects unknown kits', function () {
     $this->artisan('raise', ['--kit' => 'angular', '--to' => $this->path])->assertFailed();
 });
+
+it('removes the overlay first when a project is created', function (string $kit) {
+    raise($kit, $this->path);
+
+    $composer = json_decode(File::get("{$this->path}/composer.json"), true);
+
+    expect($composer['scripts']['post-create-project-cmd'][0])
+        ->toBe('@php -r "require \'vendor/autoload.php\'; (new Illuminate\Filesystem\Filesystem)->deleteDirectory(\'.starter-kit\');"');
+})->with(['vue', 'react', 'svelte', 'livewire', 'api']);
