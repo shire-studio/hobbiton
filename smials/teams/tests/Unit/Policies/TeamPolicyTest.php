@@ -112,3 +112,24 @@ it('allows owners and admins to cancel invitations', function (): void {
         expect($policy->cancelInvitation($user, $team))->toBe($allowed);
     }
 });
+
+it('lets owners manage other members', function (): void {
+    [$policy, $owner, $team] = teamWithRole(TeamRole::Owner);
+    $member = User::factory()->withoutPersonalTeam()->create();
+    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+
+    expect($policy->manageMember($owner, $team, $member))->toBeTrue();
+});
+
+it('forbids managing the owner', function (): void {
+    [$policy, $owner, $team] = teamWithRole(TeamRole::Owner);
+
+    expect($policy->manageMember($owner, $team, $owner))->toBeFalse();
+});
+
+it('forbids managing a non member', function (): void {
+    [$policy, $owner, $team] = teamWithRole(TeamRole::Owner);
+    $stranger = User::factory()->withoutPersonalTeam()->create();
+
+    expect($policy->manageMember($owner, $team, $stranger))->toBeFalse();
+});

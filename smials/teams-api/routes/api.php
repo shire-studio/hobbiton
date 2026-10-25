@@ -66,8 +66,10 @@ Route::middleware('auth:sanctum')->group(function (): void {
             ->name('teams.leave');
 
         Route::patch('teams/{team}/members/{user}', [TeamMemberController::class, 'update'])->can('updateMember', 'team')
+            ->can('manageMember', ['team', 'user'])
             ->name('teams.members.update');
         Route::delete('teams/{team}/members/{user}', [TeamMemberController::class, 'destroy'])->can('removeMember', 'team')
+            ->can('manageMember', ['team', 'user'])
             ->name('teams.members.destroy');
 
         Route::post('teams/{team}/invitations', [TeamInvitationController::class, 'store'])->can('inviteMember', 'team')

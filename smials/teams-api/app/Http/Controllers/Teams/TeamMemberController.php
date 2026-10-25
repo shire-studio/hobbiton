@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Teams;
 
 use App\Actions\RemoveTeamMember;
 use App\Actions\UpdateTeamMember;
-use App\Enums\TeamRole;
 use App\Http\Requests\UpdateTeamMemberRequest;
 use App\Http\Resources\TeamMemberResource;
 use App\Models\Team;
@@ -17,8 +16,6 @@ final readonly class TeamMemberController
 {
     public function update(Team $team, User $user, UpdateTeamMemberRequest $request, UpdateTeamMember $updateTeamMember): TeamMemberResource
     {
-        $this->ensureManageable($team, $user);
-
         /** @var array{role: string} $attributes */
         $attributes = $request->validated();
 
@@ -29,17 +26,8 @@ final readonly class TeamMemberController
 
     public function destroy(Team $team, User $user, RemoveTeamMember $removeTeamMember): Response
     {
-        $this->ensureManageable($team, $user);
-
         $removeTeamMember->handle($team, $user);
 
         return response()->noContent();
-    }
-
-    private function ensureManageable(Team $team, User $member): void
-    {
-        $role = $member->teamRole($team);
-
-        abort_if(! $role instanceof TeamRole || $role === TeamRole::Owner, 404);
     }
 }

@@ -47,6 +47,11 @@ final readonly class TeamPolicy
         return $user->hasTeamPermission($team, TeamPermission::RemoveMember);
     }
 
+    public function manageMember(User $user, Team $team, User $member): bool
+    {
+        return $member->belongsToTeam($team) && ! $member->ownsTeam($team);
+    }
+
     public function inviteMember(User $user, Team $team): bool
     {
         return $user->hasTeamPermission($team, TeamPermission::CreateInvitation);

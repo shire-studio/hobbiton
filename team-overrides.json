@@ -47,12 +47,32 @@
         "base": "auth",
         "sha1": "79d0b35e02f6979b9b8b97a27469a1a81f2e6fed"
     },
+    "teams/app/Actions/DeleteUser.php": {
+        "base": "auth",
+        "sha1": "ff5a5d4d06194cf148a2db206ebea8e53ba90841"
+    },
     "teams/app/Http/Requests/DeleteUserRequest.php": {
         "base": "auth",
         "sha1": "efba552c442a8c6bd7b702f40979edaa07c2e792"
     },
+    "teams/app/Models/User.php": {
+        "base": "auth",
+        "sha1": "d1e77678c87530ea797cafdf6749ff5e92da70d3"
+    },
+    "teams/database/factories/UserFactory.php": {
+        "base": "auth",
+        "sha1": "1741af2ff8c202d51118ffeb356c051330136026"
+    },
     "teams/tests/Unit/Actions/CreateUserTest.php": {
         "base": "auth",
         "sha1": "e71aba3c941fd6585852b874323ede86581ce3b0"
+    },
+    "teams/tests/Unit/Actions/DeleteUserTest.php": {
+        "base": "auth",
+        "sha1": "1d15868e1d2feccac5a12e2af9c7b64e0a43f248"
+    },
+    "teams/tests/Unit/Models/UserTest.php": {
+        "base": "auth",
+        "sha1": "3434a2bbe649c42c22f3ae68360a937c17881ebb"
     }
 }

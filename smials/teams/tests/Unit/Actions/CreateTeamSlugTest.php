@@ -35,3 +35,11 @@ it('ignores the given team', function (): void {
 
     expect(resolve(CreateTeamSlug::class)->handle('Acme', $team))->toBe('acme');
 });
+
+it('falls back when the name has no slug characters', function (): void {
+    expect(resolve(CreateTeamSlug::class)->handle('!!!'))->toBe('team');
+
+    Team::factory()->create(['slug' => 'team']);
+
+    expect(resolve(CreateTeamSlug::class)->handle('!!!'))->toBe('team-1');
+});

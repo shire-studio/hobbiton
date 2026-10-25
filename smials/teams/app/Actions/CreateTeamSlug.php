@@ -14,6 +14,10 @@ final readonly class CreateTeamSlug
     {
         $slug = Str::slug($name);
 
+        if ($slug === '') {
+            $slug = 'team';
+        }
+
         $query = Team::withTrashed()
             ->where(function (Builder $query) use ($slug): void {
                 $query->where('slug', $slug)
