@@ -9,15 +9,20 @@
             <flux:subheading>{{ __('Create a new team to collaborate with others.') }}</flux:subheading>
         </div>
 
-        <flux:input
-            id="create-team-name"
-            name="name"
-            :label="__('Team name')"
-            :value="old('name')"
-            :placeholder="__('My team')"
-            required
-            data-test="create-team-name"
-        />
+        <flux:field>
+            <flux:label>{{ __('Team name') }}</flux:label>
+            <flux:input
+                id="create-team-name"
+                name="name"
+                :value="old('form') === 'create-team' ? old('name') : ''"
+                :placeholder="__('My team')"
+                required
+                data-test="create-team-name"
+            />
+            @if (old('form') === 'create-team')
+                <flux:error name="name" />
+            @endif
+        </flux:field>
 
         <div class="flex justify-end space-x-2 rtl:space-x-reverse">
             <flux:modal.close>

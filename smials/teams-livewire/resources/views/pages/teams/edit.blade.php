@@ -17,12 +17,7 @@
         >
             <div class="mt-6 flex flex-col space-y-10">
                 @if ($permissions['can_update_team'])
-                    <form
-                        method="POST"
-                        action="{{ route('teams.update', ['team' => $team->slug]) }}"
-                        class="space-y-6"
-                        wire:key="team-{{ $team->id }}"
-                    >
+                    <form method="POST" action="{{ route('teams.update', ['team' => $team->slug]) }}" class="space-y-6">
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="form" value="rename-team" />

@@ -89,30 +89,93 @@ it('hides the delete controls on a personal team', function (): void {
         ->assertDontSeeHtml('data-test="delete-team"');
 });
 
-it('reopens only the modal whose form failed', function (string $form, string $marker, array $body): void {
+function ownedTeam(): Team
+{
     $user = User::factory()->create();
     $team = Team::factory()->create(['name' => 'Acme']);
     $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
-    $this->actingAs($user)
-        ->from(route('teams.edit', $team))
+    test()->actingAs($user);
+
+    return $team;
+}
+
+it('reopens only the delete modal after a failed delete', function (): void {
+    $team = ownedTeam();
+
+    $this->fromRoute('teams.edit', $team)
         ->followingRedirects()
-        ->call($form === 'delete-team' ? 'DELETE' : 'POST', route($form === 'delete-team' ? 'teams.destroy' : 'teams.invitations.store', $team), $body + ['form' => $form])
-        ->assertSeeHtml($marker);
-})->with([
-    'delete' => ['delete-team', 'data-test="delete-team-reopen"', ['name' => 'Other']],
-    'invite' => ['invite-member', 'data-test="invite-member-reopen"', ['email' => 'bad', 'role' => 'member']],
-]);
+        ->delete(route('teams.destroy', $team), ['name' => 'Other', 'form' => 'delete-team'])
+        ->assertSeeHtml('data-test="delete-team-reopen"')
+        ->assertSee('The team name does not match.')
+        ->assertDontSeeHtml('data-test="invite-member-reopen"')
+        ->assertDontSeeHtml('data-test="create-team-reopen"');
+});
 
-it('shows rename errors only under the rename form', function (): void {
-    $user = User::factory()->create();
-    $team = Team::factory()->create(['name' => 'Acme']);
-    $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
+it('reopens only the invite modal after a failed invitation', function (): void {
+    $team = ownedTeam();
 
-    $this->actingAs($user)
-        ->from(route('teams.edit', $team))
+    $this->fromRoute('teams.edit', $team)
+        ->followingRedirects()
+        ->post(route('teams.invitations.store', $team), ['email' => 'bad', 'role' => 'member', 'form' => 'invite-member'])
+        ->assertSeeHtml('data-test="invite-member-reopen"')
+        ->assertSee('valid email address')
+        ->assertDontSeeHtml('data-test="delete-team-reopen"')
+        ->assertDontSeeHtml('data-test="create-team-reopen"');
+});
+
+it('shows the invitation role error inside the invite modal', function (): void {
+    $team = ownedTeam();
+
+    $this->fromRoute('teams.edit', $team)
+        ->followingRedirects()
+        ->post(route('teams.invitations.store', $team), ['email' => 'new@example.com', 'role' => 'owner', 'form' => 'invite-member'])
+        ->assertSeeHtml('data-test="invite-member-reopen"')
+        ->assertSee('The selected role is invalid.');
+});
+
+it('shows the member role error under the members list', function (): void {
+    $team = ownedTeam();
+    $member = User::factory()->create();
+    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+
+    $this->fromRoute('teams.edit', $team)
+        ->followingRedirects()
+        ->patch(route('teams.members.update', [$team, $member]), ['role' => 'owner', 'form' => 'member-role'])
+        ->assertSee('The selected role is invalid.')
+        ->assertDontSeeHtml('data-test="invite-member-reopen"');
+});
+
+it('keeps rename errors out of the other forms', function (): void {
+    $team = ownedTeam();
+
+    $response = $this->fromRoute('teams.edit', $team)
         ->followingRedirects()
         ->patch(route('teams.update', $team), ['name' => '', 'form' => 'rename-team'])
         ->assertSee('The name field is required.')
-        ->assertDontSeeHtml('data-test="delete-team-reopen"');
+        ->assertDontSeeHtml('data-test="delete-team-reopen"')
+        ->assertDontSeeHtml('data-test="create-team-reopen"');
+
+    expect(mb_substr_count($response->getContent(), 'The name field is required.'))->toBe(1);
+});
+
+it('keeps delete errors out of the rename and create team forms', function (): void {
+    $team = ownedTeam();
+
+    $response = $this->fromRoute('teams.edit', $team)
+        ->followingRedirects()
+        ->delete(route('teams.destroy', $team), ['name' => 'Other', 'form' => 'delete-team']);
+
+    expect(mb_substr_count($response->getContent(), 'The team name does not match.'))->toBe(1)
+        ->and($response->getContent())->not->toContain('value="Other"');
+});
+
+it('reopens the create team modal only for its own errors', function (): void {
+    ownedTeam();
+
+    $this->fromRoute('teams.index')
+        ->followingRedirects()
+        ->post(route('teams.store'), ['name' => '', 'form' => 'create-team'])
+        ->assertSeeHtml('data-test="create-team-reopen"')
+        ->assertSee('The name field is required.');
 });
