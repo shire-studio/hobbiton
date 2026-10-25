@@ -35,7 +35,12 @@ final readonly class EnsureTeamMembership
 
         if ($request->route('current_team') instanceof Team && ! $user->isCurrentTeam($team)) {
             $this->switchTeam->handle($user, $team);
-            URL::defaults(['current_team' => $team->slug, 'team' => $team->slug]);
+            URL::defaults([
+                'current_team' => $team->slug,
+                'current_team:slug' => $team->slug,
+                'team' => $team->slug,
+                'team:slug' => $team->slug,
+            ]);
         }
 
         return $next($request);

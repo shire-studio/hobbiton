@@ -21,7 +21,12 @@ final readonly class SetTeamUrlDefaults
         $user = $request->user();
 
         if ($user instanceof User && ($team = $user->currentTeamOrPersonal()) instanceof Team) {
-            URL::defaults(['current_team' => $team->slug, 'team' => $team->slug]);
+            URL::defaults([
+                'current_team' => $team->slug,
+                'current_team:slug' => $team->slug,
+                'team' => $team->slug,
+                'team:slug' => $team->slug,
+            ]);
         }
 
         return $next($request);

@@ -25,20 +25,33 @@ it('sets url defaults to the current team', function (): void {
 });
 
 it('sets no defaults for guests', function (): void {
-    URL::defaults(['current_team' => null, 'team' => null]);
+    URL::defaults(['current_team' => null, 'current_team:slug' => null, 'team' => null, 'team:slug' => null]);
 
     $this->get('open')->assertOk();
 
-    expect(URL::getDefaultParameters())->toBe(['current_team' => null, 'team' => null]);
+    expect(URL::getDefaultParameters())->toBe(['current_team' => null, 'current_team:slug' => null, 'team' => null, 'team:slug' => null]);
 });
 
 it('sets no defaults for users without a team', function (): void {
-    URL::defaults(['current_team' => null, 'team' => null]);
+    URL::defaults(['current_team' => null, 'current_team:slug' => null, 'team' => null, 'team:slug' => null]);
     $user = User::factory()->create();
     $user->teams()->detach();
     $user->forceFill(['current_team_id' => null])->save();
 
     $this->actingAs($user)->get('open')->assertOk();
 
-    expect(URL::getDefaultParameters())->toBe(['current_team' => null, 'team' => null]);
+    expect(URL::getDefaultParameters())->toBe(['current_team' => null, 'current_team:slug' => null, 'team' => null, 'team:slug' => null]);
+});
+
+it('resolves slug bound routes without parameters', function (): void {
+    Route::middleware(['web', SetTeamUrlDefaults::class])->get('{current_team:slug}/bound', fn (): string => 'ok')->name('bound.current');
+    Route::middleware(['web', SetTeamUrlDefaults::class])->get('bound/{team:slug}', fn (): string => 'ok')->name('bound.team');
+    Route::getRoutes()->refreshNameLookups();
+    $user = User::factory()->create();
+    $team = $user->currentTeamOrPersonal();
+
+    $this->actingAs($user)->get('open')->assertOk();
+
+    expect(route('bound.current'))->toBe(url("/{$team->slug}/bound"))
+        ->and(route('bound.team'))->toBe(url("/bound/{$team->slug}"));
 });

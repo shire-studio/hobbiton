@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -107,4 +108,19 @@ it('refreshes the url defaults after switching teams', function (): void {
     runMembership($user, 'current_team', $team);
 
     expect(URL::getDefaultParameters())->toMatchArray(['current_team' => $team->slug, 'team' => $team->slug]);
+});
+
+it('resolves slug bound routes without parameters after switching teams', function (): void {
+    $router = resolve(Router::class);
+    $router->get('{current_team:slug}/switched', fn (): string => 'ok')->name('switched.current');
+    $router->get('switched/{team:slug}', fn (): string => 'ok')->name('switched.team');
+    $router->getRoutes()->refreshNameLookups();
+    $user = User::factory()->create();
+    $team = teamWithMember($user, TeamRole::Member);
+    URL::defaults(['current_team' => 'old', 'current_team:slug' => 'old', 'team' => 'old', 'team:slug' => 'old']);
+
+    runMembership($user, 'current_team', $team);
+
+    expect(route('switched.current'))->toBe(url("/{$team->slug}/switched"))
+        ->and(route('switched.team'))->toBe(url("/switched/{$team->slug}"));
 });
