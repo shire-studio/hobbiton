@@ -130,7 +130,6 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
             <div
               v-for="member in members"
               :key="member.id"
-              data-test="member-row"
               class="flex items-center justify-between rounded-lg border p-4"
             >
               <div class="flex items-center gap-4">
@@ -156,11 +155,7 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
                   "
                 >
                   <UiDropdownMenuTrigger as-child>
-                    <UiButton
-                      data-test="member-role"
-                      variant="outline"
-                      size="sm"
-                    >
+                    <UiButton variant="outline" size="sm">
                       {{ member.role_label }}
                       <ChevronDown class="ml-2 h-4 w-4 opacity-50" />
                     </UiButton>
@@ -175,7 +170,7 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
                     </UiDropdownMenuItem>
                   </UiDropdownMenuContent>
                 </UiDropdownMenu>
-                <UiBadge v-else variant="secondary" data-test="member-role">
+                <UiBadge v-else variant="secondary">
                   {{ member.role_label }}
                 </UiBadge>
 
@@ -187,7 +182,6 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
                   <UiTooltip>
                     <UiTooltipTrigger as-child>
                       <UiButton
-                        data-test="remove-member"
                         variant="ghost"
                         size="sm"
                         @click="confirmRemoveMember(member)"
@@ -216,7 +210,6 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
             <div
               v-for="invitation in invitations"
               :key="invitation.code"
-              data-test="invitation-row"
               class="flex items-center justify-between rounded-lg border p-4"
             >
               <div class="flex items-center gap-4">

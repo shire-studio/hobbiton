@@ -108,7 +108,7 @@ defineProps<{
           "
           class="underline underline-offset-4"
           :tabindex="6"
-          data-test="team-invitation-login-link"
+          data-test="login-link"
           >Log in</TextLink
         >
       </div>

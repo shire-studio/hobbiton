@@ -58,11 +58,7 @@ function handleOpenChange(value: boolean) {
           <div class="grid gap-2">
             <UiLabel for="invite-role">Role</UiLabel>
             <UiSelect v-model="inviteRole" name="role">
-              <UiSelectTrigger
-                id="invite-role"
-                class="w-full"
-                data-test="invite-role"
-              >
+              <UiSelectTrigger id="invite-role" class="w-full">
                 <UiSelectValue placeholder="Select a role" />
               </UiSelectTrigger>
               <UiSelectContent>

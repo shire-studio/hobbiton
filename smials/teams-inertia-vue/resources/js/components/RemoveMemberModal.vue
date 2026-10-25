@@ -44,7 +44,6 @@ const removeMember = () => {
         </UiDialogClose>
 
         <UiButton
-          data-test="remove-member-confirm"
           variant="destructive"
           :disabled="processing"
           @click="removeMember"

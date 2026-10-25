@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { Menu, Search } from '@lucide/vue'
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu'
-import { extraNavItems, mainNavItems } from '@/lib/navigation'
+import { dashboardUrl, extraNavItems, mainNavItems } from '@/lib/navigation'
 import { toUrl } from '@/lib/utils'
-import { dashboard } from '@/routes/team'
 import type { BreadcrumbItem } from '@/types'
 
 type Props = {
@@ -17,9 +16,6 @@ const props = withDefaults(defineProps<Props>(), {
 const page = usePage()
 const user = computed(() => page.props.auth.user!)
 const teamSlug = computed(() => page.props.currentTeam?.slug)
-const dashboardUrl = computed(() =>
-  teamSlug.value ? dashboard(teamSlug.value).url : '/',
-)
 const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl()
 const resolveInitials = getInitials
 
@@ -87,7 +83,7 @@ const activeItemStyles =
           </UiSheet>
         </div>
 
-        <Link :href="dashboardUrl" class="flex items-center gap-x-2">
+        <Link :href="dashboardUrl(teamSlug)" class="flex items-center gap-x-2">
           <AppLogo />
         </Link>
 

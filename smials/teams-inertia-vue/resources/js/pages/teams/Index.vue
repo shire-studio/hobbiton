@@ -52,7 +52,6 @@ const openLeaveTeamDialog = (team: App.Data.TeamData) => {
           <div
             v-for="team in teams"
             :key="team.id"
-            data-test="team-row"
             class="flex items-center justify-between gap-4 rounded-lg border p-4"
           >
             <div class="flex items-center gap-4">
@@ -74,7 +73,6 @@ const openLeaveTeamDialog = (team: App.Data.TeamData) => {
                 <UiTooltip v-if="canLeaveTeam(team)">
                   <UiTooltipTrigger as-child>
                     <UiButton
-                      data-test="leave-team"
                       variant="ghost"
                       size="sm"
                       @click="openLeaveTeamDialog(team)"
@@ -89,12 +87,7 @@ const openLeaveTeamDialog = (team: App.Data.TeamData) => {
 
                 <UiTooltip>
                   <UiTooltipTrigger as-child>
-                    <UiButton
-                      data-test="team-edit-link"
-                      variant="ghost"
-                      size="sm"
-                      as-child
-                    >
+                    <UiButton variant="ghost" size="sm" as-child>
                       <Link :href="edit(team.slug)">
                         <Eye v-if="team.role === 'member'" class="h-4 w-4" />
                         <Pencil v-else class="h-4 w-4" />
@@ -120,7 +113,11 @@ const openLeaveTeamDialog = (team: App.Data.TeamData) => {
         </div>
       </div>
 
-      <LeaveTeamModal v-model:open="leaveTeamDialogOpen" :team="teamLeaving" />
+      <LeaveTeamModal
+        :team="teamLeaving"
+        :open="leaveTeamDialogOpen"
+        @update:open="leaveTeamDialogOpen = $event"
+      />
     </SettingsLayout>
   </AppLayout>
 </template>

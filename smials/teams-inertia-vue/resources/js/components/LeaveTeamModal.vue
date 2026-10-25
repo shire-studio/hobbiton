@@ -43,7 +43,6 @@ const leaveTeam = () => {
         </UiDialogClose>
 
         <UiButton
-          data-test="leave-team-confirm"
           variant="destructive"
           :disabled="processing"
           @click="leaveTeam"

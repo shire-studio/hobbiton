@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { dashboard } from '@/routes/team'
+import { dashboardUrl } from '@/lib/navigation'
 import type { BreadcrumbItem } from '@/types'
 
 defineProps<{
@@ -10,7 +10,7 @@ const page = usePage()
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
   {
     title: 'Dashboard',
-    href: page.props.currentTeam ? dashboard(page.props.currentTeam.slug) : '/',
+    href: dashboardUrl(page.props.currentTeam?.slug),
   },
 ])
 </script>

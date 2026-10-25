@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import { extraNavItems, mainNavItems } from '@/lib/navigation'
-import { dashboard } from '@/routes/team'
+import { dashboardUrl, extraNavItems, mainNavItems } from '@/lib/navigation'
 
 const page = usePage()
 const teamSlug = computed(() => page.props.currentTeam?.slug)
-const dashboardUrl = computed(() =>
-  teamSlug.value ? dashboard(teamSlug.value).url : '/',
-)
 </script>
 
 <template>
@@ -15,7 +11,7 @@ const dashboardUrl = computed(() =>
       <UiSidebarMenu>
         <UiSidebarMenuItem>
           <UiSidebarMenuButton size="lg" as-child>
-            <Link :href="dashboardUrl">
+            <Link :href="dashboardUrl(teamSlug)">
               <AppLogo />
             </Link>
           </UiSidebarMenuButton>

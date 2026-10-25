@@ -25,7 +25,7 @@ const declineInvitation = (invitation: App.Data.PendingTeamInvitationData) => {
 
 <template>
   <UiDialog v-model:open="open">
-    <UiDialogContent data-test="pending-invitations-modal">
+    <UiDialogContent>
       <UiDialogHeader>
         <UiDialogTitle>Pending team invitations</UiDialogTitle>
         <UiDialogDescription>
@@ -37,7 +37,6 @@ const declineInvitation = (invitation: App.Data.PendingTeamInvitationData) => {
         <div
           v-for="invitation in invitations"
           :key="invitation.code"
-          data-test="pending-invitation"
           class="rounded-lg border p-4"
         >
           <div class="space-y-1">
@@ -50,7 +49,6 @@ const declineInvitation = (invitation: App.Data.PendingTeamInvitationData) => {
           <div class="mt-4 flex justify-end gap-2">
             <UiButton
               variant="secondary"
-              data-test="decline-invitation"
               :disabled="processingCode === invitation.code"
               @click="declineInvitation(invitation)"
             >

@@ -118,11 +118,7 @@ onUnmounted(() => {
       </UiDropdownMenuItem>
       <UiDropdownMenuSeparator />
       <CreateTeamModal>
-        <UiDropdownMenuItem
-          data-test="team-switcher-new-team"
-          :class="teamItemClass"
-          @select.prevent
-        >
+        <UiDropdownMenuItem :class="teamItemClass" @select.prevent>
           <Plus :class="plusIconClass" />
           <span class="text-muted-foreground">New team</span>
         </UiDropdownMenuItem>
