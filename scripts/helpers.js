@@ -77,24 +77,38 @@ export function isTeamSmial(smial) {
 }
 
 /**
- * The team smial that overrides a base smial: teams-<base> when the kit lists it, otherwise teams.
+ * The team kits in the manifest.
  */
-export function teamSmialFor(baseSmial, smials) {
-    return smials.includes(`teams-${baseSmial}`) ? `teams-${baseSmial}` : 'teams';
+export function teamKitsIn(manifest) {
+    return Object.values(manifest.kits).filter(kit => kit.base);
+}
+
+/**
+ * The team smial that overrides a base smial: teams-<base> when the kit lists it, otherwise teams when every team kit
+ * raises the base smial. Returns null when only some team kits raise it, because an override in teams would leak into
+ * the team kits that do not.
+ */
+export function teamSmialFor(baseSmial, smials, teamKits) {
+    if (smials.includes(`teams-${baseSmial}`)) {
+        return `teams-${baseSmial}`;
+    }
+
+    return teamKits.every(teamKit => teamKit.smials.includes(baseSmial)) ? 'teams' : null;
 }
 
 /**
  * Where a tended file lands. A team kit never edits a base smial: a file a base smial owns is overridden in the
- * team smial instead, and `overrides` names the base smial that was shadowed.
+ * team smial instead, and `overrides` names the base smial that was shadowed. `smial` is null when no team smial
+ * can take the override (see teamSmialFor).
  */
-export function tendTarget(relativePath, kit, root = smialsDir) {
+export function tendTarget(relativePath, kit, root = smialsDir, teamKits = teamKitsIn(loadManifest())) {
     const owner = owningSmial(relativePath, kit.smials, root);
 
     if (!kit.base || isTeamSmial(owner)) {
         return { smial: owner, overrides: null };
     }
 
-    return { smial: teamSmialFor(owner, kit.smials), overrides: owner };
+    return { smial: teamSmialFor(owner, kit.smials, teamKits), overrides: owner };
 }
 
 /**
@@ -162,13 +176,14 @@ export function restoreReplacements(content, smialFile, replacements) {
 /**
  * What tending an edited kit file would do. The edit is compared with the file the kit currently raises (the
  * owning smial's copy), so a base owned file the kit left alone is not overridden. A first override has no team copy
- * yet, so the shadowed base file supplies the {{placeholders}} to restore.
+ * yet, so the shadowed base file supplies the {{placeholders}} to restore. `smial` and `destination` are null when no
+ * team smial can take the override.
  */
-export function tendChange(relativePath, edited, kit, { restore = false, root = smialsDir } = {}) {
-    const { smial, overrides } = tendTarget(relativePath, kit, root);
+export function tendChange(relativePath, edited, kit, { restore = false, root = smialsDir, teamKits = teamKitsIn(loadManifest()) } = {}) {
+    const { smial, overrides } = tendTarget(relativePath, kit, root, teamKits);
     const current = path.join(root, owningSmial(relativePath, kit.smials, root), relativePath);
-    const destination = path.join(root, smial, relativePath);
-    const template = fs.existsSync(destination) ? destination : current;
+    const destination = smial === null ? null : path.join(root, smial, relativePath);
+    const template = destination !== null && fs.existsSync(destination) ? destination : current;
     const source = restore ? Buffer.from(restoreReplacements(edited.toString('utf-8'), template, kit.replacements)) : edited;
     const changed = !fs.existsSync(current) || !fs.readFileSync(current).equals(source);
 

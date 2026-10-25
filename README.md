@@ -94,7 +94,7 @@ Team kits share their base kit's lock files and `vet.json`, because teams add no
 
 ### Tending a Team Kit
 
-Tend writes a team kit's changes only into team smials, so team code never reaches the base kits by accident. A change to a file that only a base smial owns is copied into the team smial as an override, and tend warns with the base file's name. To change the base kits, tend the base kit instead.
+Tend writes a team kit's changes only into team smials, so team code never reaches the base kits by accident. A change to a file that only a base smial owns is copied into the team smial as an override, and tend warns with the base file's name. The override goes to `teams-<base>` when the kit has that smial, otherwise to `teams`, but only when every team kit raises the base smial. If only some team kits raise it, tend refuses the change and asks you to create `smials/teams-<base>` first, so the override cannot leak into team kits that do not raise the base smial. To change the base kits, tend the base kit instead.
 
 Every override of a base file is recorded in `team-overrides.json`, with a hash of the base file it replaced. After you change a base file that a team smial overrides, run `composer overrides`. It lists overrides whose base file moved on, so you can bring the team copy up to date, and then `composer overrides -- --accept` refreshes the ledger.
 

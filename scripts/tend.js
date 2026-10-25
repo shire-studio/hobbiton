@@ -17,7 +17,7 @@ import chokidar from 'chokidar';
 import { execFileSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { deleteTarget, loadManifest, log, normalizePath, raisedDir, recordOverride, rootDir, run, smialsDir, tendChange, tendTarget } from './helpers.js';
+import { deleteTarget, loadManifest, log, normalizePath, raisedDir, recordOverride, rootDir, run, smialsDir, teamKitsIn, tendChange, tendTarget } from './helpers.js';
 
 const args = process.argv.slice(2);
 const option = name => args.find(arg => arg.startsWith(`--${name}=`))?.split('=')[1];
@@ -32,6 +32,7 @@ if (!kitName) {
 const kit = manifest.kits[kitName];
 const kitDir = option('path') ? path.resolve(option('path')) : path.join(raisedDir, kitName);
 const excluded = new Set(kit.exclude ?? []);
+const teamKits = teamKitsIn(manifest);
 const checking = args.includes('--once') && args.includes('--check');
 
 if (!fs.existsSync(path.join(kitDir, 'composer.json'))) {
@@ -43,7 +44,7 @@ if (!fs.existsSync(path.join(kitDir, 'composer.json'))) {
  * Ask git which files the kit's own .gitignore files ignore. Every raised kit is its own repository.
  */
 function isIgnored(relativePath) {
-    if (/^(\.git|vendor|node_modules)(\/|$)/.test(relativePath) || relativePath === '.env') {
+    if (/^(\.git|\.starter-kit|vendor|node_modules)(\/|$)/.test(relativePath) || relativePath === '.env') {
         return true;
     }
 
@@ -81,11 +82,13 @@ function syncFile(absolutePath) {
     }
 
     const restore = manifest.replacementPaths.includes(relativePath);
-    const { smial, overrides, destination, source, changed } = tendChange(relativePath, fs.readFileSync(absolutePath), kit, { restore });
+    const { smial, overrides, destination, source, changed } = tendChange(relativePath, fs.readFileSync(absolutePath), kit, { restore, teamKits });
 
     if (!changed) {
         return false;
     }
+
+    const refusal = `${relativePath} belongs to smials/${overrides}, which not every team kit raises. Create smials/teams-${overrides} and add it to the team kits that raise ${overrides}.`;
 
     if (checking) {
         // A file that differs from smials/ but not from the kit's last commit is only behind smials/, not edited.
@@ -93,9 +96,15 @@ function syncFile(absolutePath) {
             return false;
         }
 
-        log(`Untended ${relativePath} -> smials/${smial}`, 'yellow');
+        log(smial === null ? refusal : `Untended ${relativePath} -> smials/${smial}`, 'yellow');
 
         return true;
+    }
+
+    if (smial === null) {
+        log(refusal, 'yellow');
+
+        return false;
     }
 
     fs.mkdirSync(path.dirname(destination), { recursive: true });
@@ -121,7 +130,7 @@ function deleteFile(absolutePath) {
     const smial = deleteTarget(relativePath, kit);
 
     if (smial === null) {
-        const owner = tendTarget(relativePath, kit).overrides;
+        const owner = tendTarget(relativePath, kit, smialsDir, teamKits).overrides;
 
         log(`${relativePath} belongs to smials/${owner}. Add it to exclude in hobbiton.json to drop it from ${kit.label}.`, 'yellow');
 
@@ -138,7 +147,7 @@ function deleteFile(absolutePath) {
 
 function walk(dir, files = []) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        if (['node_modules', 'vendor', '.git'].includes(entry.name)) {
+        if (['node_modules', 'vendor', '.git', '.starter-kit'].includes(entry.name)) {
             continue;
         }
 
@@ -167,7 +176,7 @@ if (args.includes('--once')) {
 chokidar
     .watch(kitDir, {
         ignoreInitial: true,
-        ignored: file => /\/(node_modules|vendor|\.git)(\/|$)/.test(file),
+        ignored: file => /\/(node_modules|vendor|\.git|\.starter-kit)(\/|$)/.test(file),
         awaitWriteFinish: { stabilityThreshold: 100 },
     })
     .on('add', syncFile)
