@@ -25,7 +25,8 @@
         <flux:field>
             <flux:label> {{ __('Type') }} <strong>"{{ $team->name }}"</strong> {{ __('to confirm') }} </flux:label>
             <flux:input
-                name="name"
+                input:name="name"
+                :invalid="old('form') === 'delete-team' && $errors->has('name')"
                 x-model="confirmation"
                 :placeholder="__('Enter team name')"
                 autocomplete="off"

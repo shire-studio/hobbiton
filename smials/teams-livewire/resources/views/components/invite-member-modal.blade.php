@@ -32,7 +32,11 @@
 
         <flux:field>
             <flux:label>{{ __('Role') }}</flux:label>
-            <flux:select name="role" id="invite-role">
+            <flux:select
+                name="role"
+                id="invite-role"
+                :invalid="old('form') === 'invite-member' && $errors->has('role')"
+            >
                 @foreach ($availableRoles as $role)
                     <flux:select.option
                         :value="$role['value']"

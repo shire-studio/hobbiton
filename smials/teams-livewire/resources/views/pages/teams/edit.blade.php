@@ -5,6 +5,11 @@
     $form = old('form');
 @endphp
 
+{{--
+    Several forms on this page (and the create team modal) post a `name` or `role` field, so each form posts a hidden
+    `form` marker. A form shows its errors, and its modal reopens, only when `old('form')` matches its marker. Flux would
+    mark every input with an errored name invalid, so these inputs pass `input:name` and an `:invalid` scoped to the marker.
+--}}
 <x-layouts::app :title="$pageTitle">
     <section class="w-full">
         @include('partials.settings-heading')
@@ -26,7 +31,8 @@
                             <flux:label>{{ __('Team name') }}</flux:label>
                             <flux:input
                                 id="name"
-                                name="name"
+                                input:name="name"
+                                :invalid="$form === 'rename-team' && $errors->has('name')"
                                 :value="$form === 'rename-team' ? old('name') : $team->name"
                                 required
                                 data-test="team-name"

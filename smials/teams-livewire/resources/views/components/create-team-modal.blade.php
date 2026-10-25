@@ -13,7 +13,8 @@
             <flux:label>{{ __('Team name') }}</flux:label>
             <flux:input
                 id="create-team-name"
-                name="name"
+                input:name="name"
+                :invalid="old('form') === 'create-team' && $errors->has('name')"
                 :value="old('form') === 'create-team' ? old('name') : ''"
                 :placeholder="__('My team')"
                 required

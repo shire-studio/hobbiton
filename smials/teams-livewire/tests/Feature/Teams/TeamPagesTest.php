@@ -189,3 +189,59 @@ it('compares the delete confirmation with the team name as a javascript string',
     expect($content)->toContain('x-bind:disabled="confirmation !== \'Bob\u0027s \u0022Team\u0022\'"')
         ->and($content)->not->toContain('@js(');
 });
+
+it('marks only the rename input invalid after a failed rename', function (): void {
+    $team = ownedTeam();
+
+    $content = $this->fromRoute('teams.edit', $team)
+        ->followingRedirects()
+        ->patch(route('teams.update', $team), ['name' => '', 'form' => 'rename-team'])
+        ->getContent();
+
+    preg_match_all('/<(?:input|select)\b[^>]*aria-invalid="true"[^>]*>/', $content, $invalid);
+
+    expect($invalid[0])->toHaveCount(1)
+        ->and($invalid[0][0])->toContain('data-test="team-name"');
+});
+
+it('marks only the delete input invalid after a failed delete', function (): void {
+    $team = ownedTeam();
+
+    $content = $this->fromRoute('teams.edit', $team)
+        ->followingRedirects()
+        ->delete(route('teams.destroy', $team), ['name' => 'Other', 'form' => 'delete-team'])
+        ->getContent();
+
+    preg_match_all('/<(?:input|select)\b[^>]*aria-invalid="true"[^>]*>/', $content, $invalid);
+
+    expect($invalid[0])->toHaveCount(1)
+        ->and($invalid[0][0])->toContain('data-test="delete-team-name"');
+});
+
+it('marks only the create team input invalid after a failed create', function (): void {
+    $team = ownedTeam();
+
+    $content = $this->fromRoute('teams.edit', $team)
+        ->followingRedirects()
+        ->post(route('teams.store'), ['name' => '', 'form' => 'create-team'])
+        ->getContent();
+
+    preg_match_all('/<(?:input|select)\b[^>]*aria-invalid="true"[^>]*>/', $content, $invalid);
+
+    expect($invalid[0])->toHaveCount(1)
+        ->and($invalid[0][0])->toContain('data-test="create-team-name"');
+});
+
+it('keeps a member role error off the invite role select', function (): void {
+    $team = ownedTeam();
+    $member = User::factory()->create();
+    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+
+    $content = $this->fromRoute('teams.edit', $team)
+        ->followingRedirects()
+        ->patch(route('teams.members.update', [$team, $member]), ['role' => 'owner', 'form' => 'member-role'])
+        ->getContent();
+
+    expect($content)->toContain('The selected role is invalid.')
+        ->and($content)->not->toContain('aria-invalid="true"');
+});
