@@ -11,7 +11,7 @@ use InvalidArgumentException;
 class Manifest
 {
     /**
-     * @param  array<string, array{label: string, repository: string, node: bool, smials: list<string>, exclude?: list<string>, replacements: array<string, string>}>  $kits
+     * @param  array<string, array{label: string, base?: string, repository: string, node: bool, smials: list<string>, exclude?: list<string>, replacements: array<string, string>}>  $kits
      * @param  list<string>  $replacementPaths
      */
     public function __construct(
@@ -35,11 +35,30 @@ class Manifest
     }
 
     /**
-     * @return array{label: string, repository: string, node: bool, smials: list<string>, exclude?: list<string>, replacements: array<string, string>}
+     * @return array{label: string, base?: string, repository: string, node: bool, smials: list<string>, exclude?: list<string>, replacements: array<string, string>}
      */
     public function kit(string $name): array
     {
         return $this->kits[strtolower($name)]
             ?? throw new InvalidArgumentException("Unknown kit [{$name}]. Available kits: ".implode(', ', $this->names()));
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function baseKits(): array
+    {
+        return array_keys(array_filter($this->kits, fn (array $kit): bool => ! isset($kit['base'])));
+    }
+
+    public function teamKitFor(string $name): ?string
+    {
+        foreach ($this->kits as $teamKit => $kit) {
+            if (($kit['base'] ?? null) === $name) {
+                return $teamKit;
+            }
+        }
+
+        return null;
     }
 }

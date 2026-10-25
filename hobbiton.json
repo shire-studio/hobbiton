@@ -102,6 +102,43 @@
                 "{{components}}": "JSON resources"
             }
         },
+        "api-teams": {
+            "label": "API Teams",
+            "base": "api",
+            "repository": "shire-studio/laravel-starter-kit-api",
+            "node": false,
+            "smials": [
+                "common",
+                "auth",
+                "api",
+                "teams",
+                "teams-api"
+            ],
+            "exclude": [
+                "app/Actions/DeleteUserPasskeys.php",
+                "app/Actions/LoginUser.php",
+                "app/Actions/LogoutUser.php",
+                "app/Http/Middleware/HandleAppearance.php",
+                "app/Http/Requests/TwoFactorAuthenticationRequest.php",
+                "app/Models/Passkey.php",
+                "config/fortify.php",
+                "database/factories/PasskeyFactory.php",
+                "database/migrations/2026_06_11_000000_create_passkeys_table.php",
+                "routes/web.php",
+                "tests/Browser/WelcomeTest.php",
+                "tests/Feature/WellKnownPasskeyEndpointsTest.php",
+                "tests/Unit/Actions/DeleteUserPasskeysTest.php",
+                "tests/Unit/Actions/LoginUserTest.php",
+                "tests/Unit/Middleware/HandleAppearanceTest.php",
+                "tests/Unit/Models/PasskeyTest.php",
+                "tests/Unit/Providers/PasskeyRateLimiterTest.php"
+            ],
+            "replacements": {
+                "{{kit}}": "api",
+                "{{framework}}": "Sanctum",
+                "{{components}}": "JSON resources"
+            }
+        },
         "blade": {
             "label": "Blade",
             "repository": "shire-studio/laravel-starter-kit-blade",
