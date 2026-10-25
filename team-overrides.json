@@ -15,6 +15,10 @@
         "base": "api",
         "sha1": "cc979636c316ecf0cce86eb6defcfc16f51f006c"
     },
+    "teams-api/README.md": {
+        "base": "api",
+        "sha1": "2384d294eedea23997683e4e511d87c1b77b0faf"
+    },
     "teams-api/routes/api.php": {
         "base": "api",
         "sha1": "bb23f6e3ad2b2ce937e8711e31a85886899a490c"

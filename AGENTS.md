@@ -14,6 +14,7 @@ Hobbiton raises six Laravel starter kits (Vue, React, Svelte, Livewire, API, Bla
 - A team kit (a kit with a `base` in `hobbiton.json`, such as `api-teams`) is its base kit's smials plus team smials. Team code goes in the lowest team smial that every affected team kit shares.
 - Tend a team kit only for team code. Tending a base file from a team kit writes an override into a team smial, which belongs in `team-overrides.json`. A fix for the base kits is made by tending the base kit.
 - Tend overrides a base file in `teams-<base>`, or in `teams` when every team kit raises that base smial. Otherwise it refuses, and you create `smials/teams-<base>` and add it to the team kits that raise `<base>`.
+- `smials/teams` sends invitations through `App\Actions\CreateTeamInvitationUrl`, which it does not define. Every team kit's own smial must provide it (`teams-api` provides the API version, which links to `FRONTEND_URL`).
 - Run `composer overrides` after you change a base file that a team smial overrides, and `composer overrides -- --accept` once the team copy is up to date.
 - Survey a team kit with its base kit. Team kits are delivered as an overlay of their base kit (`php artisan pack`), never on their own.
 
