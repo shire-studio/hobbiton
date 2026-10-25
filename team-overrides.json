@@ -87,6 +87,46 @@
         "base": "inertia-react",
         "sha1": "b8cc24f276e33dc943b51bd4b2a52c8acf0233d2"
     },
+    "teams-inertia-svelte/resources/js/components/AppHeader.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "bcab8f142bcee7303c723f56b01307e8fa82ea5e"
+    },
+    "teams-inertia-svelte/resources/js/components/AppSidebar.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "a9861eb0c4fde1eccf7feef8981ecdf2b9bf8833"
+    },
+    "teams-inertia-svelte/resources/js/components/NavUser.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "7ce61d0164c5910d9c702925fa1a20d526b2c849"
+    },
+    "teams-inertia-svelte/resources/js/components/UserInfo.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "26512f3c89f99c933e8ed012a7f4bd901cfb87de"
+    },
+    "teams-inertia-svelte/resources/js/layouts/settings/SettingsLayout.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "64df25fd335dd8d84626ff78298bdcc5cfa3a448"
+    },
+    "teams-inertia-svelte/resources/js/lib/navigation.ts": {
+        "base": "inertia-svelte",
+        "sha1": "3b55a0e08703dc39a3ac51e0428f0ea861407037"
+    },
+    "teams-inertia-svelte/resources/js/pages/auth/Login.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "eb5bddcc11539343dda9290e8f01990577339447"
+    },
+    "teams-inertia-svelte/resources/js/pages/auth/Register.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "e1775d349f11eb1c320f7ee35ccb03576c01284d"
+    },
+    "teams-inertia-svelte/resources/js/pages/Dashboard.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "4892a9c3ba65af404ed3695dc5e76b7072a0ab53"
+    },
+    "teams-inertia-svelte/resources/js/types/global.d.ts": {
+        "base": "inertia-svelte",
+        "sha1": "b8cc24f276e33dc943b51bd4b2a52c8acf0233d2"
+    },
     "teams-inertia-vue/resources/js/components/AppHeader.vue": {
         "base": "inertia-vue",
         "sha1": "4c10beb08d8536e83339c378f9fa08b9d49e0ff3"
