@@ -17,6 +17,11 @@ it('creates a team and switches between teams', function (): void {
     $page = visit('/settings/teams');
 
     $page->click('@create-team-button')
+        ->type('@create-team-name', 'Dashboard')
+        ->click('@create-team-submit')
+        ->assertPathIs('/settings/teams')
+        ->assertVisible('@create-team-name')
+        ->assertSee('This team name is reserved and cannot be used.')
         ->type('@create-team-name', 'Acme')
         ->click('@create-team-submit')
         ->assertPathIs('/settings/teams/acme');
@@ -58,6 +63,7 @@ it('renames a team and keeps navigating', function (): void {
         ->click('@login-button')
         ->assertPathIs('/'.$team->slug.'/dashboard')
         ->navigate('/settings/teams/'.$team->slug)
+        ->assertNoJavaScriptErrors()
         ->type('@team-name', 'Globex')
         ->click('@team-save')
         ->assertPathIs('/settings/teams/globex');
@@ -80,7 +86,8 @@ it('invites a member and cancels the invitation', function (): void {
 
     $page = visit('/settings/teams/'.$team->slug);
 
-    $page->click('@invite-member-button')
+    $page->assertNoJavaScriptErrors()
+        ->click('@invite-member-button')
         ->type('@invite-email', 'colleague@example.com')
         ->click('@invite-submit')
         ->assertSee('colleague@example.com');
@@ -172,7 +179,8 @@ it('changes a member role, removes a member and leaves a team', function (): voi
 
     $page = visit('/settings/teams/'.$team->slug);
 
-    $page->click($row.' [data-test="member-role"]')
+    $page->assertNoJavaScriptErrors()
+        ->click($row.' [data-test="member-role"]')
         ->click('[data-test="member-role-option"]:has-text("Admin")')
         ->assertSeeIn($row.' [data-test="member-role"]', 'Admin');
 
@@ -202,8 +210,12 @@ it('deletes a team after confirming its name', function (): void {
 
     $page = visit('/settings/teams/'.$team->slug);
 
-    $page->click('@delete-team')
+    $page->assertNoJavaScriptErrors()
+        ->click('@delete-team')
+        ->assertButtonDisabled('@delete-team-submit')
         ->type('@delete-team-name', 'Acme')
+        ->assertButtonEnabled('@delete-team-submit')
+        ->assertNoJavaScriptErrors()
         ->click('@delete-team-submit')
         ->assertPathIs('/settings/teams');
 
