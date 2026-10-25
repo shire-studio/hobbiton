@@ -2,7 +2,8 @@
 
 /**
  * Tend a raised kit: run it with `composer dev` and copy every change you make in
- * raised/<kit> back to the smial that owns the file. New files go to the kit's top smial.
+ * raised/<kit> back to the smial that owns the file. New files go to the kit's top smial. A team kit never
+ * edits a base smial: a file a base smial owns is overridden in the team smial and recorded in team-overrides.json.
  *
  * Usage: node scripts/tend.js --react [--once] [--check] [--no-serve] [--path=<dir>]
  *
@@ -16,7 +17,7 @@ import chokidar from 'chokidar';
 import { execFileSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { loadManifest, log, normalizePath, owningSmial, raisedDir, restoreReplacements, rootDir, run, smialsDir } from './helpers.js';
+import { deleteTarget, loadManifest, log, normalizePath, raisedDir, recordOverride, restoreReplacements, rootDir, run, smialsDir, tendTarget } from './helpers.js';
 
 const args = process.argv.slice(2);
 const option = name => args.find(arg => arg.startsWith(`--${name}=`))?.split('=')[1];
@@ -79,7 +80,7 @@ function syncFile(absolutePath) {
         return false;
     }
 
-    const smial = owningSmial(relativePath, kit.smials);
+    const { smial, overrides } = tendTarget(relativePath, kit);
     const destination = path.join(smialsDir, smial, relativePath);
     let source = fs.readFileSync(absolutePath);
 
@@ -104,7 +105,13 @@ function syncFile(absolutePath) {
 
     fs.mkdirSync(path.dirname(destination), { recursive: true });
     fs.writeFileSync(destination, source);
-    log(`Tended ${relativePath} -> smials/${smial}`, 'green');
+
+    if (overrides) {
+        recordOverride(smial, relativePath, overrides);
+        log(`Overrode smials/${overrides}/${relativePath} in smials/${smial}`, 'yellow');
+    } else {
+        log(`Tended ${relativePath} -> smials/${smial}`, 'green');
+    }
 
     return true;
 }
@@ -116,7 +123,16 @@ function deleteFile(absolutePath) {
         return;
     }
 
-    const smial = owningSmial(relativePath, kit.smials);
+    const smial = deleteTarget(relativePath, kit);
+
+    if (smial === null) {
+        const owner = tendTarget(relativePath, kit).overrides;
+
+        log(`${relativePath} belongs to smials/${owner}. Add it to exclude in hobbiton.json to drop it from ${kit.label}.`, 'yellow');
+
+        return;
+    }
+
     const destination = path.join(smialsDir, smial, relativePath);
 
     if (fs.existsSync(destination)) {
