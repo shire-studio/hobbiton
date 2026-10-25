@@ -59,6 +59,7 @@ jobs:
         env:
           VARIANT: ${{ matrix.variant }}
         run: |
+          set -o pipefail
           if [ "$VARIANT" = "teams" ]; then
             cp -R .starter-kit/teams/files/. .
             jq -r '.deleted[]' .starter-kit/teams/manifest.json | while IFS= read -r file; do rm -f -- "$file"; done
@@ -162,5 +163,5 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: browser-screenshots
+          name: browser-screenshots-${{ matrix.variant }}
           path: tests/Browser/Screenshots
