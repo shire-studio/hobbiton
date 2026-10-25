@@ -43,6 +43,50 @@
         "base": "api",
         "sha1": "5e3f74fa990372261d140a1a4573a679adbb9757"
     },
+    "teams-inertia-react/resources/js/components/AppHeader.tsx": {
+        "base": "inertia-react",
+        "sha1": "55266d7d815ac35eed6e96efb3cdfc42eaee80ff"
+    },
+    "teams-inertia-react/resources/js/components/AppSidebar.tsx": {
+        "base": "inertia-react",
+        "sha1": "df2e8e28133770283d16e231ca7e3ea73cd4b03f"
+    },
+    "teams-inertia-react/resources/js/components/NavUser.tsx": {
+        "base": "inertia-react",
+        "sha1": "ea55f11f1be642c63e95b4c28ccce7cff78b5abd"
+    },
+    "teams-inertia-react/resources/js/components/TextLink.tsx": {
+        "base": "inertia-react",
+        "sha1": "7b6a8b6b2893d2cec52ba88e7fca0d3c051f5ed4"
+    },
+    "teams-inertia-react/resources/js/components/UserInfo.tsx": {
+        "base": "inertia-react",
+        "sha1": "f27dd6186752df3ec38e9a484ff4b0996d929df8"
+    },
+    "teams-inertia-react/resources/js/layouts/settings/SettingsLayout.tsx": {
+        "base": "inertia-react",
+        "sha1": "6b43efd8596e850605f0d0b312401ff4ac226e1f"
+    },
+    "teams-inertia-react/resources/js/lib/navigation.ts": {
+        "base": "inertia-react",
+        "sha1": "1db37ac34d736b8eba080e391dbae2723c007c62"
+    },
+    "teams-inertia-react/resources/js/pages/auth/Login.tsx": {
+        "base": "inertia-react",
+        "sha1": "452531c3a46966a7a609d4a51d0cf4b8718000f8"
+    },
+    "teams-inertia-react/resources/js/pages/auth/Register.tsx": {
+        "base": "inertia-react",
+        "sha1": "92a17176194fb52463448ecf18d242ae9668cafb"
+    },
+    "teams-inertia-react/resources/js/pages/Dashboard.tsx": {
+        "base": "inertia-react",
+        "sha1": "6e4a7c38f2a97c2e8ddd4cedc92b20a0909ea3f9"
+    },
+    "teams-inertia-react/resources/js/types/global.d.ts": {
+        "base": "inertia-react",
+        "sha1": "b8cc24f276e33dc943b51bd4b2a52c8acf0233d2"
+    },
     "teams-inertia-vue/resources/js/components/AppHeader.vue": {
         "base": "inertia-vue",
         "sha1": "4c10beb08d8536e83339c378f9fa08b9d49e0ff3"
