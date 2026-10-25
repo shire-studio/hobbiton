@@ -1,13 +1,18 @@
-<div class="w-full">
-    <flux:dropdown :position="$inHeader ? 'bottom' : 'right'" align="start">
+{{-- Flux wraps the label in a span, so `[&>span]:min-w-0` lets the team name truncate instead of overflowing. --}}
+<div @class(['min-w-0' => $inHeader, 'w-full' => ! $inHeader])>
+    <flux:dropdown
+        :position="$inHeader ? 'bottom' : 'right'"
+        align="start"
+        :class="$inHeader ? 'max-w-full' : 'w-full'"
+    >
         <flux:button
             variant="ghost"
             icon="users"
             icon:trailing="chevrons-up-down"
             data-test="team-switcher"
-            :class="$inHeader ? '' : 'w-full justify-start'"
+            :class="$inHeader ? 'min-w-0 [&>span]:min-w-0' : 'w-full justify-start [&>span]:min-w-0'"
         >
-            <span class="max-w-[120px] truncate font-medium">{{ $currentTeam?->name ?? __('Select team') }}</span>
+            <span @class(['block truncate font-medium', 'lg:max-w-[120px]' => $inHeader])>{{ $currentTeam?->name ?? __('Select team') }}</span>
         </flux:button>
 
         <flux:menu class="min-w-56">

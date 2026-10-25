@@ -74,15 +74,15 @@
                                 data-test="member-row"
                                 class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700"
                             >
-                                <div class="flex items-center gap-4">
-                                    <flux:avatar :name="$member['name']" />
-                                    <div>
-                                        <div class="font-medium">{{ $member['name'] }}</div>
-                                        <flux:text size="sm">{{ $member['email'] }}</flux:text>
+                                <div class="flex min-w-0 items-center gap-4">
+                                    <flux:avatar :name="$member['name']" class="shrink-0" />
+                                    <div class="min-w-0">
+                                        <div class="truncate font-medium">{{ $member['name'] }}</div>
+                                        <flux:text size="sm" class="truncate">{{ $member['email'] }}</flux:text>
                                     </div>
                                 </div>
 
-                                <div class="flex items-center gap-2">
+                                <div class="flex shrink-0 items-center gap-2">
                                     @if ($member['role'] !== 'owner' && $permissions['can_update_member'])
                                         <flux:dropdown align="end">
                                             <flux:button
@@ -150,12 +150,12 @@
                         <div class="space-y-3">
                             @foreach ($invitations as $invitation)
                                 <div class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-                                    <div class="flex items-center gap-4">
-                                        <div class="flex size-10 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
+                                    <div class="flex min-w-0 items-center gap-4">
+                                        <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
                                             <flux:icon.envelope class="size-5 text-zinc-500 dark:text-zinc-400" />
                                         </div>
-                                        <div>
-                                            <div class="font-medium">{{ $invitation->email }}</div>
+                                        <div class="min-w-0">
+                                            <div class="truncate font-medium">{{ $invitation->email }}</div>
                                             <flux:text size="sm">{{ $invitation->role->label() }}</flux:text>
                                         </div>
                                     </div>
@@ -166,6 +166,7 @@
                                                 variant="ghost"
                                                 size="sm"
                                                 icon="x-mark"
+                                                class="shrink-0"
                                                 :tooltip="__('Cancel invitation')"
                                                 :aria-label="__('Cancel invitation')"
                                                 data-test="cancel-invitation"

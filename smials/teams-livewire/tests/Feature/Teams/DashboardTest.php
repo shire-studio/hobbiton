@@ -103,7 +103,9 @@ it('renders the team switcher in the header layout', function (): void {
     expect($html)
         ->toContain('data-test="team-switcher"')
         ->toContain('data-test="dashboard-link"')
-        ->toContain(e("Jane's Team"));
+        ->toContain(e("Jane's Team"))
+        ->toContain('data-flux-profile')
+        ->not->toContain('data-test="current-team-name"');
 });
 
 it('shows the current team under the user in the user menu', function (): void {

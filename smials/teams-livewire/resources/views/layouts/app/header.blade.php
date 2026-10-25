@@ -56,7 +56,7 @@
             </flux:tooltip>
         </flux:navbar>
 
-        <x-desktop-user-menu :current-team="$currentTeam" />
+        <x-desktop-user-menu :header="true" />
     </flux:header>
 
     <!-- Mobile Menu -->
