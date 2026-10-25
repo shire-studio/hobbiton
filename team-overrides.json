@@ -23,6 +23,10 @@
         "base": "api",
         "sha1": "64c8564402a4a1c0c1776f3dc3dea79af29094c2"
     },
+    "teams-api/tests/Feature/Settings/DeleteUserTest.php": {
+        "base": "api",
+        "sha1": "bd562bf140e48757d8fc09772090cfc8fd9226b0"
+    },
     "teams-api/tests/Feature/Settings/ProfileTest.php": {
         "base": "api",
         "sha1": "c6eead8ea73d0fc35124d8ab88721ab3e215c421"
@@ -38,6 +42,10 @@
     "teams/app/Actions/CreateUser.php": {
         "base": "auth",
         "sha1": "79d0b35e02f6979b9b8b97a27469a1a81f2e6fed"
+    },
+    "teams/app/Http/Requests/DeleteUserRequest.php": {
+        "base": "auth",
+        "sha1": "efba552c442a8c6bd7b702f40979edaa07c2e792"
     },
     "teams/tests/Unit/Actions/CreateUserTest.php": {
         "base": "auth",
