@@ -36,8 +36,12 @@ class TeamOverrides
         }
 
         foreach (array_keys($ledger) as $key) {
+            $path = substr($key, strpos($key, '/') + 1);
+
             if (! File::exists("{$smialsPath}/{$key}")) {
                 $problems[] = "team-overrides.json lists {$key}, which no longer exists. Run composer overrides -- --accept.";
+            } elseif (! File::exists("{$smialsPath}/{$ledger[$key]['base']}/{$path}")) {
+                $problems[] = "{$key} overrides {$ledger[$key]['base']}/{$path}, which no longer exists. Run composer overrides -- --accept.";
             }
         }
 

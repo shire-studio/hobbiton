@@ -79,6 +79,15 @@ it('fails when the ledger lists a file that no longer exists', function () {
         ->and($problems[0])->toContain('teams/app/Models/User.php');
 });
 
+it('fails when the base file of a ledger entry no longer exists', function () {
+    [$manifest, $path] = overridesFixture(['teams/app/Models/User.php' => 'team']);
+
+    $problems = TeamOverrides::problems($manifest, $path, ['teams/app/Models/User.php' => entry('auth', 'base')]);
+
+    expect($problems)->toHaveCount(1)
+        ->and($problems[0])->toContain('auth/app/Models/User.php');
+});
+
 it('pairs a team file with the base file it shadows in each kit', function () {
     [$manifest, $path] = overridesFixture([
         'auth/app/Models/User.php' => 'auth',

@@ -161,6 +161,89 @@ export function tendChange(relativePath, edited, kit, { restore = false, root = 
     return { smial, overrides, destination, source, changed };
 }
 
+function filesIn(directory) {
+    if (!fs.existsSync(directory)) {
+        return [];
+    }
+
+    return fs.readdirSync(directory, { recursive: true, withFileTypes: true })
+        .filter(entry => entry.isFile())
+        .map(entry => normalizePath(path.relative(directory, path.join(entry.parentPath, entry.name))));
+}
+
+/**
+ * The base smials each effective team file shadows, keyed "<teamSmial>/<path>". A team file is effective in a kit
+ * when its smial is the last in the kit's order to hold the path, and a file with no base copy is new, not an override.
+ * Mirrors App\Support\TeamOverrides.
+ */
+export function effectiveOverrides(manifest, root = smialsDir) {
+    const owners = new Map();
+
+    for (const kit of Object.values(manifest.kits).filter(kit => kit.base)) {
+        for (const smial of kit.smials.filter(isTeamSmial)) {
+            for (const relativePath of filesIn(path.join(root, smial))) {
+                const holders = kit.smials.filter(candidate => fs.existsSync(path.join(root, candidate, relativePath)));
+                const bases = holders.filter(holder => !isTeamSmial(holder));
+
+                if (holders.at(-1) !== smial || bases.length === 0) {
+                    continue;
+                }
+
+                const key = `${smial}/${relativePath}`;
+                owners.set(key, new Set([...(owners.get(key) ?? []), bases.at(-1)]));
+            }
+        }
+    }
+
+    return owners;
+}
+
+/**
+ * Compare the ledger with the smials. Returns the messages for what is missing or stale and the ledger as accepting
+ * would leave it: missing entries added, stale ones refreshed, and entries whose files no longer exist dropped.
+ */
+export function reconcileOverrides(manifest, ledger, root = smialsDir) {
+    const messages = [];
+    const accepted = {};
+
+    for (const [key, entry] of Object.entries(ledger)) {
+        const relativePath = key.split('/').slice(1).join('/');
+        const baseFile = path.join(root, entry.base, relativePath);
+
+        if (!fs.existsSync(path.join(root, key)) || !fs.existsSync(baseFile)) {
+            messages.push(`${key} no longer overrides smials/${entry.base}`);
+        } else {
+            accepted[key] = entry;
+        }
+    }
+
+    for (const [key, bases] of effectiveOverrides(manifest, root)) {
+        const relativePath = key.split('/').slice(1).join('/');
+
+        if (bases.size > 1) {
+            messages.push(`${key} has an ambiguous base: ${[...bases].join(', ')}`);
+
+            continue;
+        }
+
+        const [base] = bases;
+        const current = sha1Of(path.join(root, base, relativePath));
+        const entry = accepted[key];
+
+        if (!entry) {
+            messages.push(`${key} overrides smials/${base} but is not in team-overrides.json`);
+        } else if (entry.base !== base || entry.sha1 !== current) {
+            messages.push(`${key} is behind smials/${base}`);
+        } else {
+            continue;
+        }
+
+        accepted[key] = { base, sha1: current };
+    }
+
+    return { messages, accepted };
+}
+
 /**
  * Raise a kit into raised/<kit> and install its PHP dependencies. Returns the kit's directory.
  */
