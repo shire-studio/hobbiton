@@ -20,6 +20,7 @@ it("lists pending invitations for the user's email", function (): void {
         'role' => TeamRole::Admin,
     ]);
     TeamInvitation::factory()->expired()->create(['email' => 'me@example.com']);
+    TeamInvitation::factory()->create(['team_id' => Team::factory()->personal()->create()->id, 'email' => 'me@example.com']);
     TeamInvitation::factory()->create(['email' => 'other@example.com']);
 
     Sanctum::actingAs($user);
@@ -69,6 +70,20 @@ it('declines an invitation', function (): void {
 
     expect(TeamInvitation::query()->find($invitation->id))->toBeNull()
         ->and($user->belongsToTeam($invitation->team))->toBeFalse();
+});
+
+it('declines an invitation to a personal team', function (): void {
+    $user = User::factory()->create(['email' => 'me@example.com']);
+    $invitation = TeamInvitation::factory()->create([
+        'team_id' => Team::factory()->personal()->create()->id,
+        'email' => 'me@example.com',
+    ]);
+
+    Sanctum::actingAs($user);
+
+    $this->deleteJson(route('invitations.decline', $invitation))->assertNoContent();
+
+    expect(TeamInvitation::query()->find($invitation->id))->toBeNull();
 });
 
 it('rejects an invitation for another email', function (): void {

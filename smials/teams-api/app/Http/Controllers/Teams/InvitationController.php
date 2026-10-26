@@ -19,7 +19,7 @@ final readonly class InvitationController
             ->with(['team', 'inviter'])
             ->latest();
 
-        $invitations->scopes('pending');
+        $invitations->scopes(['pending', 'joinable']);
 
         return TeamInvitationResource::collection($invitations->get());
     }

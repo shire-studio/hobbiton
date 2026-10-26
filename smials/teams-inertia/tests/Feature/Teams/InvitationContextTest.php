@@ -39,6 +39,16 @@ it('ignores an expired invitation code', function (): void {
         ->assertInertia(fn ($page) => $page->where('teamInvitation', null));
 });
 
+it('ignores an invitation code for a personal team', function (): void {
+    $invitation = TeamInvitation::factory()->create(['team_id' => Team::factory()->personal()->create()->id]);
+
+    $this->get(route('login', ['invitation' => $invitation->code]))
+        ->assertInertia(fn ($page) => $page->where('teamInvitation', null));
+
+    $this->get(route('register', ['invitation' => $invitation->code]))
+        ->assertInertia(fn ($page) => $page->where('teamInvitation', null));
+});
+
 it('ignores an unknown invitation code', function (): void {
     $this->get(route('login', ['invitation' => 'unknown']))
         ->assertInertia(fn ($page) => $page->where('teamInvitation', null));

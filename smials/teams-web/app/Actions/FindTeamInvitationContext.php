@@ -15,7 +15,7 @@ final readonly class FindTeamInvitationContext
         }
 
         $invitations = TeamInvitation::query();
-        $invitations->scopes('pending');
+        $invitations->scopes(['pending', 'joinable']);
 
         $invitation = $invitations->where('code', $code)->with('team')->first();
 

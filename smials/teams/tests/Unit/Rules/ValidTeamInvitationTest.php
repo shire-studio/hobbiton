@@ -70,3 +70,15 @@ it('rejects an invitation to a personal team', function (): void {
     expect($validator->passes())->toBeFalse()
         ->and($validator->errors()->first('invitation'))->toBe('This invitation is invalid or has expired.');
 });
+
+it('accepts an invitation to a personal team when personal teams are allowed', function (): void {
+    $user = User::factory()->create();
+    $invitation = TeamInvitation::factory()->create([
+        'team_id' => Team::factory()->personal()->create()->id,
+        'email' => $user->email,
+    ]);
+
+    $validator = Validator::make(['invitation' => $invitation], ['invitation' => [new ValidTeamInvitation($user, allowPersonalTeam: true)]]);
+
+    expect($validator->passes())->toBeTrue();
+});

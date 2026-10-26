@@ -27,8 +27,10 @@ final class RespondToTeamInvitationRequest extends FormRequest
 
         assert($user instanceof User);
 
+        $declining = $this->routeIs('invitations.decline');
+
         return [
-            'invitation' => [new ValidTeamInvitation($user)],
+            'invitation' => [new ValidTeamInvitation($user, $declining)],
         ];
     }
 }

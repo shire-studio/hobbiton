@@ -47,6 +47,18 @@ it('ignores an expired invitation code', function (): void {
     $login->assertDontSeeHtml('data-test="team-invitation-alert"');
 });
 
+it('ignores an invitation code for a personal team', function (): void {
+    $invitation = TeamInvitation::factory()->create(['team_id' => Team::factory()->personal()->create()->id]);
+
+    $login = $this->get(route('login', ['invitation' => $invitation->code]));
+    $register = $this->get(route('register', ['invitation' => $invitation->code]));
+
+    expect($login->viewData('teamInvitation'))->toBeNull()
+        ->and($register->viewData('teamInvitation'))->toBeNull();
+
+    $login->assertDontSeeHtml('data-test="team-invitation-alert"');
+});
+
 it('ignores an unknown invitation code', function (): void {
     expect($this->get(route('login', ['invitation' => 'unknown']))->viewData('teamInvitation'))->toBeNull()
         ->and($this->get(route('register', ['invitation' => ['array']]))->viewData('teamInvitation'))->toBeNull()

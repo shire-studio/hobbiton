@@ -15,7 +15,7 @@ final readonly class DashboardController
     public function __invoke(Team $current_team, #[CurrentUser] User $user): View
     {
         $pending = TeamInvitation::query();
-        $pending->scopes('pending');
+        $pending->scopes(['pending', 'joinable']);
 
         $invitations = $pending
             ->whereRaw('LOWER(email) = ?', [mb_strtolower($user->email)])

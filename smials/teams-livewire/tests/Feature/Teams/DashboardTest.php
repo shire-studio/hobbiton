@@ -96,7 +96,7 @@ it('renders the team switcher in the header layout', function (): void {
     $user = User::factory()->create(['name' => 'Jane']);
 
     $this->actingAs($user);
-    view()->share('errors', new ViewErrorBag());
+    view()->share('errors', new ViewErrorBag);
 
     $html = Blade::render('<x-layouts::app.header>content</x-layouts::app.header>');
 
@@ -128,7 +128,7 @@ it('falls back to the plain dashboard link for a user without a team', function 
     $user->forceFill(['current_team_id' => null])->save();
 
     $this->actingAs($user);
-    view()->share('errors', new ViewErrorBag());
+    view()->share('errors', new ViewErrorBag);
 
     foreach (['sidebar', 'header'] as $layout) {
         expect(Blade::render("<x-layouts::app.{$layout}>content</x-layouts::app.{$layout}>"))
@@ -170,6 +170,7 @@ it("lists pending invitations for the user's email", function (): void {
     ]);
     TeamInvitation::factory()->expired()->create(['email' => 'invitee@example.com']);
     TeamInvitation::factory()->accepted()->create(['email' => 'invitee@example.com']);
+    TeamInvitation::factory()->create(['team_id' => Team::factory()->personal()->create()->id, 'email' => 'invitee@example.com']);
     TeamInvitation::factory()->create(['email' => 'someone-else@example.com']);
 
     $this->actingAs($user)

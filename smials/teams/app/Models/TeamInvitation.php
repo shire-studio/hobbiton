@@ -93,6 +93,15 @@ final class TeamInvitation extends Model
      * @param  Builder<TeamInvitation>  $query
      */
     #[Scope]
+    public function joinable(Builder $query): void
+    {
+        $query->whereHas('team', fn (Builder $team): Builder => $team->where('is_personal', false));
+    }
+
+    /**
+     * @param  Builder<TeamInvitation>  $query
+     */
+    #[Scope]
     public function pending(Builder $query): void
     {
         $query->whereNull('accepted_at')

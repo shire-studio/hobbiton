@@ -78,6 +78,7 @@ it("lists pending invitations for the user's email", function (): void {
     ]);
     TeamInvitation::factory()->expired()->create(['email' => 'invitee@example.com']);
     TeamInvitation::factory()->accepted()->create(['email' => 'invitee@example.com']);
+    TeamInvitation::factory()->create(['team_id' => Team::factory()->personal()->create()->id, 'email' => 'invitee@example.com']);
     TeamInvitation::factory()->create(['email' => 'someone-else@example.com']);
 
     $this->actingAs($user)
