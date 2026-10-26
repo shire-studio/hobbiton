@@ -258,3 +258,24 @@ it('forbids owners leaving their team', function (): void {
 it('requires authentication to list teams', function (): void {
     $this->getJson(route('teams.index'))->assertUnauthorized();
 });
+
+it('does not offer adding or inviting on a personal team', function (): void {
+    $user = User::factory()->create();
+    $team = $user->personalTeam();
+    $team->invitations()->create([
+        'code' => str_repeat('b', 64),
+        'email' => 'old@example.com',
+        'role' => TeamRole::Member,
+        'invited_by' => $user->id,
+        'expires_at' => now()->addDays(3),
+    ]);
+
+    Sanctum::actingAs($user);
+
+    $this->getJson(route('teams.show', $team))
+        ->assertOk()
+        ->assertJsonCount(1, 'data.invitations')
+        ->assertJsonPath('data.permissions.can_add_member', false)
+        ->assertJsonPath('data.permissions.can_create_invitation', false)
+        ->assertJsonPath('data.permissions.can_cancel_invitation', true);
+});

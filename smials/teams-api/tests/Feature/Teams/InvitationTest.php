@@ -100,3 +100,17 @@ it('rejects an expired invitation', function (): void {
         ->assertUnprocessable()
         ->assertJsonValidationErrors('invitation');
 });
+
+it('rejects accepting an invitation to a personal team', function (): void {
+    $user = User::factory()->create(['email' => 'me@example.com']);
+    $invitation = TeamInvitation::factory()->create([
+        'team_id' => Team::factory()->personal()->create()->id,
+        'email' => 'me@example.com',
+    ]);
+
+    Sanctum::actingAs($user);
+
+    $this->postJson(route('invitations.accept', $invitation))->assertUnprocessable();
+
+    expect($invitation->fresh()->accepted_at)->toBeNull();
+});

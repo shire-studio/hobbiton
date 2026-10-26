@@ -34,7 +34,7 @@ A strict, fully tested Laravel 13 starter kit with Livewire 4 and Flux. It share
 
 ## Teams
 
-Registering creates a personal team named after the user, which becomes their current team. A personal team cannot be left or deleted. Users can create more teams and switch between them from the sidebar. `/dashboard` redirects to the dashboard of the current team at `/{team}/dashboard`, and team settings live under `/settings/teams`.
+Registering creates a personal team named after the user, which becomes their current team. A personal team cannot be left or deleted. A personal team can never gain members, so it has no invite button and an old invitation to one cannot be accepted. Create a team to collaborate. Users can create more teams and switch between them from the sidebar. `/dashboard` redirects to the dashboard of the current team at `/{team}/dashboard`, and team settings live under `/settings/teams`.
 
 Every member has a role. Owners can do everything. Admins can rename the team and send or cancel invitations. Members can view the team and leave it. Owners cannot leave their own team. A team page the user is not allowed to see answers `404`, so it never reveals whether the team exists.
 

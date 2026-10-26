@@ -71,3 +71,13 @@ it('resolves the viewer role with a single query', function (): void {
 
     expect(DB::getQueryLog())->toHaveCount(1);
 });
+
+it('never lets anyone add members or invite to a personal team', function (): void {
+    $user = User::factory()->create();
+    $permissions = TeamPermissionsData::fromTeam($user->personalTeam(), $user);
+
+    expect($permissions->can_add_member)->toBeFalse()
+        ->and($permissions->can_create_invitation)->toBeFalse()
+        ->and($permissions->can_cancel_invitation)->toBeTrue()
+        ->and($permissions->can_update_team)->toBeTrue();
+});

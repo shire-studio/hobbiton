@@ -34,7 +34,7 @@ final readonly class TeamPolicy
 
     public function addMember(User $user, Team $team): bool
     {
-        return $user->hasTeamPermission($team, TeamPermission::AddMember);
+        return ! $team->is_personal && $user->hasTeamPermission($team, TeamPermission::AddMember);
     }
 
     public function updateMember(User $user, Team $team): bool
@@ -54,7 +54,7 @@ final readonly class TeamPolicy
 
     public function inviteMember(User $user, Team $team): bool
     {
-        return $user->hasTeamPermission($team, TeamPermission::CreateInvitation);
+        return ! $team->is_personal && $user->hasTeamPermission($team, TeamPermission::CreateInvitation);
     }
 
     public function cancelInvitation(User $user, Team $team): bool

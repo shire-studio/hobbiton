@@ -106,6 +106,8 @@ Team kits share their base kit's lock files and `vet.json`, because teams add no
 
 Two dashboard routes exist. `GET /dashboard`, named `dashboard`, stays and redirects an authenticated, verified user to the dashboard of their current team, falling back to their personal team. The team dashboard is `GET /{current_team:slug}/dashboard`, named `team.dashboard`. Team settings live under `/settings/teams`.
 
+Personal teams cannot be shared. `TeamPolicy` denies `inviteMember` and `addMember` for a personal team whatever the role, `ValidTeamInvitation` rejects an invitation to one, and the permissions on the edit pages agree, so a personal team always has exactly one member, its owner. Create a team to collaborate. Cancelling an existing invitation stays allowed.
+
 The three `teams-inertia-*` smials hold the same screens, so a frontend change to teams is made in all three with identical file names, props, copy and `data-test` attributes.
 
 ### Livewire Team Kit

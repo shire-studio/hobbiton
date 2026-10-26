@@ -118,3 +118,22 @@ it('returns 404 for an invitation from another team', function (): void {
 
     expect(TeamInvitation::query()->find($invitation->id))->not->toBeNull();
 });
+
+it('returns 404 when inviting to a personal team', function (): void {
+    $user = User::factory()->create();
+
+    Sanctum::actingAs($user);
+
+    $this->postJson(route('teams.invitations.store', $user->personalTeam()), ['email' => 'new@example.com', 'role' => 'member'])
+        ->assertNotFound();
+});
+
+it('still cancels an invitation on a personal team', function (): void {
+    $user = User::factory()->create();
+    $team = $user->personalTeam();
+    $invitation = TeamInvitation::factory()->create(['team_id' => $team->id, 'invited_by' => $user->id]);
+
+    Sanctum::actingAs($user);
+
+    $this->deleteJson(route('teams.invitations.destroy', [$team, $invitation]))->assertNoContent();
+});

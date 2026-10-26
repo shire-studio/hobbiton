@@ -133,3 +133,18 @@ it('forbids managing a non member', function (): void {
 
     expect($policy->manageMember($owner, $team, $stranger))->toBeFalse();
 });
+
+it('never lets anyone invite or add members to a personal team', function (): void {
+    foreach ([TeamRole::Owner, TeamRole::Admin, TeamRole::Member, null] as $role) {
+        [$policy, $user, $team] = teamWithRole($role, personal: true);
+
+        expect($policy->inviteMember($user, $team))->toBeFalse()
+            ->and($policy->addMember($user, $team))->toBeFalse();
+    }
+});
+
+it('still lets an owner cancel an invitation on a personal team', function (): void {
+    [$policy, $user, $team] = teamWithRole(TeamRole::Owner, personal: true);
+
+    expect($policy->cancelInvitation($user, $team))->toBeTrue();
+});

@@ -293,3 +293,24 @@ it('forbids owners leaving their team', function (): void {
 it('redirects guests to login', function (): void {
     $this->get(route('teams.index'))->assertRedirectToRoute('login');
 });
+
+it('does not offer inviting on a personal team', function (): void {
+    $user = User::factory()->create();
+    $team = $user->personalTeam();
+    $team->invitations()->create([
+        'code' => str_repeat('b', 64),
+        'email' => 'old@example.com',
+        'role' => TeamRole::Member,
+        'invited_by' => $user->id,
+        'expires_at' => now()->addDays(3),
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('teams.edit', $team))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->has('invitations', 1)
+            ->where('permissions.can_add_member', false)
+            ->where('permissions.can_create_invitation', false)
+            ->where('permissions.can_cancel_invitation', true));
+});

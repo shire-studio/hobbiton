@@ -29,10 +29,10 @@ final class TeamPermissionsData extends Data
         return new self(
             can_update_team: $can(TeamPermission::UpdateTeam),
             can_delete_team: ! $team->is_personal && $can(TeamPermission::DeleteTeam),
-            can_add_member: $can(TeamPermission::AddMember),
+            can_add_member: ! $team->is_personal && $can(TeamPermission::AddMember),
             can_update_member: $can(TeamPermission::UpdateMember),
             can_remove_member: $can(TeamPermission::RemoveMember),
-            can_create_invitation: $can(TeamPermission::CreateInvitation),
+            can_create_invitation: ! $team->is_personal && $can(TeamPermission::CreateInvitation),
             can_cancel_invitation: $can(TeamPermission::CancelInvitation),
         );
     }

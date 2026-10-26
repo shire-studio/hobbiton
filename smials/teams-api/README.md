@@ -54,7 +54,7 @@ Send the token as `Authorization: Bearer <token>`. Every response, including err
 
 ## Teams
 
-Registering creates a personal team named after the user, which becomes their current team. A personal team cannot be left or deleted. Users can create more teams and switch between them with `PUT /user/current-team`, and `GET /user` returns the current team.
+Registering creates a personal team named after the user, which becomes their current team. A personal team cannot be left or deleted. A personal team can never gain members, so inviting someone to it answers `404` and an old invitation to one cannot be accepted. Create a team to collaborate. Users can create more teams and switch between them with `PUT /user/current-team`, and `GET /user` returns the current team.
 
 Every member has a role. Owners can do everything. Admins can rename the team and send or cancel invitations. Members can view the team and leave it. Owners cannot leave their own team. A team request the user is not allowed to make answers `404`, so it never reveals whether the team exists.
 

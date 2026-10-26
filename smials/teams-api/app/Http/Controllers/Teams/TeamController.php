@@ -46,7 +46,7 @@ final readonly class TeamController
 
         $invitations->scopes('pending');
 
-        $team->setRelation('invitations', Gate::allows('inviteMember', $team) ? $invitations->get() : new Collection);
+        $team->setRelation('invitations', Gate::allows('cancelInvitation', $team) ? $invitations->get() : new Collection);
 
         return new TeamResource($team)->withPermissions([
             'can_update_team' => Gate::allows('update', $team),

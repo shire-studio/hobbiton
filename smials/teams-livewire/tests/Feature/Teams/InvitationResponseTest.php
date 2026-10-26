@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\TeamRole;
+use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\User;
 
@@ -95,4 +96,18 @@ it('shows the declined toast on the team dashboard after both redirects', functi
         ->delete(route('invitations.decline', $invitation))
         ->assertOk()
         ->assertSee('Invitation declined.');
+});
+
+it('rejects accepting an invitation to a personal team', function (): void {
+    $user = User::factory()->create(['email' => 'me@example.com']);
+    $invitation = TeamInvitation::factory()->create([
+        'team_id' => Team::factory()->personal()->create()->id,
+        'email' => 'me@example.com',
+    ]);
+
+    $this->actingAs($user)
+        ->post(route('invitations.accept', $invitation))
+        ->assertSessionHasErrors('invitation');
+
+    expect($invitation->fresh()->accepted_at)->toBeNull();
 });

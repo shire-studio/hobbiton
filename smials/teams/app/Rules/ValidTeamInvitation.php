@@ -22,6 +22,7 @@ final readonly class ValidTeamInvitation implements ValidationRule
         $valid = $this->user->hasVerifiedEmail()
             && $value instanceof TeamInvitation
             && $value->isPending()
+            && ! $value->team->is_personal
             && mb_strtolower($value->email) === mb_strtolower($this->user->email);
 
         if (! $valid) {

@@ -64,7 +64,7 @@ final readonly class TeamController
                     ($pivot = $member->getRelation('pivot')) instanceof Membership ? $pivot->role : TeamRole::Member,
                 ))
                 ->all(),
-            'invitations' => $permissions->can_create_invitation
+            'invitations' => $permissions->can_cancel_invitation
                 ? $invitations->get()
                     ->map(TeamInvitationData::fromInvitation(...))
                     ->all()

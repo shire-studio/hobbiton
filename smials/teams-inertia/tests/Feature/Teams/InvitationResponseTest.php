@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\TeamRole;
+use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\User;
 
@@ -67,6 +68,20 @@ it('rejects an expired invitation', function (): void {
 
     $this->actingAs($user)
         ->fromRoute('team.dashboard', ['current_team' => $user->personalTeam()?->slug])
+        ->post(route('invitations.accept', $invitation))
+        ->assertSessionHasErrors('invitation');
+
+    expect($invitation->fresh()->accepted_at)->toBeNull();
+});
+
+it('rejects accepting an invitation to a personal team', function (): void {
+    $user = User::factory()->create(['email' => 'me@example.com']);
+    $invitation = TeamInvitation::factory()->create([
+        'team_id' => Team::factory()->personal()->create()->id,
+        'email' => 'me@example.com',
+    ]);
+
+    $this->actingAs($user)
         ->post(route('invitations.accept', $invitation))
         ->assertSessionHasErrors('invitation');
 

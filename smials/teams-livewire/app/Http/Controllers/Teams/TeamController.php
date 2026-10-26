@@ -60,10 +60,10 @@ final readonly class TeamController
         $permissions = [
             'can_update_team' => $can(TeamPermission::UpdateTeam),
             'can_delete_team' => ! $team->is_personal && $can(TeamPermission::DeleteTeam),
-            'can_add_member' => $can(TeamPermission::AddMember),
+            'can_add_member' => ! $team->is_personal && $can(TeamPermission::AddMember),
             'can_update_member' => $can(TeamPermission::UpdateMember),
             'can_remove_member' => $can(TeamPermission::RemoveMember),
-            'can_create_invitation' => $can(TeamPermission::CreateInvitation),
+            'can_create_invitation' => ! $team->is_personal && $can(TeamPermission::CreateInvitation),
             'can_cancel_invitation' => $can(TeamPermission::CancelInvitation),
         ];
 
@@ -85,7 +85,7 @@ final readonly class TeamController
                     ];
                 })
                 ->all(),
-            'invitations' => $permissions['can_create_invitation']
+            'invitations' => $permissions['can_cancel_invitation']
                 ? $invitations->get()->all()
                 : [],
             'permissions' => $permissions,
