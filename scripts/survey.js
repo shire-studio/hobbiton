@@ -12,6 +12,7 @@
  */
 
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { log, parseArgs, prepareKit, raisedDir, rootDir, run } from './helpers.js';
 
@@ -20,6 +21,23 @@ const manifest = JSON.parse(fs.readFileSync(path.join(rootDir, 'hobbiton.json'),
 const failures = [];
 
 const git = (dir, ...gitArgs) => run('git', ['-c', 'user.name=Hobbiton', '-c', 'user.email=hobbiton@localhost', ...gitArgs], { cwd: dir });
+
+/**
+ * Run the kit's composer test with Pint and Pest TIA caches cleared, so a survey never passes on stale results.
+ * Pint caches in the system temp directory, so the run gets a fresh one. TIA keeps its state under ~/.pest/tia,
+ * which Pest's own Storage::purge() clears for the kit.
+ */
+async function surveyCold(dir) {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'hobbiton-survey-'));
+
+    await run('php', ['-r', "require 'vendor/autoload.php'; if (method_exists(Pest\\Plugins\\Tia\\Storage::class, 'purge')) { Pest\\Plugins\\Tia\\Storage::purge(getcwd()); }"], { cwd: dir });
+
+    try {
+        await run('composer', ['test'], { cwd: dir, env: { ...process.env, TMPDIR: tmpDir } });
+    } finally {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+}
 
 for (const name of kits) {
     const kit = manifest.kits[name];
@@ -44,7 +62,7 @@ for (const name of kits) {
         await git(dir, 'add', '-A');
         await git(dir, 'commit', '-qm', 'Survey', '--allow-empty');
 
-        await run('composer', ['test'], { cwd: dir });
+        await surveyCold(dir);
         log(`${kit.label} passed`, 'green');
     } catch (error) {
         failures.push(kit.label);

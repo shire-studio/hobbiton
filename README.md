@@ -122,7 +122,7 @@ Every override of a base file is recorded in `team-overrides.json`, with a hash 
 
 ### Surveying
 
-`composer survey` raises each kit, team kits included, into `raised/<kit>`, installs it, migrates it, builds its assets and runs its own `composer test`. Installs are kept between surveys, so only the first survey of a kit is slow.
+`composer survey` raises each kit, team kits included, into `raised/<kit>`, installs it, migrates it, builds its assets and runs its own `composer test`. Installs are kept between surveys, so only the first survey of a kit is slow. Pint and Pest TIA caches are cleared before every survey, so a result is never carried over from an earlier run.
 
 ### Harvesting
 
