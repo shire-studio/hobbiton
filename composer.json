@@ -52,7 +52,8 @@
         "deliver": [
             "Composer\\Config::disableProcessTimeout",
             "node scripts/deliver.js"
-        ]
+        ],
+        "overrides": "node scripts/overrides.js"
     },
     "config": {
         "optimize-autoloader": true,

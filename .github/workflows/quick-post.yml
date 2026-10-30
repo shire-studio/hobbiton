@@ -35,7 +35,7 @@ jobs:
         env:
           SELECTED: ${{ inputs.kits }}
         run: |
-          echo "kits=$(jq -c --arg selected "$SELECTED" '($selected | split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(. != ""))) as $only | [.kits | to_entries[] | select(($only | length) == 0 or (.key as $k | $only | index($k))) | {name: .key, label: .value.label, repository: .value.repository}]' hobbiton.json)" >> "$GITHUB_OUTPUT"
+          echo "kits=$(jq -c --arg selected "$SELECTED" '($selected | split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(. != ""))) as $only | [.kits | to_entries[] | select(.value.base == null) | select(($only | length) == 0 or (.key as $k | $only | index($k))) | {name: .key, label: .value.label, repository: .value.repository}]' hobbiton.json)" >> "$GITHUB_OUTPUT"
 
   post:
     name: Post ${{ matrix.kit.label }}
@@ -64,8 +64,8 @@ jobs:
       - name: Install Hobbiton Dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
 
-      - name: Raise ${{ matrix.kit.label }}
-        run: php artisan raise --kit=${{ matrix.kit.name }} --to=${{ runner.temp }}/kit
+      - name: Pack ${{ matrix.kit.label }}
+        run: php artisan pack --kit=${{ matrix.kit.name }} --to=${{ runner.temp }}/kit
 
       - name: Checkout ${{ matrix.kit.repository }}
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

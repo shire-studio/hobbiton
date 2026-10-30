@@ -2,7 +2,10 @@
 
 /**
  * Tend a raised kit: run it with `composer dev` and copy every change you make in
- * raised/<kit> back to the smial that owns the file. New files go to the kit's top smial.
+ * raised/<kit> back to the smial that owns the file. New files go to the kit's top smial. A team kit never
+ * edits a base smial: a file a base smial owns is overridden in the team smial and recorded in team-overrides.json.
+ *
+ * With --once the exit code is 1 when a file was refused, so nothing is lost silently.
  *
  * Usage: node scripts/tend.js --react [--once] [--check] [--no-serve] [--path=<dir>]
  *
@@ -16,7 +19,7 @@ import chokidar from 'chokidar';
 import { execFileSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { loadManifest, log, normalizePath, owningSmial, raisedDir, restoreReplacements, rootDir, run, smialsDir } from './helpers.js';
+import { deleteTarget, loadManifest, log, normalizePath, raisedDir, recordOverride, rootDir, run, smialsDir, teamKitsIn, tendChange, tendTarget } from './helpers.js';
 
 const args = process.argv.slice(2);
 const option = name => args.find(arg => arg.startsWith(`--${name}=`))?.split('=')[1];
@@ -31,6 +34,7 @@ if (!kitName) {
 const kit = manifest.kits[kitName];
 const kitDir = option('path') ? path.resolve(option('path')) : path.join(raisedDir, kitName);
 const excluded = new Set(kit.exclude ?? []);
+const teamKits = teamKitsIn(manifest);
 const checking = args.includes('--once') && args.includes('--check');
 
 if (!fs.existsSync(path.join(kitDir, 'composer.json'))) {
@@ -42,7 +46,7 @@ if (!fs.existsSync(path.join(kitDir, 'composer.json'))) {
  * Ask git which files the kit's own .gitignore files ignore. Every raised kit is its own repository.
  */
 function isIgnored(relativePath) {
-    if (/^(\.git|vendor|node_modules)(\/|$)/.test(relativePath) || relativePath === '.env') {
+    if (/^(\.git|\.starter-kit|vendor|node_modules)(\/|$)/.test(relativePath) || relativePath === '.env') {
         return true;
     }
 
@@ -72,6 +76,8 @@ function editedSinceCommit() {
 
 const edited = checking ? editedSinceCommit() : null;
 
+let refused = 0;
+
 function syncFile(absolutePath) {
     const relativePath = normalizePath(path.relative(kitDir, absolutePath));
 
@@ -79,17 +85,14 @@ function syncFile(absolutePath) {
         return false;
     }
 
-    const smial = owningSmial(relativePath, kit.smials);
-    const destination = path.join(smialsDir, smial, relativePath);
-    let source = fs.readFileSync(absolutePath);
+    const restore = manifest.replacementPaths.includes(relativePath);
+    const { smial, overrides, destination, source, changed } = tendChange(relativePath, fs.readFileSync(absolutePath), kit, { restore, teamKits });
 
-    if (manifest.replacementPaths.includes(relativePath)) {
-        source = Buffer.from(restoreReplacements(source.toString('utf-8'), destination, kit.replacements));
-    }
-
-    if (fs.existsSync(destination) && fs.readFileSync(destination).equals(source)) {
+    if (!changed) {
         return false;
     }
+
+    const refusal = `${relativePath} belongs to smials/${overrides}, which not every team kit raises. Create smials/teams-${overrides} and add it to the team kits that raise ${overrides}.`;
 
     if (checking) {
         // A file that differs from smials/ but not from the kit's last commit is only behind smials/, not edited.
@@ -97,14 +100,27 @@ function syncFile(absolutePath) {
             return false;
         }
 
-        log(`Untended ${relativePath} -> smials/${smial}`, 'yellow');
+        log(smial === null ? refusal : `Untended ${relativePath} -> smials/${smial}`, 'yellow');
 
         return true;
     }
 
+    if (smial === null) {
+        log(refusal, 'yellow');
+        refused++;
+
+        return false;
+    }
+
     fs.mkdirSync(path.dirname(destination), { recursive: true });
     fs.writeFileSync(destination, source);
-    log(`Tended ${relativePath} -> smials/${smial}`, 'green');
+
+    if (overrides) {
+        recordOverride(smial, relativePath, overrides);
+        log(`Overrode smials/${overrides}/${relativePath} in smials/${smial}`, 'yellow');
+    } else {
+        log(`Tended ${relativePath} -> smials/${smial}`, 'green');
+    }
 
     return true;
 }
@@ -116,7 +132,16 @@ function deleteFile(absolutePath) {
         return;
     }
 
-    const smial = owningSmial(relativePath, kit.smials);
+    const smial = deleteTarget(relativePath, kit);
+
+    if (smial === null) {
+        const owner = tendTarget(relativePath, kit, smialsDir, teamKits).overrides;
+
+        log(`${relativePath} belongs to smials/${owner}. Add it to exclude in hobbiton.json to drop it from ${kit.label}.`, 'yellow');
+
+        return;
+    }
+
     const destination = path.join(smialsDir, smial, relativePath);
 
     if (fs.existsSync(destination)) {
@@ -127,7 +152,7 @@ function deleteFile(absolutePath) {
 
 function walk(dir, files = []) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        if (['node_modules', 'vendor', '.git'].includes(entry.name)) {
+        if (['node_modules', 'vendor', '.git', '.starter-kit'].includes(entry.name)) {
             continue;
         }
 
@@ -150,13 +175,13 @@ const synced = walk(kitDir).filter(syncFile).length;
 log(`${synced} file(s) tended`, 'green');
 
 if (args.includes('--once')) {
-    process.exit(0);
+    process.exit(refused > 0 ? 1 : 0);
 }
 
 chokidar
     .watch(kitDir, {
         ignoreInitial: true,
-        ignored: file => /\/(node_modules|vendor|\.git)(\/|$)/.test(file),
+        ignored: file => /\/(node_modules|vendor|\.git|\.starter-kit)(\/|$)/.test(file),
         awaitWriteFinish: { stabilityThreshold: 100 },
     })
     .on('add', syncFile)

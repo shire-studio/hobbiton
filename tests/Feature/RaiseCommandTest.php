@@ -52,6 +52,23 @@ it('shares the php application between the inertia kits', function () {
         ->and($raised['svelte'])->toBe($raised['vue']);
 });
 
+it('shares the php application between the inertia team kits', function () {
+    $paths = ['app', 'routes', 'tests/Feature'];
+
+    $raised = collect(['vue-teams', 'react-teams', 'svelte-teams'])->mapWithKeys(function (string $kit) use ($paths) {
+        $path = "{$this->path}/{$kit}";
+        raise($kit, $path);
+
+        return [$kit => collect($paths)->flatMap(fn (string $directory) => collect(File::allFiles("{$path}/{$directory}"))
+            ->mapWithKeys(fn ($file) => [$directory.'/'.$file->getRelativePathname() => md5($file->getContents())]))
+            ->sortKeys()
+            ->all()];
+    });
+
+    expect($raised['react-teams'])->toBe($raised['vue-teams'])
+        ->and($raised['svelte-teams'])->toBe($raised['vue-teams']);
+});
+
 it('removes excluded files and the directories they leave empty', function () {
     raise('api', $this->path);
 
@@ -79,3 +96,12 @@ it('keeps installs and local state when raising again', function () {
 it('rejects unknown kits', function () {
     $this->artisan('raise', ['--kit' => 'angular', '--to' => $this->path])->assertFailed();
 });
+
+it('removes the overlay first when a project is created', function (string $kit) {
+    raise($kit, $this->path);
+
+    $composer = json_decode(File::get("{$this->path}/composer.json"), true);
+
+    expect($composer['scripts']['post-create-project-cmd'][0])
+        ->toBe('@php -r "require \'vendor/autoload.php\'; (new Illuminate\Filesystem\Filesystem)->deleteDirectory(\'.starter-kit\');"');
+})->with(['vue', 'react', 'svelte', 'livewire', 'api']);

@@ -1,0 +1,294 @@
+{
+    "teams-api/app/Actions/DeleteUser.php": {
+        "base": "api",
+        "sha1": "d771cd58dc8c42adef7b962c1fee728d49927ac6"
+    },
+    "teams-api/app/Http/Resources/UserResource.php": {
+        "base": "api",
+        "sha1": "60bb49cc608b5fa3a02de4f6721e1c960b6d37db"
+    },
+    "teams-api/app/Models/User.php": {
+        "base": "api",
+        "sha1": "2e0da95715771bec65f7c292eecba044cb9cc1bf"
+    },
+    "teams-api/database/factories/UserFactory.php": {
+        "base": "api",
+        "sha1": "cc979636c316ecf0cce86eb6defcfc16f51f006c"
+    },
+    "teams-api/README.md": {
+        "base": "api",
+        "sha1": "2384d294eedea23997683e4e511d87c1b77b0faf"
+    },
+    "teams-api/routes/api.php": {
+        "base": "api",
+        "sha1": "bb23f6e3ad2b2ce937e8711e31a85886899a490c"
+    },
+    "teams-api/tests/Feature/Auth/RegisterTest.php": {
+        "base": "api",
+        "sha1": "64c8564402a4a1c0c1776f3dc3dea79af29094c2"
+    },
+    "teams-api/tests/Feature/Settings/DeleteUserTest.php": {
+        "base": "api",
+        "sha1": "bd562bf140e48757d8fc09772090cfc8fd9226b0"
+    },
+    "teams-api/tests/Feature/Settings/ProfileTest.php": {
+        "base": "api",
+        "sha1": "c6eead8ea73d0fc35124d8ab88721ab3e215c421"
+    },
+    "teams-api/tests/Unit/Actions/DeleteUserTest.php": {
+        "base": "api",
+        "sha1": "7d085d6296677429fb0bd95e42f81bd3d47687a2"
+    },
+    "teams-api/tests/Unit/Models/UserTest.php": {
+        "base": "api",
+        "sha1": "5e3f74fa990372261d140a1a4573a679adbb9757"
+    },
+    "teams-inertia-react/resources/js/components/AppHeader.tsx": {
+        "base": "inertia-react",
+        "sha1": "55266d7d815ac35eed6e96efb3cdfc42eaee80ff"
+    },
+    "teams-inertia-react/resources/js/components/AppSidebar.tsx": {
+        "base": "inertia-react",
+        "sha1": "df2e8e28133770283d16e231ca7e3ea73cd4b03f"
+    },
+    "teams-inertia-react/resources/js/components/NavMain.tsx": {
+        "base": "inertia-react",
+        "sha1": "d79049391694351b26fb03289b77e2754918bec9"
+    },
+    "teams-inertia-react/resources/js/components/NavUser.tsx": {
+        "base": "inertia-react",
+        "sha1": "ea55f11f1be642c63e95b4c28ccce7cff78b5abd"
+    },
+    "teams-inertia-react/resources/js/components/TextLink.tsx": {
+        "base": "inertia-react",
+        "sha1": "7b6a8b6b2893d2cec52ba88e7fca0d3c051f5ed4"
+    },
+    "teams-inertia-react/resources/js/components/UserInfo.tsx": {
+        "base": "inertia-react",
+        "sha1": "f27dd6186752df3ec38e9a484ff4b0996d929df8"
+    },
+    "teams-inertia-react/resources/js/layouts/settings/SettingsLayout.tsx": {
+        "base": "inertia-react",
+        "sha1": "6b43efd8596e850605f0d0b312401ff4ac226e1f"
+    },
+    "teams-inertia-react/resources/js/lib/navigation.ts": {
+        "base": "inertia-react",
+        "sha1": "1db37ac34d736b8eba080e391dbae2723c007c62"
+    },
+    "teams-inertia-react/resources/js/pages/auth/Login.tsx": {
+        "base": "inertia-react",
+        "sha1": "452531c3a46966a7a609d4a51d0cf4b8718000f8"
+    },
+    "teams-inertia-react/resources/js/pages/auth/Register.tsx": {
+        "base": "inertia-react",
+        "sha1": "92a17176194fb52463448ecf18d242ae9668cafb"
+    },
+    "teams-inertia-react/resources/js/pages/Dashboard.tsx": {
+        "base": "inertia-react",
+        "sha1": "6e4a7c38f2a97c2e8ddd4cedc92b20a0909ea3f9"
+    },
+    "teams-inertia-react/resources/js/types/global.d.ts": {
+        "base": "inertia-react",
+        "sha1": "b8cc24f276e33dc943b51bd4b2a52c8acf0233d2"
+    },
+    "teams-inertia-svelte/resources/js/components/AppHeader.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "bcab8f142bcee7303c723f56b01307e8fa82ea5e"
+    },
+    "teams-inertia-svelte/resources/js/components/AppSidebar.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "a9861eb0c4fde1eccf7feef8981ecdf2b9bf8833"
+    },
+    "teams-inertia-svelte/resources/js/components/NavMain.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "458b60b4162771c5346c118d52affe8f4410d036"
+    },
+    "teams-inertia-svelte/resources/js/components/NavUser.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "7ce61d0164c5910d9c702925fa1a20d526b2c849"
+    },
+    "teams-inertia-svelte/resources/js/components/UserInfo.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "26512f3c89f99c933e8ed012a7f4bd901cfb87de"
+    },
+    "teams-inertia-svelte/resources/js/layouts/settings/SettingsLayout.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "64df25fd335dd8d84626ff78298bdcc5cfa3a448"
+    },
+    "teams-inertia-svelte/resources/js/lib/navigation.ts": {
+        "base": "inertia-svelte",
+        "sha1": "3b55a0e08703dc39a3ac51e0428f0ea861407037"
+    },
+    "teams-inertia-svelte/resources/js/pages/auth/Login.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "eb5bddcc11539343dda9290e8f01990577339447"
+    },
+    "teams-inertia-svelte/resources/js/pages/auth/Register.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "e1775d349f11eb1c320f7ee35ccb03576c01284d"
+    },
+    "teams-inertia-svelte/resources/js/pages/Dashboard.svelte": {
+        "base": "inertia-svelte",
+        "sha1": "4892a9c3ba65af404ed3695dc5e76b7072a0ab53"
+    },
+    "teams-inertia-svelte/resources/js/types/global.d.ts": {
+        "base": "inertia-svelte",
+        "sha1": "b8cc24f276e33dc943b51bd4b2a52c8acf0233d2"
+    },
+    "teams-inertia-vue/resources/js/components/AppHeader.vue": {
+        "base": "inertia-vue",
+        "sha1": "4c10beb08d8536e83339c378f9fa08b9d49e0ff3"
+    },
+    "teams-inertia-vue/resources/js/components/AppSidebar.vue": {
+        "base": "inertia-vue",
+        "sha1": "dbb4b42532ec220e253c4fa7e470f76b6537946e"
+    },
+    "teams-inertia-vue/resources/js/components/NavMain.vue": {
+        "base": "inertia-vue",
+        "sha1": "ccbe47ef904683ac77ef2db9e894e47d10aefb35"
+    },
+    "teams-inertia-vue/resources/js/components/NavUser.vue": {
+        "base": "inertia-vue",
+        "sha1": "e1c8a0d4a917f9e3727c27185d5637ea98c55a87"
+    },
+    "teams-inertia-vue/resources/js/components/UserInfo.vue": {
+        "base": "inertia-vue",
+        "sha1": "c5d35d4f0f94df40fd86a68902c4005713874d75"
+    },
+    "teams-inertia-vue/resources/js/layouts/settings/SettingsLayout.vue": {
+        "base": "inertia-vue",
+        "sha1": "c78c3fa3544da61ff870600325b778b99e555d7c"
+    },
+    "teams-inertia-vue/resources/js/lib/navigation.ts": {
+        "base": "inertia-vue",
+        "sha1": "591e0eddd5e3c7599f8884f7a7cb8081f032fa71"
+    },
+    "teams-inertia-vue/resources/js/pages/auth/Login.vue": {
+        "base": "inertia-vue",
+        "sha1": "363be556de7b738a8834bc5a3120477fcf13f95b"
+    },
+    "teams-inertia-vue/resources/js/pages/auth/Register.vue": {
+        "base": "inertia-vue",
+        "sha1": "db93dfb18e32b6c35668af5b797e5f03771d35cc"
+    },
+    "teams-inertia-vue/resources/js/pages/Dashboard.vue": {
+        "base": "inertia-vue",
+        "sha1": "2db0f73721ee1271485967fc73f6e991db779888"
+    },
+    "teams-inertia-vue/resources/js/types/global.d.ts": {
+        "base": "inertia-vue",
+        "sha1": "7de91c2a3a676802572d516cd3b40cf986edc64c"
+    },
+    "teams-inertia/app/Http/Controllers/Auth/LoginController.php": {
+        "base": "inertia",
+        "sha1": "bba3719722aaf84c1467d85666aaefc7c5531d86"
+    },
+    "teams-inertia/app/Http/Controllers/Auth/RegisterController.php": {
+        "base": "inertia",
+        "sha1": "5cc3dfc8f678a2de5e8d3cb90c94989ebe40373a"
+    },
+    "teams-inertia/app/Http/Middleware/HandleInertiaRequests.php": {
+        "base": "inertia",
+        "sha1": "6367dfcbb3f5463819dbf9ab3203d05080495cae"
+    },
+    "teams-inertia/bootstrap/app.php": {
+        "base": "inertia",
+        "sha1": "e6daa41622ccf7d506b1c3f094f20396b9280c10"
+    },
+    "teams-inertia/README.md": {
+        "base": "inertia",
+        "sha1": "500d7bd89fbce1d153f24cca31e3d70446295395"
+    },
+    "teams-inertia/routes/web.php": {
+        "base": "inertia",
+        "sha1": "4b4697ddbb83e9f7e07fd2f6cf8a4b75ec8dd3e0"
+    },
+    "teams-inertia/tests/Unit/Middleware/HandleInertiaRequestsTest.php": {
+        "base": "inertia",
+        "sha1": "d6eda9abf5de434626aea29a74b426885a8068a7"
+    },
+    "teams-livewire/app/Http/Controllers/Auth/LoginController.php": {
+        "base": "livewire",
+        "sha1": "f396c55b50b7a6ca41de03a65c14c6c08e998f2e"
+    },
+    "teams-livewire/app/Http/Controllers/Auth/RegisterController.php": {
+        "base": "livewire",
+        "sha1": "a949284cd19dadc013adf955f208284ac0659a89"
+    },
+    "teams-livewire/bootstrap/app.php": {
+        "base": "livewire",
+        "sha1": "16a906cfc5d5b58614f661bd9ab7625c0ef73b2f"
+    },
+    "teams-livewire/README.md": {
+        "base": "livewire",
+        "sha1": "2e9ad9b779491d55018ea2b7fb0c7d483583e47c"
+    },
+    "teams-livewire/resources/views/components/desktop-user-menu.blade.php": {
+        "base": "livewire",
+        "sha1": "6e89956ef28334ce6b6f60c01b6cfa6135493e06"
+    },
+    "teams-livewire/resources/views/layouts/app/header.blade.php": {
+        "base": "livewire",
+        "sha1": "59bc8140aaafe12bf7af1f7cea44b1abc41ae9f6"
+    },
+    "teams-livewire/resources/views/layouts/app/sidebar.blade.php": {
+        "base": "livewire",
+        "sha1": "09dec98412549c9acc56b6a62680915228eed37a"
+    },
+    "teams-livewire/resources/views/pages/auth/login.blade.php": {
+        "base": "livewire",
+        "sha1": "96b55b40b6a5ab8d09e3e28e26f2540a753b874c"
+    },
+    "teams-livewire/resources/views/pages/auth/register.blade.php": {
+        "base": "livewire",
+        "sha1": "79c86995f9b790ae3d5aea75e886cdb1b61b9c3c"
+    },
+    "teams-livewire/resources/views/pages/dashboard.blade.php": {
+        "base": "livewire",
+        "sha1": "1aa9500b925a4d4ce371dfe2bdb2ff08ddc6d594"
+    },
+    "teams-livewire/resources/views/pages/settings/layout.blade.php": {
+        "base": "livewire",
+        "sha1": "7c8fea314c52282657ac9d2dbf55cf33a2cee9ea"
+    },
+    "teams-livewire/routes/web.php": {
+        "base": "livewire",
+        "sha1": "a1f1c9d7056bdb18c1b0f13be092bd879e79c130"
+    },
+    "teams-livewire/tests/Feature/PagesTest.php": {
+        "base": "livewire",
+        "sha1": "2e121845e9c1845a44df062515eaa4098aec57dd"
+    },
+    "teams/app/Actions/CreateUser.php": {
+        "base": "auth",
+        "sha1": "79d0b35e02f6979b9b8b97a27469a1a81f2e6fed"
+    },
+    "teams/app/Actions/DeleteUser.php": {
+        "base": "auth",
+        "sha1": "ff5a5d4d06194cf148a2db206ebea8e53ba90841"
+    },
+    "teams/app/Http/Requests/DeleteUserRequest.php": {
+        "base": "auth",
+        "sha1": "efba552c442a8c6bd7b702f40979edaa07c2e792"
+    },
+    "teams/app/Models/User.php": {
+        "base": "auth",
+        "sha1": "d1e77678c87530ea797cafdf6749ff5e92da70d3"
+    },
+    "teams/database/factories/UserFactory.php": {
+        "base": "auth",
+        "sha1": "1741af2ff8c202d51118ffeb356c051330136026"
+    },
+    "teams/tests/Unit/Actions/CreateUserTest.php": {
+        "base": "auth",
+        "sha1": "e71aba3c941fd6585852b874323ede86581ce3b0"
+    },
+    "teams/tests/Unit/Actions/DeleteUserTest.php": {
+        "base": "auth",
+        "sha1": "1d15868e1d2feccac5a12e2af9c7b64e0a43f248"
+    },
+    "teams/tests/Unit/Models/UserTest.php": {
+        "base": "auth",
+        "sha1": "3434a2bbe649c42c22f3ae68360a937c17881ebb"
+    }
+}

@@ -102,6 +102,43 @@
                 "{{components}}": "JSON resources"
             }
         },
+        "api-teams": {
+            "label": "API Teams",
+            "base": "api",
+            "repository": "shire-studio/laravel-starter-kit-api",
+            "node": false,
+            "smials": [
+                "common",
+                "auth",
+                "api",
+                "teams",
+                "teams-api"
+            ],
+            "exclude": [
+                "app/Actions/DeleteUserPasskeys.php",
+                "app/Actions/LoginUser.php",
+                "app/Actions/LogoutUser.php",
+                "app/Http/Middleware/HandleAppearance.php",
+                "app/Http/Requests/TwoFactorAuthenticationRequest.php",
+                "app/Models/Passkey.php",
+                "config/fortify.php",
+                "database/factories/PasskeyFactory.php",
+                "database/migrations/2026_06_11_000000_create_passkeys_table.php",
+                "routes/web.php",
+                "tests/Browser/WelcomeTest.php",
+                "tests/Feature/WellKnownPasskeyEndpointsTest.php",
+                "tests/Unit/Actions/DeleteUserPasskeysTest.php",
+                "tests/Unit/Actions/LoginUserTest.php",
+                "tests/Unit/Middleware/HandleAppearanceTest.php",
+                "tests/Unit/Models/PasskeyTest.php",
+                "tests/Unit/Providers/PasskeyRateLimiterTest.php"
+            ],
+            "replacements": {
+                "{{kit}}": "api",
+                "{{framework}}": "Sanctum",
+                "{{components}}": "JSON resources"
+            }
+        },
         "blade": {
             "label": "Blade",
             "repository": "shire-studio/laravel-starter-kit-blade",
@@ -114,6 +151,92 @@
                 "{{kit}}": "blade",
                 "{{framework}}": "Blade",
                 "{{components}}": "Blade"
+            }
+        },
+        "vue-teams": {
+            "label": "Vue Teams",
+            "base": "vue",
+            "repository": "shire-studio/laravel-starter-kit-vue",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-vue",
+                "teams",
+                "teams-web",
+                "teams-inertia",
+                "teams-inertia-vue"
+            ],
+            "replacements": {
+                "{{kit}}": "vue",
+                "{{framework}}": "Vue 3",
+                "{{components}}": "shadcn-vue"
+            }
+        },
+        "react-teams": {
+            "label": "React Teams",
+            "base": "react",
+            "repository": "shire-studio/laravel-starter-kit-react",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-react",
+                "teams",
+                "teams-web",
+                "teams-inertia",
+                "teams-inertia-react"
+            ],
+            "replacements": {
+                "{{kit}}": "react",
+                "{{framework}}": "React 19",
+                "{{components}}": "shadcn/ui"
+            }
+        },
+        "svelte-teams": {
+            "label": "Svelte Teams",
+            "base": "svelte",
+            "repository": "shire-studio/laravel-starter-kit-svelte",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-svelte",
+                "teams",
+                "teams-web",
+                "teams-inertia",
+                "teams-inertia-svelte"
+            ],
+            "replacements": {
+                "{{kit}}": "svelte",
+                "{{framework}}": "Svelte 5",
+                "{{components}}": "shadcn-svelte"
+            }
+        },
+        "livewire-teams": {
+            "label": "Livewire Teams",
+            "base": "livewire",
+            "repository": "shire-studio/laravel-starter-kit-livewire",
+            "node": true,
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "livewire",
+                "teams",
+                "teams-web",
+                "teams-livewire"
+            ],
+            "replacements": {
+                "{{kit}}": "livewire",
+                "{{framework}}": "Livewire 4",
+                "{{components}}": "Flux"
             }
         }
     },
