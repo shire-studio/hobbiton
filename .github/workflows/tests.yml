@@ -107,9 +107,5 @@ jobs:
           composer install --no-interaction --prefer-dist --no-progress
           pnpm install --frozen-lockfile
 
-      - name: Install Playwright Browsers
-        if: matrix.kit.node
-        run: npx --yes playwright install --with-deps chromium
-
       - name: Survey ${{ matrix.kit.label }}
         run: node scripts/survey.js --${{ matrix.kit.name }}

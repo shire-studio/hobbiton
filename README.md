@@ -43,7 +43,7 @@ A smial is a folder under `smials/` holding part of a kit. Raising a kit copies 
 | `api` | JSON controllers, Sanctum, the API tests and the artwork | API |
 | `blade` | The landing page and the artwork | Blade |
 | `teams` | The team domain (models, enums, policy, rules, actions, notification, migrations and factories), the team form requests every team kit shares, the team aware `User`, `UserFactory`, `CreateUser`, `DeleteUser` and `DeleteUserRequest` that override `auth` (API Teams replaces `User`, `UserFactory` and `DeleteUser` again from `teams-api`), and their unit tests | Every team kit |
-| `teams-web` | The session side of teams: the `EnsureTeamMembership` and `SetTeamUrlDefaults` middleware, `CurrentTeamDashboardController` (the `/dashboard` redirect), the web `CreateTeamInvitationUrl`, `FindTeamInvitationContext`, the shared browser test and their unit tests | Vue Teams, React Teams, Svelte Teams, Livewire Teams |
+| `teams-web` | The session side of teams: the `EnsureTeamMembership` and `SetTeamUrlDefaults` middleware, `CurrentTeamDashboardController` (the `/dashboard` redirect), the web `CreateTeamInvitationUrl`, `FindTeamInvitationContext` and their unit tests | Vue Teams, React Teams, Svelte Teams, Livewire Teams |
 | `teams-inertia` | Team Inertia controllers, routes, middleware, Data classes and feature tests | Vue Teams, React Teams, Svelte Teams |
 | `teams-inertia-vue`, `teams-inertia-react`, `teams-inertia-svelte` | The team screens, modals, team switcher and sidebar changes of one frontend | One team kit each |
 | `teams-livewire` | The team controllers that return Blade views, routes, Flux views, the team switcher (a Blade view component) and layout changes, and their feature tests | Livewire Teams |
@@ -114,7 +114,7 @@ The three `teams-inertia-*` smials hold the same screens, so a frontend change t
 
 `livewire-teams` adds `teams`, `teams-web` and `teams-livewire` to the Livewire kit. It has the same routes, route names, middleware, redirects and toast copy as the Inertia team kits, but its pages are Blade views (`pages.dashboard`, `pages.teams.index` and `pages.teams.edit`) built with Flux, and toasts are flashed to the session.
 
-`smials/teams-web/tests/Browser/TeamsTest.php` is the one browser test that all four web team kits run against their own frontend, unchanged. It is the check that the three Inertia frontends and the Livewire screens stay in step, so the Livewire screens use the same copy and `data-test` attributes as the Inertia ones.
+The three Inertia frontends and the Livewire screens stay in step, with the same copy and `data-test` attributes.
 
 ### Tending a Team Kit
 
@@ -124,7 +124,7 @@ Every override of a base file is recorded in `team-overrides.json`, with a hash 
 
 ### Surveying
 
-`composer survey` raises each kit, team kits included, into `raised/<kit>`, installs it, migrates it, builds its assets and runs its own `composer test`. Installs are kept between surveys, so only the first survey of a kit is slow. Pint and Pest TIA caches are cleared before every survey, so a result is never carried over from an earlier run.
+`composer survey` raises each kit, team kits included, into `raised/<kit>`, installs it, migrates it, builds its assets and runs its own `composer test` without the Browser suite, so surveys need no Playwright browsers. Each kit's own CI still runs its browser tests. Installs are kept between surveys, so only the first survey of a kit is slow. Pint and Pest TIA caches are cleared before every survey, so a result is never carried over from an earlier run.
 
 ### Harvesting
 

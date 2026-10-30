@@ -2,7 +2,7 @@
 
 /**
  * Survey kits: raise each selected kit into raised/<kit> and run its full quality suite
- * (composer test: lint, types, type coverage and 100% code coverage).
+ * (composer test: lint, types, type coverage and 100% code coverage, without the Browser suite).
  *
  * vendor/ and node_modules/ survive between surveys, so only the first survey of a kit is slow.
  *
@@ -23,17 +23,22 @@ const failures = [];
 const git = (dir, ...gitArgs) => run('git', ['-c', 'user.name=Hobbiton', '-c', 'user.email=hobbiton@localhost', ...gitArgs], { cwd: dir });
 
 /**
- * Run the kit's composer test with Pint and Pest TIA caches cleared, so a survey never passes on stale results.
+ * Run each step of the kit's composer test with Pint and Pest TIA caches cleared, so a survey never passes on stale results.
  * Pint caches in the system temp directory, so the run gets a fresh one. TIA keeps its state under ~/.pest/tia,
- * which Pest's own Storage::purge() clears for the kit.
+ * which Pest's own Storage::purge() clears for the kit. The Browser suite is skipped, so surveys need no Playwright browsers.
  */
 async function surveyCold(dir) {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'hobbiton-survey-'));
+    const steps = JSON.parse(fs.readFileSync(path.join(dir, 'composer.json'), 'utf-8')).scripts.test.map(step => step.replace(/^@/, ''));
 
     await run('php', ['-r', "require 'vendor/autoload.php'; if (method_exists(Pest\\Plugins\\Tia\\Storage::class, 'purge')) { Pest\\Plugins\\Tia\\Storage::purge(getcwd()); }"], { cwd: dir });
 
     try {
-        await run('composer', ['test'], { cwd: dir, env: { ...process.env, TMPDIR: tmpDir } });
+        for (const step of steps) {
+            const extra = step === 'test:unit' ? ['--', '--exclude-testsuite=Browser'] : [];
+
+            await run('composer', [step, ...extra], { cwd: dir, env: { ...process.env, TMPDIR: tmpDir } });
+        }
     } finally {
         fs.rmSync(tmpDir, { recursive: true, force: true });
     }
