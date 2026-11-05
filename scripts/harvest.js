@@ -19,7 +19,7 @@ import fs from 'fs';
 import path from 'path';
 import readline from 'readline/promises';
 import { promisify } from 'util';
-import { baseKitNames, loadManifest, log, parseArgs, prepareKit, raisedDir, rootDir, run, smialsDir, teamKitsFor } from './helpers.js';
+import { baseKitNames, loadManifest, log, parseArgs, raisedDir, rootDir, run, smialsDir, teamKitsFor } from './helpers.js';
 import {
     bumpablePackages,
     catalogEntries,
@@ -327,10 +327,10 @@ async function harvestHobbiton() {
 }
 
 /**
- * Raise a kit without installing it. A sibling Inertia kit's old lock no longer fits the composer.json and vet.json
- * the first Inertia kit tended, so it goes straight to an update pinned to that kit's lock.
+ * Raise a kit without installing it. Its old lock may not fit: a sibling Inertia kit's no longer matches the shared
+ * composer.json and vet.json, and a security advisory can rule out a locked version, which only the update can fix.
  */
-async function raiseSibling(name) {
+async function raiseKit(name) {
     const dir = path.join(raisedDir, name);
 
     await run('php', ['artisan', 'raise', `--kit=${name}`], { cwd: rootDir });
@@ -351,7 +351,7 @@ async function harvestKit(name) {
     let dir;
 
     try {
-        dir = sibling ? await raiseSibling(name) : await prepareKit(name);
+        dir = await raiseKit(name);
 
         await updateComposer(dir, sibling ? pinArguments(inertiaLock) : []);
 
