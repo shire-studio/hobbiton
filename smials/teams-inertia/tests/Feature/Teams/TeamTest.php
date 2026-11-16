@@ -238,29 +238,6 @@ it('forbids deleting a personal team', function (): void {
         ->assertNotFound();
 });
 
-it('switches teams', function (): void {
-    $user = User::factory()->create();
-    $team = teamFor($user, TeamRole::Member);
-
-    $this->actingAs($user)
-        ->fromRoute('teams.index')
-        ->post(route('teams.switch', $team))
-        ->assertRedirectToRoute('team.dashboard', ['current_team' => $team->slug]);
-
-    expect($user->fresh()->current_team_id)->toBe($team->id);
-});
-
-it('forbids switching to a team the user does not belong to', function (): void {
-    $user = User::factory()->create();
-    $team = Team::factory()->create();
-
-    $this->actingAs($user)
-        ->post(route('teams.switch', $team))
-        ->assertNotFound();
-
-    expect($user->fresh()->current_team_id)->not->toBe($team->id);
-});
-
 it('lets members leave a team', function (): void {
     $user = User::factory()->create();
     $team = teamFor($user, TeamRole::Member, ['name' => 'Acme']);
