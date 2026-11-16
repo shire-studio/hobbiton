@@ -71,7 +71,7 @@ php artisan key:generate
 | `php artisan raise --kit=react` | Raise a kit into `raised/react`, keeping its `vendor`, `node_modules`, `.env` and database |
 | `composer tend -- --react` | Run the raised kit with `composer dev` and copy every change back into `smials/` |
 | `composer tend -- --react --once` | Copy changes back once, without serving or watching |
-| `composer survey` | Raise every kit and run its full `composer test` |
+| `composer survey` | Raise every kit and run its `composer test`, without the Browser suite |
 | `composer survey -- --api --tend` | Survey only the API kit, then copy lock files and tool fixes back |
 | `composer harvest` | Update the dependencies of every kit and of Hobbiton, then survey every kit |
 | `composer harvest -- --api` | Harvest only the API kit, then survey it and its team kit |
