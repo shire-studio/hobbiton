@@ -14,6 +14,19 @@ use Symfony\Component\HttpFoundation\Response;
 final readonly class SetTeamUrlDefaults
 {
     /**
+     * Route model binding by slug reads the `name:field` keys, so each parameter is set under both names.
+     */
+    public static function forTeam(Team $team): void
+    {
+        URL::defaults([
+            'current_team' => $team->slug,
+            'current_team:slug' => $team->slug,
+            'team' => $team->slug,
+            'team:slug' => $team->slug,
+        ]);
+    }
+
+    /**
      * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
@@ -21,12 +34,7 @@ final readonly class SetTeamUrlDefaults
         $user = $request->user();
 
         if ($user instanceof User && ($team = $user->currentTeamOrPersonal()) instanceof Team) {
-            URL::defaults([
-                'current_team' => $team->slug,
-                'current_team:slug' => $team->slug,
-                'team' => $team->slug,
-                'team:slug' => $team->slug,
-            ]);
+            self::forTeam($team);
         }
 
         return $next($request);

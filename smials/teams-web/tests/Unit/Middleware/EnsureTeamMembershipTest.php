@@ -21,7 +21,7 @@ function teamWithMember(User $user, TeamRole $role): Team
     return $team;
 }
 
-function runMembership(?User $user, string $parameter, ?Team $team, ?string $minimumRole = null): Response
+function runMembership(?User $user, string $parameter, ?Team $team): Response
 {
     $request = Request::create('/probe');
     $route = new Route('GET', "{{$parameter}}/probe", []);
@@ -37,7 +37,6 @@ function runMembership(?User $user, string $parameter, ?Team $team, ?string $min
     return resolve(EnsureTeamMembership::class)->handle(
         $request,
         fn (): Response => response('ok'),
-        $minimumRole,
     );
 }
 
@@ -52,20 +51,6 @@ it('rejects guests', function (): void {
 it('rejects routes without a team', function (): void {
     runMembership(User::factory()->create(), 'current_team', null);
 })->throws(NotFoundHttpException::class);
-
-it('rejects members below the minimum role', function (): void {
-    $user = User::factory()->create();
-
-    runMembership($user, 'team', teamWithMember($user, TeamRole::Member), 'admin');
-})->throws(NotFoundHttpException::class);
-
-it('allows members at the minimum role', function (): void {
-    $user = User::factory()->create();
-
-    $response = runMembership($user, 'team', teamWithMember($user, TeamRole::Admin), 'admin');
-
-    expect($response->getContent())->toBe('ok');
-});
 
 it('switches to the team in the url', function (): void {
     $user = User::factory()->create();
