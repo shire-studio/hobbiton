@@ -10,9 +10,6 @@ use Illuminate\Support\Str;
 
 final readonly class CreateTeamSlug
 {
-    /**
-     * Leaves room for a numeric suffix within the 255 character slug column.
-     */
     private const int MAX_BASE_LENGTH = 240;
 
     public function handle(string $name, ?Team $ignoring = null): string
