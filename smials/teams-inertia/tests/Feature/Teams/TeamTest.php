@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\TeamRole;
 use App\Models\Team;
+use App\Models\TeamInvitation;
 use App\Models\User;
 
 function teamFor(User $user, TeamRole $role, array $attributes = []): Team
@@ -79,19 +80,15 @@ it('shows a team to members', function (): void {
     $team = teamFor($owner, TeamRole::Owner, ['name' => 'Acme']);
     $member = User::factory()->create(['name' => 'Mike Member']);
     $team->members()->attach($member, ['role' => TeamRole::Member->value]);
-    $invitation = $team->invitations()->create([
-        'code' => str_repeat('a', 64),
+    $invitation = TeamInvitation::factory()->for($team)->create([
         'email' => 'new@example.com',
         'role' => TeamRole::Admin,
         'invited_by' => $owner->id,
-        'expires_at' => now()->addDays(3),
     ]);
-    $team->invitations()->create([
-        'code' => str_repeat('b', 64),
+    TeamInvitation::factory()->for($team)->expired()->create([
         'email' => 'old@example.com',
         'role' => TeamRole::Admin,
         'invited_by' => $owner->id,
-        'expires_at' => now()->subDay(),
     ]);
 
     $this->actingAs($owner)
@@ -129,12 +126,10 @@ it('hides invitations from members without the invitation permission', function 
     $team = teamFor($owner, TeamRole::Owner);
     $member = User::factory()->create();
     $team->members()->attach($member, ['role' => TeamRole::Member->value]);
-    $team->invitations()->create([
-        'code' => str_repeat('a', 64),
+    TeamInvitation::factory()->for($team)->create([
         'email' => 'new@example.com',
         'role' => TeamRole::Admin,
         'invited_by' => $owner->id,
-        'expires_at' => now()->addDays(3),
     ]);
 
     $this->actingAs($member)
@@ -297,12 +292,10 @@ it('redirects guests to login', function (): void {
 it('does not offer inviting on a personal team', function (): void {
     $user = User::factory()->create();
     $team = $user->personalTeam();
-    $team->invitations()->create([
-        'code' => str_repeat('b', 64),
+    TeamInvitation::factory()->for($team)->create([
         'email' => 'old@example.com',
         'role' => TeamRole::Member,
         'invited_by' => $user->id,
-        'expires_at' => now()->addDays(3),
     ]);
 
     $this->actingAs($user)
