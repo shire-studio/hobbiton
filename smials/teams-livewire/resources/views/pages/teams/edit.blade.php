@@ -149,7 +149,10 @@
 
                         <div class="space-y-3">
                             @foreach ($invitations as $invitation)
-                                <div class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+                                <div
+                                    data-test="invitation-row"
+                                    class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700"
+                                >
                                     <div class="flex min-w-0 items-center gap-4">
                                         <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
                                             <flux:icon.envelope class="size-5 text-zinc-500 dark:text-zinc-400" />

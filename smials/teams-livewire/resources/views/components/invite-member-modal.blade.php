@@ -35,6 +35,7 @@
             <flux:select
                 name="role"
                 id="invite-role"
+                data-test="invite-role"
                 :invalid="old('form') === 'invite-member' && $errors->has('role')"
             >
                 @foreach ($availableRoles as $role)
