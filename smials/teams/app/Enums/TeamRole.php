@@ -51,18 +51,4 @@ enum TeamRole: string
     {
         return in_array($permission, $this->permissions(), true);
     }
-
-    public function level(): int
-    {
-        return match ($this) {
-            self::Owner => 3,
-            self::Admin => 2,
-            self::Member => 1,
-        };
-    }
-
-    public function isAtLeast(self $role): bool
-    {
-        return $this->level() >= $role->level();
-    }
 }
