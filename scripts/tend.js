@@ -37,6 +37,12 @@ const excluded = new Set(kit.exclude ?? []);
 const teamKits = teamKitsIn(manifest);
 const checking = args.includes('--once') && args.includes('--check');
 
+/**
+ * Directories tend never syncs: installs, git, and the team overlay that packing writes.
+ */
+const IGNORED_DIRECTORIES = ['.git', '.starter-kit', 'vendor', 'node_modules'];
+const isIgnoredDirectory = relativePath => IGNORED_DIRECTORIES.some(directory => relativePath === directory || relativePath.startsWith(`${directory}/`));
+
 if (!fs.existsSync(path.join(kitDir, 'composer.json'))) {
     log(`${kit.label} has not been raised. Run 'php artisan raise --kit=${kitName}' first.`, 'red');
     process.exit(1);
@@ -46,7 +52,7 @@ if (!fs.existsSync(path.join(kitDir, 'composer.json'))) {
  * Ask git which files the kit's own .gitignore files ignore. Every raised kit is its own repository.
  */
 function isIgnored(relativePath) {
-    if (/^(\.git|\.starter-kit|vendor|node_modules)(\/|$)/.test(relativePath) || relativePath === '.env') {
+    if (isIgnoredDirectory(relativePath) || relativePath === '.env') {
         return true;
     }
 
@@ -152,7 +158,7 @@ function deleteFile(absolutePath) {
 
 function walk(dir, files = []) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        if (['node_modules', 'vendor', '.git', '.starter-kit'].includes(entry.name)) {
+        if (IGNORED_DIRECTORIES.includes(entry.name)) {
             continue;
         }
 
@@ -181,7 +187,7 @@ if (args.includes('--once')) {
 chokidar
     .watch(kitDir, {
         ignoreInitial: true,
-        ignored: file => /\/(node_modules|vendor|\.git|\.starter-kit)(\/|$)/.test(file),
+        ignored: file => normalizePath(path.relative(kitDir, file)).split('/').some(segment => IGNORED_DIRECTORIES.includes(segment)),
         awaitWriteFinish: { stabilityThreshold: 100 },
     })
     .on('add', syncFile)
