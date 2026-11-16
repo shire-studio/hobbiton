@@ -15,11 +15,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 final readonly class SwitchTeamController
 {
-    /**
-     * Returns to the page the switch came from, with the old team's slug swapped for the new one in the route parameters
-     * that hold it, so a team page shows the new team. A previous page on another host, or one that matches no route,
-     * falls back to the new team's dashboard.
-     */
     public function __invoke(Request $request, Team $team, #[CurrentUser] User $user, SwitchTeam $switchTeam, Router $router): RedirectResponse
     {
         $previousTeam = $user->currentTeamOrPersonal();

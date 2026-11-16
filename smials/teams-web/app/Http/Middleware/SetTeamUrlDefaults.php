@@ -13,9 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final readonly class SetTeamUrlDefaults
 {
-    /**
-     * Route model binding by slug reads the `name:field` keys, so each parameter is set under both names.
-     */
     public static function forTeam(Team $team): void
     {
         URL::defaults([
