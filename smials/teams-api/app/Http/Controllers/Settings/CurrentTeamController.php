@@ -10,12 +10,15 @@ use App\Http\Resources\TeamResource;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Support\Facades\Gate;
 
 final readonly class CurrentTeamController
 {
     public function __invoke(UpdateCurrentTeamRequest $request, #[CurrentUser] User $user, SwitchTeam $switchTeam): TeamResource
     {
         $team = Team::query()->findOrFail($request->string('team_id')->value());
+
+        Gate::authorize('view', $team);
 
         $switchTeam->handle($user, $team);
 

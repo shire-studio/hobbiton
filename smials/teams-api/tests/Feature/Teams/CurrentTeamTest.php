@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\TeamRole;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 
 it('switches the current team', function (): void {
@@ -29,8 +30,19 @@ it('rejects a team the user does not belong to', function (): void {
     Sanctum::actingAs($user);
 
     $this->putJson(route('user.current-team.update'), ['team_id' => Team::factory()->create()->id])
-        ->assertUnprocessable()
-        ->assertJsonValidationErrors('team_id');
+        ->assertNotFound();
+
+    expect($user->fresh()->current_team_id)->toBe($current);
+});
+
+it('rejects a team that does not exist', function (): void {
+    $user = User::factory()->create();
+    $current = $user->current_team_id;
+
+    Sanctum::actingAs($user);
+
+    $this->putJson(route('user.current-team.update'), ['team_id' => (string) Str::uuid()])
+        ->assertNotFound();
 
     expect($user->fresh()->current_team_id)->toBe($current);
 });
