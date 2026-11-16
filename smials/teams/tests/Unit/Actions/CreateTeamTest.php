@@ -9,7 +9,7 @@ use App\Models\User;
 it('creates a team owned by the user and switches to it', function (): void {
     $user = User::factory()->create();
 
-    $team = resolve(CreateTeam::class)->handle($user, ['name' => 'Acme Inc']);
+    $team = resolve(CreateTeam::class)->handle($user, ['name' => 'Acme Inc'])->refresh();
 
     expect($team->name)->toBe('Acme Inc')
         ->and($team->slug)->toBe('acme-inc')
@@ -21,7 +21,7 @@ it('creates a team owned by the user and switches to it', function (): void {
 it('creates a personal team', function (): void {
     $user = User::factory()->withoutPersonalTeam()->create();
 
-    $team = resolve(CreateTeam::class)->handle($user, ['name' => "{$user->name}'s Team"], personal: true);
+    $team = resolve(CreateTeam::class)->handle($user, ['name' => "{$user->name}'s Team"], personal: true)->refresh();
 
     expect($team->is_personal)->toBeTrue()
         ->and($user->personalTeam()?->is($team))->toBeTrue();

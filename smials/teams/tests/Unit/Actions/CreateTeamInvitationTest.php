@@ -17,7 +17,7 @@ it('creates an invitation that expires in three days', function (): void {
     $invitation = resolve(CreateTeamInvitation::class)->handle($team, $inviter, [
         'email' => 'new@example.com',
         'role' => 'admin',
-    ]);
+    ])->refresh();
 
     expect($invitation->email)->toBe('new@example.com')
         ->and($invitation->role)->toBe(TeamRole::Admin)
