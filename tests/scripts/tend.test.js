@@ -172,9 +172,9 @@ test('tend --once exits 1 when it refuses a file, and writes nothing to smials',
     fs.writeFileSync(path.join(checkout, 'hobbiton.json'), JSON.stringify({
         kits: {
             a: { label: 'A', repository: 'x/a', node: false, smials: ['web'] },
-            'a-teams': { label: 'A Teams', base: 'a', repository: 'x/a', node: false, smials: ['web', 'teams'] },
+            'a-teams': { label: 'A Teams', base: 'a', smials: ['web', 'teams'] },
             b: { label: 'B', repository: 'x/b', node: false, smials: [] },
-            'b-teams': { label: 'B Teams', base: 'b', repository: 'x/b', node: false, smials: ['teams'] },
+            'b-teams': { label: 'B Teams', base: 'b', smials: ['teams'] },
         },
         replacementPaths: [],
     }));

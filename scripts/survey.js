@@ -14,10 +14,10 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { log, parseArgs, prepareKit, raisedDir, rootDir, run } from './helpers.js';
+import { loadManifest, log, parseArgs, prepareKit, raisedDir, rootDir, run } from './helpers.js';
 
-const { kits, flags } = parseArgs(process.argv.slice(2), ['tend']);
-const manifest = JSON.parse(fs.readFileSync(path.join(rootDir, 'hobbiton.json'), 'utf-8'));
+const manifest = loadManifest();
+const { kits, flags } = parseArgs(process.argv.slice(2), ['tend'], manifest);
 const failures = [];
 
 const git = (dir, ...gitArgs) => run('git', ['-c', 'user.name=Hobbiton', '-c', 'user.email=hobbiton@localhost', ...gitArgs], { cwd: dir });

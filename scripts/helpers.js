@@ -18,7 +18,35 @@ export function log(message, color = 'reset') {
 }
 
 export function loadManifest() {
-    return JSON.parse(fs.readFileSync(path.join(rootDir, 'hobbiton.json'), 'utf-8'));
+    return inheritBases(JSON.parse(fs.readFileSync(path.join(rootDir, 'hobbiton.json'), 'utf-8')));
+}
+
+/**
+ * A team kit ships in its base kit's repository, so it takes the base kit's repository, node and replacements. Its
+ * exclude list adds to the base kit's, which lets it drop a file the base kit raises. Mirrors App\Support\Manifest.
+ */
+export function inheritBases(manifest) {
+    const kits = Object.fromEntries(Object.entries(manifest.kits).map(([name, kit]) => {
+        if (!kit.base) {
+            return [name, kit];
+        }
+
+        const base = manifest.kits[kit.base];
+
+        if (!base) {
+            throw new Error(`Kit ${name} has an unknown base ${kit.base}.`);
+        }
+
+        return [name, {
+            ...kit,
+            repository: base.repository,
+            node: base.node,
+            exclude: [...(base.exclude ?? []), ...(kit.exclude ?? [])],
+            replacements: base.replacements,
+        }];
+    }));
+
+    return { ...manifest, kits };
 }
 
 /**

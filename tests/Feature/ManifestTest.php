@@ -4,9 +4,22 @@ use App\Support\Manifest;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Finder\SplFileInfo;
 
-it('lists base kits', function () {
-    expect(Manifest::load()->baseKits())->toBe(['vue', 'react', 'svelte', 'livewire', 'api', 'blade']);
+beforeEach(function () {
+    $this->root = storage_path('framework/testing/manifest-'.uniqid());
+
+    File::ensureDirectoryExists($this->root);
 });
+
+afterEach(function () {
+    File::deleteDirectory($this->root);
+});
+
+function manifestFixture(string $root, array $kits): Manifest
+{
+    File::put("{$root}/hobbiton.json", json_encode(['kits' => $kits, 'replacementPaths' => ['composer.json']]));
+
+    return Manifest::load("{$root}/hobbiton.json");
+}
 
 it('pairs every team kit with a base kit', function () {
     $manifest = Manifest::load();
@@ -44,18 +57,39 @@ it('raises team kits from their base smials followed by team smials', function (
     }
 });
 
-it("gives team kits their base kit's repository, node, exclude and replacements", function () {
-    $manifest = Manifest::load();
+it("gives a team kit its base kit's repository, node and replacements, and adds its exclude to the base kit's", function () {
+    $manifest = manifestFixture($this->root, [
+        'api' => ['label' => 'API', 'repository' => 'x/api', 'node' => false, 'smials' => ['api'], 'exclude' => ['routes/web.php'], 'replacements' => ['{{kit}}' => 'api']],
+        'api-teams' => ['label' => 'API Teams', 'base' => 'api', 'smials' => ['api', 'teams'], 'exclude' => ['config/teams.php']],
+        'blade' => ['label' => 'Blade', 'repository' => 'x/blade', 'node' => true, 'smials' => ['blade'], 'replacements' => ['{{kit}}' => 'blade']],
+        'blade-teams' => ['label' => 'Blade Teams', 'base' => 'blade', 'smials' => ['blade', 'teams']],
+    ]);
 
-    foreach ($manifest->kits as $team) {
-        if (! isset($team['base'])) {
-            continue;
-        }
+    expect($manifest->kit('api-teams'))->toBe([
+        'label' => 'API Teams',
+        'base' => 'api',
+        'smials' => ['api', 'teams'],
+        'exclude' => ['routes/web.php', 'config/teams.php'],
+        'repository' => 'x/api',
+        'node' => false,
+        'replacements' => ['{{kit}}' => 'api'],
+    ])
+        ->and($manifest->kit('blade-teams')['exclude'])->toBe([])
+        ->and($manifest->kit('blade-teams')['node'])->toBeTrue()
+        ->and($manifest->kit('api'))->not->toHaveKey('base')
+        ->and($manifest->replacementPaths)->toBe(['composer.json']);
+});
 
-        $base = $manifest->kit($team['base']);
+it('rejects a team kit with an unknown base', function () {
+    manifestFixture($this->root, ['x-teams' => ['label' => 'X Teams', 'base' => 'x', 'smials' => []]]);
+})->throws(InvalidArgumentException::class, 'Kit [x-teams] has an unknown base [x].');
 
-        foreach (['repository', 'node', 'exclude', 'replacements'] as $key) {
-            expect($team[$key] ?? null)->toBe($base[$key] ?? null);
+it('leaves repository, node and replacements of team kits to their base kit', function () {
+    $kits = json_decode(File::get(base_path('hobbiton.json')), true, flags: JSON_THROW_ON_ERROR)['kits'];
+
+    foreach ($kits as $name => $kit) {
+        if (isset($kit['base'])) {
+            expect(array_intersect_key($kit, array_flip(['repository', 'node', 'replacements'])))->toBe([], "{$name} sets keys it takes from {$kit['base']}");
         }
     }
 });

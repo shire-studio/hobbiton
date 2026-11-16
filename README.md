@@ -49,7 +49,7 @@ A smial is a folder under `smials/` holding part of a kit. Raising a kit copies 
 | `teams-livewire` | The team controllers that return Blade views, routes, Flux views, the team switcher (a Blade view component) and layout changes, and their feature tests | Livewire Teams |
 | `teams-api` | Team JSON controllers, resources, routes and API feature tests | API Teams |
 
-`hobbiton.json` lists every kit with its smials, the files it leaves out and the `{{placeholders}}` it fills in. A team kit also names its `base` kit. `raise`, `tend`, `survey`, `deliver` and both CI workflows read it.
+`hobbiton.json` lists every kit with its smials, the files it leaves out and the `{{placeholders}}` it fills in. A team kit also names its `base` kit and takes that kit's repository, `node` setting and placeholders. Its `exclude` list adds to the base kit's, so a team kit can drop a file its base kit raises, and the overlay then deletes it. `raise`, `tend`, `survey`, `deliver` and both CI workflows read it.
 
 The three Inertia kits use the same page names (for example `auth/Login`), so their `app`, `routes` and `tests/Feature` folders are identical byte for byte. The three Inertia team kits do the same with theirs. Hobbiton's own test suite checks both.
 

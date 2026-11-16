@@ -137,7 +137,7 @@ function deleteFile(absolutePath) {
     if (smial === null) {
         const owner = tendTarget(relativePath, kit, smialsDir, teamKits).overrides;
 
-        log(`${relativePath} belongs to smials/${owner}. Add it to exclude in hobbiton.json to drop it from ${kit.label}.`, 'yellow');
+        log(`${relativePath} belongs to smials/${owner}. Add it to the exclude list of ${kitName} in hobbiton.json to drop it from ${kit.label}.`, 'yellow');
 
         return;
     }
