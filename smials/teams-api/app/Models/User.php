@@ -9,6 +9,7 @@ use Carbon\CarbonInterface;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -25,6 +26,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $current_team_id
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
+ * @property-read Collection<int, Team> $teams
+ * @property-read Collection<int, Team> $ownedTeams
+ * @property-read Collection<int, Membership> $teamMemberships
+ * @property-read Team|null $currentTeam
  */
 #[Hidden([
     'password',

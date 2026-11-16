@@ -32,6 +32,10 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
  * @property-read Collection<int, Passkey> $passkeys
+ * @property-read Collection<int, Team> $teams
+ * @property-read Collection<int, Team> $ownedTeams
+ * @property-read Collection<int, Membership> $teamMemberships
+ * @property-read Team|null $currentTeam
  */
 #[Hidden([
     'password',
