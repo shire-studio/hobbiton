@@ -35,39 +35,25 @@ it('lets later smials override earlier ones', function () {
         ->and("{$this->path}/resources/js/pages/auth/Login.vue")->not->toBeFile();
 });
 
-it('shares the php application between the inertia kits', function () {
+it('shares the php application between the inertia kits', function (array $kits) {
     $paths = ['app', 'routes', 'tests/Feature'];
 
-    $raised = collect(['vue', 'react', 'svelte'])->mapWithKeys(function (string $kit) use ($paths) {
+    $raised = collect($kits)->map(function (string $kit) use ($paths) {
         $path = "{$this->path}/{$kit}";
         raise($kit, $path);
 
-        return [$kit => collect($paths)->flatMap(fn (string $directory) => collect(File::allFiles("{$path}/{$directory}"))
+        return collect($paths)->flatMap(fn (string $directory) => collect(File::allFiles("{$path}/{$directory}"))
             ->mapWithKeys(fn ($file) => [$directory.'/'.$file->getRelativePathname() => md5($file->getContents())]))
             ->sortKeys()
-            ->all()];
+            ->all();
     });
 
-    expect($raised['react'])->toBe($raised['vue'])
-        ->and($raised['svelte'])->toBe($raised['vue']);
-});
-
-it('shares the php application between the inertia team kits', function () {
-    $paths = ['app', 'routes', 'tests/Feature'];
-
-    $raised = collect(['vue-teams', 'react-teams', 'svelte-teams'])->mapWithKeys(function (string $kit) use ($paths) {
-        $path = "{$this->path}/{$kit}";
-        raise($kit, $path);
-
-        return [$kit => collect($paths)->flatMap(fn (string $directory) => collect(File::allFiles("{$path}/{$directory}"))
-            ->mapWithKeys(fn ($file) => [$directory.'/'.$file->getRelativePathname() => md5($file->getContents())]))
-            ->sortKeys()
-            ->all()];
-    });
-
-    expect($raised['react-teams'])->toBe($raised['vue-teams'])
-        ->and($raised['svelte-teams'])->toBe($raised['vue-teams']);
-});
+    expect($raised[1])->toBe($raised[0])
+        ->and($raised[2])->toBe($raised[0]);
+})->with([
+    'base kits' => [['vue', 'react', 'svelte']],
+    'team kits' => [['vue-teams', 'react-teams', 'svelte-teams']],
+]);
 
 it('removes excluded files and the directories they leave empty', function () {
     raise('api', $this->path);
