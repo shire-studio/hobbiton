@@ -109,4 +109,18 @@ final class TeamInvitation extends Model
                 $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
             });
     }
+
+    /**
+     * @param  Builder<TeamInvitation>  $query
+     */
+    #[Scope]
+    public function pendingFor(Builder $query, User $user): void
+    {
+        $this->pending($query);
+        $this->joinable($query);
+
+        $query->whereRaw('LOWER(email) = ?', [mb_strtolower($user->email)])
+            ->with(['team', 'inviter'])
+            ->latest();
+    }
 }

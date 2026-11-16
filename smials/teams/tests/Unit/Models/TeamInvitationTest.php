@@ -38,6 +38,22 @@ it('scopes pending invitations', function (): void {
         ->toEqualCanonicalizing([$pending->id, $open->id]);
 });
 
+it('scopes pending invitations a user can join, latest first', function (): void {
+    $user = User::factory()->create(['email' => 'me@example.com']);
+    $older = TeamInvitation::factory()->create(['email' => 'ME@example.com', 'created_at' => now()->subDay()]);
+    $newer = TeamInvitation::factory()->create(['email' => 'me@example.com']);
+    TeamInvitation::factory()->expired()->create(['email' => 'me@example.com']);
+    TeamInvitation::factory()->accepted()->create(['email' => 'me@example.com']);
+    TeamInvitation::factory()->for(Team::factory()->personal())->create(['email' => 'me@example.com']);
+    TeamInvitation::factory()->create(['email' => 'other@example.com']);
+
+    $invitations = TeamInvitation::query()->pendingFor($user)->get();
+
+    expect($invitations->pluck('id')->all())->toBe([$newer->id, $older->id])
+        ->and($invitations->first()?->relationLoaded('team'))->toBeTrue()
+        ->and($invitations->first()?->relationLoaded('inviter'))->toBeTrue();
+});
+
 it('relates to its team and inviter and routes by code', function (): void {
     $team = Team::factory()->create();
     $inviter = User::factory()->withoutPersonalTeam()->create();

@@ -16,17 +16,11 @@ final readonly class DashboardController
 {
     public function __invoke(Team $current_team, #[CurrentUser] User $user): Response
     {
-        $pending = TeamInvitation::query();
-        $pending->scopes(['pending', 'joinable']);
-
-        $invitations = $pending
-            ->whereRaw('LOWER(email) = ?', [mb_strtolower($user->email)])
-            ->with(['team', 'inviter'])
-            ->latest()
-            ->get();
+        $invitations = TeamInvitation::query();
+        $invitations->scopes(['pendingFor' => [$user]]);
 
         return Inertia::render('Dashboard', [
-            'pendingInvitations' => $invitations
+            'pendingInvitations' => $invitations->get()
                 ->map(PendingTeamInvitationData::fromInvitation(...))
                 ->values()
                 ->all(),

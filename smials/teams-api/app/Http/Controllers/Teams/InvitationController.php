@@ -14,12 +14,8 @@ final readonly class InvitationController
 {
     public function index(#[CurrentUser] User $user): AnonymousResourceCollection
     {
-        $invitations = TeamInvitation::query()
-            ->whereRaw('LOWER(email) = ?', [mb_strtolower($user->email)])
-            ->with(['team', 'inviter'])
-            ->latest();
-
-        $invitations->scopes(['pending', 'joinable']);
+        $invitations = TeamInvitation::query();
+        $invitations->scopes(['pendingFor' => [$user]]);
 
         return TeamInvitationResource::collection($invitations->get());
     }
