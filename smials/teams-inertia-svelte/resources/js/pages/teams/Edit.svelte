@@ -15,7 +15,7 @@
     members: App.Data.TeamMemberData[]
     invitations: App.Data.TeamInvitationData[]
     permissions: App.Data.TeamPermissionsData
-    availableRoles: { value: string; label: string }[]
+    availableRoles: App.Data.TeamRoleData[]
   } = $props()
 
   const breadcrumbs: BreadcrumbItem[] = $derived([
@@ -42,7 +42,7 @@
 
   const updateMemberRole = (
     member: App.Data.TeamMemberData,
-    newRole: string,
+    newRole: App.Enums.TeamRole,
   ) => {
     router.visit(updateMember([team.slug, member.id]), {
       data: { role: newRole },
@@ -156,7 +156,7 @@
               </div>
 
               <div class="flex items-center gap-2">
-                {#if member.role !== 'owner' && permissions.can_update_member}
+                {#if member.can_update}
                   <UiDropdownMenu>
                     <UiDropdownMenuTrigger asChild>
                       {#snippet children(props)}
@@ -199,7 +199,7 @@
                   </UiBadge>
                 {/if}
 
-                {#if member.role !== 'owner' && permissions.can_remove_member}
+                {#if member.can_remove}
                   <UiTooltipProvider delayDuration={0}>
                     <UiTooltip>
                       <UiTooltipTrigger>
@@ -241,6 +241,7 @@
           <div class="space-y-3">
             {#each invitations as invitation (invitation.code)}
               <div
+                data-test="invitation-row"
                 class="flex items-center justify-between rounded-lg border p-4"
               >
                 <div class="flex items-center gap-4">

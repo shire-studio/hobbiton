@@ -9,7 +9,7 @@ const props = defineProps<{
   members: App.Data.TeamMemberData[]
   invitations: App.Data.TeamInvitationData[]
   permissions: App.Data.TeamPermissionsData
-  availableRoles: { value: string; label: string }[]
+  availableRoles: App.Data.TeamRoleData[]
 }>()
 
 const breadcrumbItems = computed<BreadcrumbItem[]>(() => [
@@ -39,7 +39,10 @@ const pageTitle = computed(() =>
     : `View ${props.team.name}`,
 )
 
-const updateMemberRole = (member: App.Data.TeamMemberData, newRole: string) => {
+const updateMemberRole = (
+  member: App.Data.TeamMemberData,
+  newRole: App.Enums.TeamRole,
+) => {
   router.visit(updateMember([props.team.slug, member.id]), {
     data: { role: newRole },
     preserveScroll: true,
@@ -152,11 +155,7 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
               </div>
 
               <div class="flex items-center gap-2">
-                <UiDropdownMenu
-                  v-if="
-                    member.role !== 'owner' && permissions.can_update_member
-                  "
-                >
+                <UiDropdownMenu v-if="member.can_update">
                   <UiDropdownMenuTrigger as-child>
                     <UiButton
                       data-test="member-role"
@@ -182,11 +181,7 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
                   {{ member.role_label }}
                 </UiBadge>
 
-                <UiTooltipProvider
-                  v-if="
-                    member.role !== 'owner' && permissions.can_remove_member
-                  "
-                >
+                <UiTooltipProvider v-if="member.can_remove">
                   <UiTooltip>
                     <UiTooltipTrigger as-child>
                       <UiButton
@@ -222,6 +217,7 @@ const confirmCancelInvitation = (invitation: App.Data.TeamInvitationData) => {
             <div
               v-for="invitation in invitations"
               :key="invitation.code"
+              data-test="invitation-row"
               class="flex items-center justify-between rounded-lg border p-4"
             >
               <div class="flex items-center gap-4">

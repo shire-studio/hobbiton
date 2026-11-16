@@ -15,9 +15,6 @@
   let leaveTeamDialogOpen = $state(false)
   let teamLeaving = $state<App.Data.TeamData | null>(null)
 
-  const canLeaveTeam = (team: App.Data.TeamData) =>
-    !team.is_personal && team.role !== 'owner'
-
   const openLeaveTeamDialog = (team: App.Data.TeamData) => {
     teamLeaving = team
     leaveTeamDialogOpen = true
@@ -68,7 +65,7 @@
 
             <UiTooltipProvider delayDuration={0}>
               <div class="flex items-center gap-2">
-                {#if canLeaveTeam(team)}
+                {#if team.can_leave}
                   <UiTooltip>
                     <UiTooltipTrigger>
                       {#snippet child({ props })}
@@ -96,15 +93,13 @@
                       <UiButton variant="ghost" size="sm" asChild {...props}>
                         {#snippet children(buttonProps)}
                           <Link {...buttonProps} href={edit(team.slug)}>
-                            {#if team.role === 'member'}
-                              <Eye class="h-4 w-4" />
-                            {:else}
+                            {#if team.can_update}
                               <Pencil class="h-4 w-4" />
+                            {:else}
+                              <Eye class="h-4 w-4" />
                             {/if}
                             <span class="sr-only">
-                              {team.role === 'member'
-                                ? 'View team'
-                                : 'Edit team'}
+                              {team.can_update ? 'Edit team' : 'View team'}
                             </span>
                           </Link>
                         {/snippet}
@@ -112,7 +107,7 @@
                     {/snippet}
                   </UiTooltipTrigger>
                   <UiTooltipContent>
-                    <p>{team.role === 'member' ? 'View team' : 'Edit team'}</p>
+                    <p>{team.can_update ? 'Edit team' : 'View team'}</p>
                   </UiTooltipContent>
                 </UiTooltip>
               </div>

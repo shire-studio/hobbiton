@@ -17,9 +17,6 @@ const breadcrumbItems: BreadcrumbItem[] = [
 const leaveTeamDialogOpen = ref(false)
 const teamLeaving = ref<App.Data.TeamData | null>(null)
 
-const canLeaveTeam = (team: App.Data.TeamData) =>
-  !team.is_personal && team.role !== 'owner'
-
 const openLeaveTeamDialog = (team: App.Data.TeamData) => {
   teamLeaving.value = team
   leaveTeamDialogOpen.value = true
@@ -70,7 +67,7 @@ const openLeaveTeamDialog = (team: App.Data.TeamData) => {
 
             <UiTooltipProvider>
               <div class="flex items-center gap-2">
-                <UiTooltip v-if="canLeaveTeam(team)">
+                <UiTooltip v-if="team.can_leave">
                   <UiTooltipTrigger as-child>
                     <UiButton
                       data-test="leave-team"
@@ -91,19 +88,17 @@ const openLeaveTeamDialog = (team: App.Data.TeamData) => {
                   <UiTooltipTrigger as-child>
                     <UiButton variant="ghost" size="sm" as-child>
                       <Link :href="edit(team.slug)">
-                        <Eye v-if="team.role === 'member'" class="h-4 w-4" />
-                        <Pencil v-else class="h-4 w-4" />
+                        <Pencil v-if="team.can_update" class="h-4 w-4" />
+                        <Eye v-else class="h-4 w-4" />
                         <span class="sr-only">
-                          {{
-                            team.role === 'member' ? 'View team' : 'Edit team'
-                          }}
+                          {{ team.can_update ? 'Edit team' : 'View team' }}
                         </span>
                       </Link>
                     </UiButton>
                   </UiTooltipTrigger>
                   <UiTooltipContent>
                     <p>
-                      {{ team.role === 'member' ? 'View team' : 'Edit team' }}
+                      {{ team.can_update ? 'Edit team' : 'View team' }}
                     </p>
                   </UiTooltipContent>
                 </UiTooltip>

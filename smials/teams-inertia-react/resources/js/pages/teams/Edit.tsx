@@ -8,7 +8,7 @@ type Props = {
   members: App.Data.TeamMemberData[]
   invitations: App.Data.TeamInvitationData[]
   permissions: App.Data.TeamPermissionsData
-  availableRoles: { value: string; label: string }[]
+  availableRoles: App.Data.TeamRoleData[]
 }
 
 export default function Edit({
@@ -46,7 +46,7 @@ export default function Edit({
 
   const updateMemberRole = (
     member: App.Data.TeamMemberData,
-    newRole: string,
+    newRole: App.Enums.TeamRole,
   ) => {
     router.visit(updateMember([team.slug, member.id]), {
       data: { role: newRole },
@@ -165,8 +165,7 @@ export default function Edit({
                   </div>
 
                   <div className="flex items-center gap-2">
-                    {member.role !== 'owner' &&
-                    permissions.can_update_member ? (
+                    {member.can_update ? (
                       <UiDropdownMenu>
                         <UiDropdownMenuTrigger asChild>
                           <UiButton
@@ -196,27 +195,26 @@ export default function Edit({
                       <UiBadge variant="secondary">{member.role_label}</UiBadge>
                     )}
 
-                    {member.role !== 'owner' &&
-                      permissions.can_remove_member && (
-                        <UiTooltipProvider>
-                          <UiTooltip>
-                            <UiTooltipTrigger asChild>
-                              <UiButton
-                                data-test="remove-member"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => confirmRemoveMember(member)}
-                              >
-                                <X className="h-4 w-4" />
-                                <span className="sr-only">Remove member</span>
-                              </UiButton>
-                            </UiTooltipTrigger>
-                            <UiTooltipContent>
-                              <p>Remove member</p>
-                            </UiTooltipContent>
-                          </UiTooltip>
-                        </UiTooltipProvider>
-                      )}
+                    {member.can_remove && (
+                      <UiTooltipProvider>
+                        <UiTooltip>
+                          <UiTooltipTrigger asChild>
+                            <UiButton
+                              data-test="remove-member"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => confirmRemoveMember(member)}
+                            >
+                              <X className="h-4 w-4" />
+                              <span className="sr-only">Remove member</span>
+                            </UiButton>
+                          </UiTooltipTrigger>
+                          <UiTooltipContent>
+                            <p>Remove member</p>
+                          </UiTooltipContent>
+                        </UiTooltip>
+                      </UiTooltipProvider>
+                    )}
                   </div>
                 </div>
               ))}
@@ -237,6 +235,7 @@ export default function Edit({
                 {invitations.map((invitation) => (
                   <div
                     key={invitation.code}
+                    data-test="invitation-row"
                     className="flex items-center justify-between rounded-lg border p-4"
                   >
                     <div className="flex items-center gap-4">

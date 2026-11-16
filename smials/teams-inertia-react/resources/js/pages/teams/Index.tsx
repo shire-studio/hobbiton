@@ -13,9 +13,6 @@ const breadcrumbItems: BreadcrumbItem[] = [
   },
 ]
 
-const canLeaveTeam = (team: App.Data.TeamData) =>
-  !team.is_personal && team.role !== 'owner'
-
 export default function Index({ teams }: Props) {
   const [leaveTeamDialogOpen, setLeaveTeamDialogOpen] = useState(false)
   const [teamLeaving, setTeamLeaving] = useState<App.Data.TeamData | null>(null)
@@ -69,7 +66,7 @@ export default function Index({ teams }: Props) {
 
                 <UiTooltipProvider>
                   <div className="flex items-center gap-2">
-                    {canLeaveTeam(team) && (
+                    {team.can_leave && (
                       <UiTooltip>
                         <UiTooltipTrigger asChild>
                           <UiButton
@@ -92,23 +89,19 @@ export default function Index({ teams }: Props) {
                       <UiTooltipTrigger asChild>
                         <UiButton variant="ghost" size="sm" asChild>
                           <Link href={edit(team.slug)}>
-                            {team.role === 'member' ? (
-                              <Eye className="h-4 w-4" />
-                            ) : (
+                            {team.can_update ? (
                               <Pencil className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
                             )}
                             <span className="sr-only">
-                              {team.role === 'member'
-                                ? 'View team'
-                                : 'Edit team'}
+                              {team.can_update ? 'Edit team' : 'View team'}
                             </span>
                           </Link>
                         </UiButton>
                       </UiTooltipTrigger>
                       <UiTooltipContent>
-                        <p>
-                          {team.role === 'member' ? 'View team' : 'Edit team'}
-                        </p>
+                        <p>{team.can_update ? 'Edit team' : 'View team'}</p>
                       </UiTooltipContent>
                     </UiTooltip>
                   </div>
