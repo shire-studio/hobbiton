@@ -4,24 +4,21 @@ use App\Support\Manifest;
 use App\Support\TeamOverrides;
 use Illuminate\Support\Facades\File;
 
-$GLOBALS['overridesFixtures'] = [];
+beforeEach(function () {
+    $this->root = storage_path('framework/testing/overrides-'.uniqid());
 
-afterEach(function () {
-    foreach ($GLOBALS['overridesFixtures'] as $path) {
-        File::deleteDirectory($path);
-    }
-
-    $GLOBALS['overridesFixtures'] = [];
+    File::ensureDirectoryExists($this->root);
 });
 
-function overridesFixture(array $files, array $kits = []): array
-{
-    $path = sys_get_temp_dir().'/hobbiton-overrides-'.uniqid();
-    $GLOBALS['overridesFixtures'][] = $path;
+afterEach(function () {
+    File::deleteDirectory($this->root);
+});
 
+function overridesFixture(string $root, array $files, array $kits = []): Manifest
+{
     foreach ($files as $file => $contents) {
-        File::ensureDirectoryExists(dirname("{$path}/{$file}"));
-        File::put("{$path}/{$file}", $contents);
+        File::ensureDirectoryExists(dirname("{$root}/{$file}"));
+        File::put("{$root}/{$file}", $contents);
     }
 
     $kits = $kits ?: [
@@ -29,7 +26,7 @@ function overridesFixture(array $files, array $kits = []): array
         'api-teams' => ['base' => 'api', 'smials' => ['common', 'auth', 'api', 'teams', 'teams-api']],
     ];
 
-    return [new Manifest($kits, []), $path];
+    return new Manifest($kits, []);
 }
 
 function entry(string $base, string $contents): array
@@ -38,84 +35,84 @@ function entry(string $base, string $contents): array
 }
 
 it('accepts an override whose base file is unchanged', function () {
-    [$manifest, $path] = overridesFixture([
+    $manifest = overridesFixture($this->root, [
         'auth/app/Models/User.php' => 'base',
         'teams/app/Models/User.php' => 'team',
     ]);
 
-    expect(TeamOverrides::problems($manifest, $path, ['teams/app/Models/User.php' => entry('auth', 'base')]))->toBe([]);
+    expect(TeamOverrides::problems($manifest, $this->root, ['teams/app/Models/User.php' => entry('auth', 'base')]))->toBe([]);
 });
 
 it('fails when a base file changed after it was overridden', function () {
-    [$manifest, $path] = overridesFixture([
+    $manifest = overridesFixture($this->root, [
         'auth/app/Models/User.php' => 'changed',
         'teams/app/Models/User.php' => 'team',
     ]);
 
-    $problems = TeamOverrides::problems($manifest, $path, ['teams/app/Models/User.php' => entry('auth', 'base')]);
+    $problems = TeamOverrides::problems($manifest, $this->root, ['teams/app/Models/User.php' => entry('auth', 'base')]);
 
     expect($problems)->toHaveCount(1)
         ->and($problems[0])->toContain('teams/app/Models/User.php')->toContain('auth');
 });
 
 it('fails when an override is missing from the ledger', function () {
-    [$manifest, $path] = overridesFixture([
+    $manifest = overridesFixture($this->root, [
         'auth/app/Models/User.php' => 'base',
         'teams/app/Models/User.php' => 'team',
     ]);
 
-    $problems = TeamOverrides::problems($manifest, $path, []);
+    $problems = TeamOverrides::problems($manifest, $this->root, []);
 
     expect($problems)->toHaveCount(1)
         ->and($problems[0])->toContain('teams/app/Models/User.php')->toContain('auth');
 });
 
 it('fails when the ledger lists a file that no longer exists', function () {
-    [$manifest, $path] = overridesFixture(['auth/app/Models/User.php' => 'base']);
+    $manifest = overridesFixture($this->root, ['auth/app/Models/User.php' => 'base']);
 
-    $problems = TeamOverrides::problems($manifest, $path, ['teams/app/Models/User.php' => entry('auth', 'base')]);
+    $problems = TeamOverrides::problems($manifest, $this->root, ['teams/app/Models/User.php' => entry('auth', 'base')]);
 
     expect($problems)->toHaveCount(1)
         ->and($problems[0])->toContain('teams/app/Models/User.php');
 });
 
 it('fails when the base file of a ledger entry no longer exists', function () {
-    [$manifest, $path] = overridesFixture(['teams/app/Models/User.php' => 'team']);
+    $manifest = overridesFixture($this->root, ['teams/app/Models/User.php' => 'team']);
 
-    $problems = TeamOverrides::problems($manifest, $path, ['teams/app/Models/User.php' => entry('auth', 'base')]);
+    $problems = TeamOverrides::problems($manifest, $this->root, ['teams/app/Models/User.php' => entry('auth', 'base')]);
 
     expect($problems)->toHaveCount(1)
         ->and($problems[0])->toContain('auth/app/Models/User.php');
 });
 
 it('pairs a team file with the base file it shadows in each kit', function () {
-    [$manifest, $path] = overridesFixture([
+    $manifest = overridesFixture($this->root, [
         'auth/app/Models/User.php' => 'auth',
         'api/app/Models/User.php' => 'api',
         'teams-api/app/Models/User.php' => 'team',
     ]);
 
-    expect(TeamOverrides::problems($manifest, $path, ['teams-api/app/Models/User.php' => entry('api', 'api')]))->toBe([]);
+    expect(TeamOverrides::problems($manifest, $this->root, ['teams-api/app/Models/User.php' => entry('api', 'api')]))->toBe([]);
 });
 
 it('treats a team file without a base counterpart as a new file', function () {
-    [$manifest, $path] = overridesFixture(['teams/app/Models/Team.php' => 'team']);
+    $manifest = overridesFixture($this->root, ['teams/app/Models/Team.php' => 'team']);
 
-    expect(TeamOverrides::problems($manifest, $path, []))->toBe([]);
+    expect(TeamOverrides::problems($manifest, $this->root, []))->toBe([]);
 });
 
 it('ignores a team file that another team smial replaces', function () {
-    [$manifest, $path] = overridesFixture([
+    $manifest = overridesFixture($this->root, [
         'auth/app/Models/User.php' => 'base',
         'teams/app/Models/User.php' => 'team',
         'teams-api/app/Models/User.php' => 'team api',
     ]);
 
-    expect(TeamOverrides::problems($manifest, $path, ['teams-api/app/Models/User.php' => entry('auth', 'base')]))->toBe([]);
+    expect(TeamOverrides::problems($manifest, $this->root, ['teams-api/app/Models/User.php' => entry('auth', 'base')]))->toBe([]);
 });
 
 it('reports an ambiguous base', function () {
-    [$manifest, $path] = overridesFixture([
+    $manifest = overridesFixture($this->root, [
         'auth/app/Models/User.php' => 'auth',
         'web/app/Models/User.php' => 'web',
         'teams/app/Models/User.php' => 'team',
@@ -126,7 +123,7 @@ it('reports an ambiguous base', function () {
         'b-teams' => ['base' => 'b', 'smials' => ['auth', 'web', 'teams']],
     ]);
 
-    $problems = TeamOverrides::problems($manifest, $path, ['teams/app/Models/User.php' => entry('web', 'web')]);
+    $problems = TeamOverrides::problems($manifest, $this->root, ['teams/app/Models/User.php' => entry('web', 'web')]);
 
     expect($problems)->toHaveCount(1)
         ->and($problems[0])->toContain('ambiguous base')->toContain('teams/app/Models/User.php');
