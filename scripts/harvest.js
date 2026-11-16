@@ -55,18 +55,17 @@ const TRUST_BACKUP = 'vet.json.harvest';
 const ROOT_FILES = ['composer.json', 'composer.lock', 'vet.json', 'package.json', 'pnpm-lock.yaml'];
 
 const manifest = loadManifest();
-const args = process.argv.slice(2);
 const bases = baseKitNames(manifest);
-const asked = args.filter(arg => manifest.kits[arg.slice(2)]?.base);
+const { kits: selected, named } = parseArgs(process.argv.slice(2), [], manifest);
+const asked = named.filter(name => manifest.kits[name].base);
 
 if (asked.length > 0) {
-    log(`${asked.map(arg => arg.slice(2)).join(', ')} shares its base kit's dependencies. Harvest the base kit instead.`, 'red');
+    log(`${asked.join(', ')} shares its base kit's dependencies. Harvest the base kit instead.`, 'red');
     process.exit(1);
 }
 
-const parsed = parseArgs(args, [], manifest).kits.filter(name => bases.includes(name));
-const kits = withSiblings(parsed, bases, INERTIA);
-const fullRun = !args.some(arg => manifest.kits[arg.slice(2)]);
+const kits = withSiblings(selected.filter(name => bases.includes(name)), bases, INERTIA);
+const fullRun = named.length === 0;
 
 const pool = new Map();
 const rejected = new Set();

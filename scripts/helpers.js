@@ -50,7 +50,8 @@ export function inheritBases(manifest) {
 }
 
 /**
- * Split CLI arguments into selected kits (--react, --svelte) and other flags. No kit flags selects every kit.
+ * Split CLI arguments into selected kits (--react, --svelte) and other flags. No kit flags selects every kit, and
+ * `named` holds only the kits the arguments name, so it is empty then.
  */
 export function parseArgs(args, flags = [], manifest = loadManifest()) {
     const names = Object.keys(manifest.kits);
@@ -66,6 +67,7 @@ export function parseArgs(args, flags = [], manifest = loadManifest()) {
 
     return {
         kits: kits.length > 0 ? kits : names,
+        named: kits,
         flags: Object.fromEntries(flags.map(flag => [flag, given.includes(flag)])),
     };
 }

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { inheritBases, loadManifest } from '../../scripts/helpers.js';
+import { inheritBases, loadManifest, parseArgs } from '../../scripts/helpers.js';
 
 const manifest = {
     kits: {
@@ -47,4 +47,17 @@ test('loadManifest fills in every team kit from its base kit', () => {
         assert.equal(kit.repository, kits[kit.base].repository);
         assert.equal(kit.node, kits[kit.base].node);
     }
+});
+
+test('parseArgs selects every kit when none is named, and reports only the named ones', () => {
+    assert.deepEqual(parseArgs(['--tend'], ['tend'], manifest), {
+        kits: ['api', 'api-teams', 'blade', 'blade-teams'],
+        named: [],
+        flags: { tend: true },
+    });
+    assert.deepEqual(parseArgs(['--blade', '--api-teams'], ['tend'], manifest), {
+        kits: ['blade', 'api-teams'],
+        named: ['blade', 'api-teams'],
+        flags: { tend: false },
+    });
 });

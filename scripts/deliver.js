@@ -22,15 +22,14 @@ import { execFileSync } from 'child_process';
 import { baseKitNames, loadManifest, log, normalizePath, parseArgs, rootDir, run } from './helpers.js';
 
 const manifest = loadManifest();
-const given = parseArgs(process.argv.slice(2), [], manifest);
-const explicit = process.argv.slice(2).some(arg => manifest.kits[arg.slice(2)]);
+const { named } = parseArgs(process.argv.slice(2), [], manifest);
 
-for (const name of given.kits.filter(name => manifest.kits[name].base && explicit)) {
+for (const name of named.filter(name => manifest.kits[name].base)) {
     log(`${name} is delivered with ${manifest.kits[name].base}. Deliver --${manifest.kits[name].base} instead.`, 'red');
     process.exit(1);
 }
 
-const kits = explicit ? given.kits : baseKitNames(manifest);
+const kits = named.length > 0 ? named : baseKitNames(manifest);
 const deliverDir = process.env.HOBBITON_DELIVER_DIR ?? path.dirname(rootDir);
 
 function walk(dir, files = []) {
