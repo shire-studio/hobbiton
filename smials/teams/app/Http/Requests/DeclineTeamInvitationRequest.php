@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Rules\ValidTeamInvitation;
 use Illuminate\Foundation\Http\FormRequest;
 
-final class RespondToTeamInvitationRequest extends FormRequest
+final class DeclineTeamInvitationRequest extends FormRequest
 {
     /**
      * @return array<string, mixed>
@@ -27,10 +27,8 @@ final class RespondToTeamInvitationRequest extends FormRequest
 
         assert($user instanceof User);
 
-        $declining = $this->routeIs('invitations.decline');
-
         return [
-            'invitation' => [new ValidTeamInvitation($user, $declining)],
+            'invitation' => [new ValidTeamInvitation($user, allowPersonalTeam: true)],
         ];
     }
 }
