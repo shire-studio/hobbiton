@@ -35,8 +35,9 @@ it('moves members whose current team it was to their personal team', function ()
     expect($member->fresh()?->current_team_id)->toBe($member->personalTeam()?->id);
 });
 
-it('switches the deleting user to a fallback team', function (): void {
-    $user = User::factory()->create();
+it('switches the deleting user to their personal team', function (): void {
+    $user = User::factory()->create(['name' => 'Zed']);
+    Team::factory()->create(['name' => 'Aardvark'])->members()->attach($user, ['role' => TeamRole::Member->value]);
     $team = resolve(CreateTeam::class)->handle($user, ['name' => 'Acme']);
 
     resolve(DeleteTeam::class)->handle($team, $user);

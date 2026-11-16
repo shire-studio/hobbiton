@@ -15,8 +15,6 @@ final readonly class DeleteTeam
     public function handle(Team $team, User $user): void
     {
         DB::transaction(function () use ($team, $user): void {
-            $fallback = $user->isCurrentTeam($team) ? $user->fallbackTeam($team) : null;
-
             $affected = User::query()
                 ->where('current_team_id', $team->id)
                 ->where('id', '!=', $user->id)
@@ -34,8 +32,10 @@ final readonly class DeleteTeam
                 }
             });
 
-            if ($fallback instanceof Team) {
-                $this->switchTeam->handle($user, $fallback);
+            $personal = $user->personalTeam();
+
+            if ($user->isCurrentTeam($team) && $personal instanceof Team) {
+                $this->switchTeam->handle($user, $personal);
             }
         });
     }

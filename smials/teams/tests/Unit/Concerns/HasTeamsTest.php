@@ -72,15 +72,6 @@ it('checks permissions through the role', function (): void {
         ->and($user->hasTeamPermission(Team::factory()->create(), TeamPermission::UpdateTeam))->toBeFalse();
 });
 
-it('picks a fallback team alphabetically', function (): void {
-    $user = User::factory()->withoutPersonalTeam()->create();
-    $teams = collect(['b', 'A', 'c'])->map(fn (string $name) => Team::factory()->create(['name' => $name]));
-    $teams->each(fn (Team $team) => $team->members()->attach($user, ['role' => TeamRole::Member->value]));
-
-    expect($user->fallbackTeam()?->name)->toBe('A')
-        ->and($user->fallbackTeam($teams[1])?->name)->toBe('b');
-});
-
 it('falls back to the personal team when no current team is set', function (): void {
     $user = User::factory()->create();
     $personal = $user->personalTeam();

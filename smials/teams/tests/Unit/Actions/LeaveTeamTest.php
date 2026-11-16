@@ -7,8 +7,9 @@ use App\Enums\TeamRole;
 use App\Models\Team;
 use App\Models\User;
 
-it('leaves the team and switches to a fallback team', function (): void {
-    $user = User::factory()->create();
+it('leaves the team and switches to the personal team', function (): void {
+    $user = User::factory()->create(['name' => 'Zed']);
+    Team::factory()->create(['name' => 'Aardvark'])->members()->attach($user, ['role' => TeamRole::Member->value]);
     $team = Team::factory()->create();
     $team->members()->attach($user, ['role' => TeamRole::Member->value]);
     $user->forceFill(['current_team_id' => $team->id])->save();

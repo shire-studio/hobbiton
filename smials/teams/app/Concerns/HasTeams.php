@@ -105,15 +105,4 @@ trait HasTeams
     {
         return $this->teamRole($team)?->hasPermission($permission) ?? false;
     }
-
-    public function fallbackTeam(?Team $excluding = null): ?Team
-    {
-        $query = $this->teams();
-
-        if ($excluding instanceof Team) {
-            $query->where('teams.id', '!=', $excluding->id);
-        }
-
-        return $query->orderByRaw('LOWER(teams.name)')->first();
-    }
 }
