@@ -27,6 +27,9 @@ it('shows the authenticated user', function (): void {
                 'is_personal' => true,
                 'role' => 'owner',
                 'is_current' => true,
+                'members' => null,
+                'invitations' => null,
+                'permissions' => null,
             ],
         ]]);
 });

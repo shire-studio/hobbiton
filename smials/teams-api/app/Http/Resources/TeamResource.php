@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Enums\TeamRole;
+use App\Models\Membership;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -64,11 +67,18 @@ final class TeamResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'is_personal' => $this->is_personal,
-            'role' => $this->when($this->withMembership, fn (): ?string => $user->teamRole($team)?->value),
-            'is_current' => $this->when($this->withMembership, fn (): bool => $user->currentTeamOrPersonal()?->id === $this->id),
-            'members' => $this->whenLoaded('members', fn () => TeamMemberResource::collection($this->members)),
-            'invitations' => $this->whenLoaded('invitations', fn () => TeamInvitationResource::collection($this->invitations)),
-            'permissions' => $this->when($this->permissions !== null, fn (): ?array => $this->permissions),
+            'role' => $this->when($this->withMembership, fn (): ?string => $this->roleOf($user, $team)?->value, null),
+            'is_current' => $this->when($this->withMembership, fn (): bool => $user->isCurrentTeam($team), null),
+            'members' => $this->whenLoaded('members', fn (): AnonymousResourceCollection => TeamMemberResource::collection($this->members), null),
+            'invitations' => $this->whenLoaded('invitations', fn (): AnonymousResourceCollection => TeamInvitationResource::collection($this->invitations), null),
+            'permissions' => $this->permissions,
         ];
+    }
+
+    private function roleOf(User $user, Team $team): ?TeamRole
+    {
+        $pivot = $team->relationLoaded('pivot') ? $team->getRelation('pivot') : null;
+
+        return $pivot instanceof Membership ? $pivot->role : $user->teamRole($team);
     }
 }

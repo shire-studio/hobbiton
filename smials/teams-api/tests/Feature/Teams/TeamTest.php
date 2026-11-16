@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\TeamRole;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 
 function teamFor(User $user, TeamRole $role, array $attributes = []): Team
@@ -33,6 +34,9 @@ it("lists the user's teams", function (): void {
                 'is_personal' => false,
                 'role' => 'member',
                 'is_current' => false,
+                'members' => null,
+                'invitations' => null,
+                'permissions' => null,
             ],
             [
                 'id' => $personal->id,
@@ -41,8 +45,33 @@ it("lists the user's teams", function (): void {
                 'is_personal' => true,
                 'role' => 'owner',
                 'is_current' => true,
+                'members' => null,
+                'invitations' => null,
+                'permissions' => null,
             ],
         ]]);
+});
+
+it('lists teams in a constant number of queries', function (): void {
+    $user = User::factory()->create();
+
+    Sanctum::actingAs($user);
+
+    $count = function (): int {
+        DB::flushQueryLog();
+        DB::enableQueryLog();
+        $this->getJson(route('teams.index'))->assertOk();
+
+        return count(DB::getQueryLog());
+    };
+
+    $before = $count();
+
+    Team::factory()->count(4)->create()->each(
+        fn (Team $team) => $team->members()->attach($user, ['role' => TeamRole::Member->value]),
+    );
+
+    expect($count())->toBe($before);
 });
 
 it('creates a team', function (): void {
@@ -123,6 +152,11 @@ it('shows a team to members', function (): void {
                     'name' => 'Acme',
                     'slug' => $team->slug,
                     'is_personal' => false,
+                    'role' => null,
+                    'is_current' => null,
+                    'members' => null,
+                    'invitations' => null,
+                    'permissions' => null,
                 ],
                 'inviter_name' => 'Olivia Owner',
                 'expires_at' => $invitation->expires_at->toIso8601String(),

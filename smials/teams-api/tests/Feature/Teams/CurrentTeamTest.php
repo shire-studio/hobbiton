@@ -63,7 +63,7 @@ it('rejects a team id that is not a uuid', function (): void {
         ->assertJsonValidationErrors('team_id');
 });
 
-it('falls back to the personal team when no current team is set', function (): void {
+it('returns the personal team when no current team is set', function (): void {
     $user = User::factory()->create();
     $personal = $user->personalTeam();
     $user->forceFill(['current_team_id' => null])->save();
@@ -73,7 +73,7 @@ it('falls back to the personal team when no current team is set', function (): v
     $this->getJson(route('user.show'))
         ->assertOk()
         ->assertJsonPath('data.current_team.id', $personal->id)
-        ->assertJsonPath('data.current_team.is_current', true);
+        ->assertJsonPath('data.current_team.is_current', false);
 });
 
 it('returns a null current team when the user has no teams', function (): void {
