@@ -41,7 +41,7 @@ const switchTeam = (team: App.Data.TeamData) => {
 }
 
 onMounted(() => {
-  mediaQuery = window.matchMedia('(max-width: 767px)')
+  mediaQuery = window.matchMedia('(max-width: 768px)')
   updateIsMobile()
   mediaQuery.addEventListener('change', updateIsMobile)
 })

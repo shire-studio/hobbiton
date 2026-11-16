@@ -15,7 +15,7 @@
   }
 
   onMount(() => {
-    const mediaQuery = window.matchMedia('(max-width: 767px)')
+    const mediaQuery = window.matchMedia('(max-width: 768px)')
     const update = () => (isMobile = mediaQuery.matches)
 
     update()

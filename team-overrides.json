@@ -59,10 +59,6 @@
         "base": "inertia-react",
         "sha1": "ea55f11f1be642c63e95b4c28ccce7cff78b5abd"
     },
-    "teams-inertia-react/resources/js/components/TextLink.tsx": {
-        "base": "inertia-react",
-        "sha1": "7b6a8b6b2893d2cec52ba88e7fca0d3c051f5ed4"
-    },
     "teams-inertia-react/resources/js/components/UserInfo.tsx": {
         "base": "inertia-react",
         "sha1": "f27dd6186752df3ec38e9a484ff4b0996d929df8"

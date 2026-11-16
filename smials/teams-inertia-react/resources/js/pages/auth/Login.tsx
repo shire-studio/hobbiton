@@ -26,14 +26,14 @@ export default function Login({
     >
       <Head title="Log in" />
 
-      {teamInvitation && (
-        <TeamInvitationAlert invitation={teamInvitation} action="Log in" />
-      )}
-
       {status && (
         <div className="mb-4 text-center text-sm font-medium text-green-600">
           {status}
         </div>
+      )}
+
+      {teamInvitation && (
+        <TeamInvitationAlert invitation={teamInvitation} action="Log in" />
       )}
 
       <PasskeyVerify

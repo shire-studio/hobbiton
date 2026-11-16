@@ -9,6 +9,7 @@ type Props = {
   method?: Method
   as?: 'a' | 'button'
   className?: string
+  'data-test'?: string
   children: ReactNode
 }
 
@@ -18,6 +19,7 @@ export default function TextLink({
   method,
   as,
   className,
+  'data-test': dataTest,
   children,
 }: Props) {
   return (
@@ -26,6 +28,7 @@ export default function TextLink({
       tabIndex={tabIndex}
       method={method}
       as={as}
+      data-test={dataTest}
       className={cn(
         'text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500',
         className,
