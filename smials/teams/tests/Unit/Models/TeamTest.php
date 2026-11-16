@@ -8,20 +8,6 @@ use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\User;
 
-it('returns the owner', function (): void {
-    $team = Team::factory()->create();
-    $owner = User::factory()->withoutPersonalTeam()->create();
-    $member = User::factory()->withoutPersonalTeam()->create();
-    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
-
-    expect($team->owner()?->is($owner))->toBeTrue();
-});
-
-it('has no owner without members', function (): void {
-    expect(Team::factory()->create()->owner())->toBeNull();
-});
-
 it('lists members with their roles', function (): void {
     $team = Team::factory()->create();
     $admin = User::factory()->withoutPersonalTeam()->create();

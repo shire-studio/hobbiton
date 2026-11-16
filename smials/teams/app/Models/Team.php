@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\TeamRole;
 use Carbon\CarbonInterface;
 use Database\Factories\TeamFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -51,13 +50,6 @@ final class Team extends Model
             'updated_at' => 'datetime',
             'deleted_at' => 'datetime',
         ];
-    }
-
-    public function owner(): ?User
-    {
-        return $this->members()
-            ->wherePivot('role', TeamRole::Owner->value)
-            ->first();
     }
 
     /**
