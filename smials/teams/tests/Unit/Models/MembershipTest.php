@@ -19,3 +19,10 @@ it('casts the role and uses a uuid key', function (): void {
         ->and($membership->team_id)->toBe($team->id)
         ->and($membership->user_id)->toBe($user->id);
 });
+
+it('has a factory for members', function (): void {
+    $membership = Membership::factory()->create()->refresh();
+
+    expect($membership->role)->toBe(TeamRole::Member)
+        ->and($membership->team->members()->first()?->is($membership->user))->toBeTrue();
+});
