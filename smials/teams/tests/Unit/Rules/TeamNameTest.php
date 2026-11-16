@@ -25,6 +25,10 @@ it('ignores case and whitespace', function (): void {
     expect(teamNamePasses(' Settings '))->toBeFalse();
 });
 
+it('rejects names whose slug is reserved', function (string $name): void {
+    expect(teamNamePasses($name))->toBeFalse();
+})->with(['Settings!', 'Dashboard.', 'Sign In']);
+
 it('accepts other names', function (): void {
     expect(teamNamePasses('Fellowship of the Ring'))->toBeTrue();
 });
