@@ -7,11 +7,11 @@
     open = $bindable(),
   }: {
     team: App.Data.TeamData
-    availableRoles: { value: string; label: string }[]
+    availableRoles: App.Data.TeamRoleData[]
     open: boolean
   } = $props()
 
-  let inviteRole = $state('member')
+  let inviteRole = $state<App.Enums.TeamRole>('member')
   let formKey = $state(0)
 
   const inviteRoleLabel = $derived(
@@ -62,7 +62,11 @@
             <div class="grid gap-2">
               <UiLabel for="invite-role">Role</UiLabel>
               <UiSelect bind:value={inviteRole}>
-                <UiSelectTrigger id="invite-role" class="w-full">
+                <UiSelectTrigger
+                  id="invite-role"
+                  class="w-full"
+                  data-test="invite-role"
+                >
                   {inviteRoleLabel}
                 </UiSelectTrigger>
                 <UiSelectContent>

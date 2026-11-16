@@ -3,7 +3,7 @@ import { store as storeInvitation } from '@/routes/teams/invitations'
 
 const props = defineProps<{
   team: App.Data.TeamData
-  availableRoles: { value: string; label: string }[]
+  availableRoles: App.Data.TeamRoleData[]
   open: boolean
 }>()
 
@@ -11,7 +11,7 @@ const emit = defineEmits<{
   'update:open': [value: boolean]
 }>()
 
-const inviteRole = ref('member')
+const inviteRole = ref<App.Enums.TeamRole>('member')
 const formKey = ref(0)
 
 function handleOpenChange(value: boolean) {
@@ -58,7 +58,11 @@ function handleOpenChange(value: boolean) {
           <div class="grid gap-2">
             <UiLabel for="invite-role">Role</UiLabel>
             <UiSelect v-model="inviteRole" name="role">
-              <UiSelectTrigger id="invite-role" class="w-full">
+              <UiSelectTrigger
+                id="invite-role"
+                class="w-full"
+                data-test="invite-role"
+              >
                 <UiSelectValue placeholder="Select a role" />
               </UiSelectTrigger>
               <UiSelectContent>

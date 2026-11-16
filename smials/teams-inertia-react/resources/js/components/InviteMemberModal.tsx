@@ -2,7 +2,7 @@ import { store as storeInvitation } from '@/routes/teams/invitations'
 
 type Props = {
   team: App.Data.TeamData
-  availableRoles: { value: string; label: string }[]
+  availableRoles: App.Data.TeamRoleData[]
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -64,7 +64,11 @@ export default function InviteMemberModal({
                     value={inviteRole}
                     onValueChange={setInviteRole}
                   >
-                    <UiSelectTrigger id="invite-role" className="w-full">
+                    <UiSelectTrigger
+                      id="invite-role"
+                      className="w-full"
+                      data-test="invite-role"
+                    >
                       <UiSelectValue placeholder="Select a role" />
                     </UiSelectTrigger>
                     <UiSelectContent>
