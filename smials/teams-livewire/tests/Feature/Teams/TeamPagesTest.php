@@ -245,3 +245,38 @@ it('keeps a member role error off the invite role select', function (): void {
     expect($content)->toContain('The selected role is invalid.')
         ->and($content)->not->toContain('aria-invalid="true"');
 });
+
+it('keeps a failed team create out of the profile form', function (): void {
+    $user = User::factory()->create(['name' => 'Ada Lovelace']);
+
+    $content = $this->actingAs($user)
+        ->fromRoute('user-profile.edit')
+        ->followingRedirects()
+        ->post(route('teams.store'), ['form' => 'create-team', 'name' => 'settings'])
+        ->assertSeeHtml('data-test="create-team-reopen"')
+        ->getContent();
+
+    preg_match('#<form method="POST" action="[^"]*/settings/profile"[\s\S]*?</form>#', $content, $form);
+
+    expect($form[0])->toContain('value="Ada Lovelace"')
+        ->not->toContain('This team name is reserved')
+        ->not->toContain('aria-invalid="true"');
+});
+
+it('shows profile errors and old values in the profile form', function (): void {
+    $user = User::factory()->create(['name' => 'Ada Lovelace']);
+
+    $content = $this->actingAs($user)
+        ->fromRoute('user-profile.edit')
+        ->followingRedirects()
+        ->patch(route('user-profile.update'), ['form' => 'profile', 'name' => 'Ada Byron', 'email' => 'not-an-email'])
+        ->assertDontSeeHtml('data-test="create-team-reopen"')
+        ->getContent();
+
+    preg_match('#<form method="POST" action="[^"]*/settings/profile"[\s\S]*?</form>#', $content, $form);
+
+    expect($form[0])->toContain('value="Ada Byron"')
+        ->toContain('value="not-an-email"')
+        ->toContain('valid email address')
+        ->toContain('aria-invalid="true"');
+});

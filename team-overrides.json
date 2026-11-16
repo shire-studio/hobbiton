@@ -251,6 +251,10 @@
         "base": "livewire",
         "sha1": "7c8fea314c52282657ac9d2dbf55cf33a2cee9ea"
     },
+    "teams-livewire/resources/views/pages/settings/profile.blade.php": {
+        "base": "livewire",
+        "sha1": "5a22b8dab9cbbbd2ce5f0db2c983d9eb0729e5a9"
+    },
     "teams-livewire/routes/web.php": {
         "base": "livewire",
         "sha1": "a1f1c9d7056bdb18c1b0f13be092bd879e79c130"
