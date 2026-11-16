@@ -39,10 +39,10 @@
             >
                 @foreach ($availableRoles as $role)
                     <flux:select.option
-                        :value="$role['value']"
-                        :selected="(old('form') === 'invite-member' ? old('role', 'member') : 'member') === $role['value']"
+                        :value="$role->value"
+                        :selected="(old('form') === 'invite-member' ? old('role', 'member') : 'member') === $role->value"
                     >
-                        {{ $role['label'] }}</flux:select.option>
+                        {{ $role->label() }}</flux:select.option>
                 @endforeach
             </flux:select>
             @if (old('form') === 'invite-member')

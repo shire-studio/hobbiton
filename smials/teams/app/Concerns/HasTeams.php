@@ -78,9 +78,19 @@ trait HasTeams
         return $team instanceof Team && $this->belongsToTeam($team) ? $team : $this->personalTeam();
     }
 
+    public function teamWithMembership(Team $team): Team
+    {
+        if ($this->loadedMembership($team) instanceof Membership) {
+            return $team;
+        }
+
+        return $this->teams()->whereKey($team->id)->first() ?? $team;
+    }
+
     public function belongsToTeam(Team $team): bool
     {
-        return $this->teams()->where('teams.id', $team->id)->exists();
+        return $this->loadedMembership($team) instanceof Membership
+            || $this->teams()->where('teams.id', $team->id)->exists();
     }
 
     public function isCurrentTeam(Team $team): bool
@@ -95,14 +105,27 @@ trait HasTeams
 
     public function teamRole(Team $team): ?TeamRole
     {
-        return $this->teamMemberships()
-            ->where('team_id', $team->id)
-            ->first()
-            ?->role;
+        $membership = $this->loadedMembership($team)
+            ?? $this->teamMemberships()->where('team_id', $team->id)->first();
+
+        return $membership?->role;
     }
 
     public function hasTeamPermission(Team $team, TeamPermission $permission): bool
     {
         return $this->teamRole($team)?->hasPermission($permission) ?? false;
+    }
+
+    private function loadedMembership(Team $team): ?Membership
+    {
+        foreach ([$team, $this] as $model) {
+            $pivot = $model->relationLoaded('pivot') ? $model->getRelation('pivot') : null;
+
+            if ($pivot instanceof Membership && $pivot->team_id === $team->id && $pivot->user_id === $this->id) {
+                return $pivot;
+            }
+        }
+
+        return null;
     }
 }

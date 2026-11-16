@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Actions\UpdateTeamMember;
 use App\Enums\TeamPermission;
 use App\Enums\TeamRole;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 it('creates a personal team for factory users', function (): void {
     $user = User::factory()->create(['name' => 'Frodo']);
@@ -96,4 +98,69 @@ it('falls back to the personal team when the user no longer belongs to the curre
     $user->unsetRelation('currentTeam');
 
     expect($user->currentTeamOrPersonal()?->is($personal))->toBeTrue();
+});
+
+it('reads a membership loaded through either relation without a query', function (): void {
+    $user = User::factory()->create();
+    $team = Team::factory()->create();
+    $team->members()->attach($user, ['role' => TeamRole::Admin->value]);
+    $listedTeam = $user->teams()->whereKey($team->id)->firstOrFail();
+    $listedMember = $team->members()->whereKey($user->id)->firstOrFail();
+
+    DB::enableQueryLog();
+
+    expect($user->teamRole($listedTeam))->toBe(TeamRole::Admin)
+        ->and($user->belongsToTeam($listedTeam))->toBeTrue()
+        ->and($listedMember->teamRole($team))->toBe(TeamRole::Admin)
+        ->and($listedMember->belongsToTeam($team))->toBeTrue()
+        ->and(DB::getQueryLog())->toBeEmpty();
+});
+
+it('ignores a loaded membership of another user or team', function (): void {
+    $owner = User::factory()->create();
+    $admin = User::factory()->create();
+    $team = Team::factory()->create();
+    $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
+    $team->members()->attach($admin, ['role' => TeamRole::Admin->value]);
+    $listedByAdmin = $admin->teams()->whereKey($team->id)->firstOrFail();
+    $listedOwner = $team->members()->whereKey($owner->id)->firstOrFail();
+
+    expect($owner->teamRole($listedByAdmin))->toBe(TeamRole::Owner)
+        ->and($listedOwner->teamRole($owner->personalTeam()))->toBe(TeamRole::Owner)
+        ->and($listedOwner->belongsToTeam(Team::factory()->create()))->toBeFalse();
+});
+
+it('loads a team with the membership once', function (): void {
+    $user = User::factory()->create();
+    $team = Team::factory()->create();
+    $team->members()->attach($user, ['role' => TeamRole::Member->value]);
+
+    $loaded = $user->teamWithMembership($team);
+
+    DB::enableQueryLog();
+
+    expect($loaded->is($team))->toBeTrue()
+        ->and($user->teamWithMembership($loaded))->toBe($loaded)
+        ->and($user->teamRole($loaded))->toBe(TeamRole::Member)
+        ->and(DB::getQueryLog())->toBeEmpty();
+});
+
+it('keeps a team without a membership as it is', function (): void {
+    $team = Team::factory()->create();
+
+    expect(User::factory()->create()->teamWithMembership($team))->toBe($team);
+});
+
+it('reads a changed role on the next lookup', function (): void {
+    $user = User::factory()->create();
+    $team = Team::factory()->create();
+    $team->members()->attach($user, ['role' => TeamRole::Member->value]);
+
+    expect($user->teamRole($team))->toBe(TeamRole::Member);
+
+    resolve(UpdateTeamMember::class)->handle($team, $user, ['role' => TeamRole::Admin->value]);
+
+    expect($user->teamRole($team))->toBe(TeamRole::Admin)
+        ->and($user->teamRole($user->teamWithMembership($team)))->toBe(TeamRole::Admin)
+        ->and($user->can('update', $team))->toBeTrue();
 });

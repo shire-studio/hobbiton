@@ -14,14 +14,11 @@ enum TeamRole: string
     case Member = 'member';
 
     /**
-     * @return list<array{value: string, label: string}>
+     * @return list<self>
      */
     public static function assignable(): array
     {
-        return array_map(
-            fn (self $role): array => ['value' => $role->value, 'label' => $role->label()],
-            [self::Admin, self::Member],
-        );
+        return [self::Admin, self::Member];
     }
 
     public static function assignableRule(): Enum

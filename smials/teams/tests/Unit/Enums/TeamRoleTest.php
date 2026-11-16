@@ -34,10 +34,7 @@ it('compares role levels', function (): void {
 });
 
 it('lists assignable roles without the owner', function (): void {
-    expect(TeamRole::assignable())->toBe([
-        ['value' => 'admin', 'label' => 'Admin'],
-        ['value' => 'member', 'label' => 'Member'],
-    ]);
+    expect(TeamRole::assignable())->toBe([TeamRole::Admin, TeamRole::Member]);
 });
 
 it('validates assignable roles without the owner', function (string $role, bool $passes): void {

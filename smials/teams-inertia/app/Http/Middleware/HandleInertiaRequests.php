@@ -6,7 +6,6 @@ namespace App\Http\Middleware;
 
 use App\Data\TeamData;
 use App\Data\UserData;
-use App\Models\Membership;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -41,11 +40,7 @@ final class HandleInertiaRequests extends Middleware
                 : null,
             'teams' => fn (): array => $user instanceof User
                 ? $user->teams()->orderByRaw('LOWER(teams.name)')->get()
-                    ->map(fn (Team $team): TeamData => TeamData::fromTeam(
-                        $team,
-                        $user,
-                        ($pivot = $team->getRelation('pivot')) instanceof Membership ? $pivot->role : null,
-                    ))
+                    ->map(fn (Team $team): TeamData => TeamData::fromTeam($team, $user))
                     ->all()
                 : [],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',

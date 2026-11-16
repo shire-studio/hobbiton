@@ -28,7 +28,7 @@
                             </div>
 
                             <div class="flex items-center gap-2">
-                                @if (! $team['is_personal'] && $team['role'] !== 'owner')
+                                @if ($team['can_leave'])
                                     <flux:modal.trigger :name="'leave-team-'.$team['id']">
                                         <flux:button
                                             variant="ghost"
@@ -44,16 +44,16 @@
                                 <flux:button
                                     variant="ghost"
                                     size="sm"
-                                    :icon="$team['role'] === 'member' ? 'eye' : 'pencil'"
+                                    :icon="$team['can_update'] ? 'pencil' : 'eye'"
                                     :href="route('teams.edit', ['team' => $team['slug']])"
-                                    :tooltip="$team['role'] === 'member' ? __('View team') : __('Edit team')"
-                                    :aria-label="$team['role'] === 'member' ? __('View team') : __('Edit team')"
+                                    :tooltip="$team['can_update'] ? __('Edit team') : __('View team')"
+                                    :aria-label="$team['can_update'] ? __('Edit team') : __('View team')"
                                     wire:navigate
                                 />
                             </div>
                         </div>
 
-                        @if (! $team['is_personal'] && $team['role'] !== 'owner')
+                        @if ($team['can_leave'])
                             <x-leave-team-modal :team="$team" />
                         @endif
                     @empty

@@ -11,10 +11,10 @@ use App\Data\TeamData;
 use App\Data\TeamInvitationData;
 use App\Data\TeamMemberData;
 use App\Data\TeamPermissionsData;
+use App\Data\TeamRoleData;
 use App\Enums\TeamRole;
 use App\Http\Requests\DeleteTeamRequest;
 use App\Http\Requests\SaveTeamRequest;
-use App\Models\Membership;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -28,11 +28,7 @@ final readonly class TeamController
     {
         return Inertia::render('teams/Index', [
             'teams' => $user->teams()->orderByRaw('LOWER(teams.name)')->get()
-                ->map(fn (Team $team): TeamData => TeamData::fromTeam(
-                    $team,
-                    $user,
-                    ($pivot = $team->getRelation('pivot')) instanceof Membership ? $pivot->role : null,
-                ))
+                ->map(fn (Team $team): TeamData => TeamData::fromTeam($team, $user))
                 ->all(),
         ]);
     }
@@ -51,6 +47,7 @@ final readonly class TeamController
 
     public function edit(Team $team, #[CurrentUser] User $user): Response
     {
+        $team = $user->teamWithMembership($team);
         $permissions = TeamPermissionsData::fromTeam($team, $user);
 
         $invitations = $team->invitations()->oldest();
@@ -59,10 +56,7 @@ final readonly class TeamController
         return Inertia::render('teams/Edit', [
             'team' => TeamData::fromTeam($team, $user),
             'members' => $team->members()->orderBy('name')->get()
-                ->map(fn (User $member): TeamMemberData => TeamMemberData::fromMember(
-                    $member,
-                    ($pivot = $member->getRelation('pivot')) instanceof Membership ? $pivot->role : TeamRole::Member,
-                ))
+                ->map(fn (User $member): TeamMemberData => TeamMemberData::fromMember($member, $team, $user))
                 ->all(),
             'invitations' => $permissions->can_cancel_invitation
                 ? $invitations->get()
@@ -70,7 +64,7 @@ final readonly class TeamController
                     ->all()
                 : [],
             'permissions' => $permissions,
-            'availableRoles' => TeamRole::assignable(),
+            'availableRoles' => array_map(TeamRoleData::fromRole(...), TeamRole::assignable()),
         ]);
     }
 

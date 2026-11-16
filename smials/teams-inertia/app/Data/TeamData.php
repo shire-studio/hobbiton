@@ -16,23 +16,28 @@ final class TeamData extends Data
         public readonly string $name,
         public readonly string $slug,
         public readonly bool $is_personal,
-        public readonly ?string $role,
+        public readonly ?TeamRole $role,
         public readonly ?string $role_label,
         public readonly bool $is_current,
+        public readonly bool $can_leave,
+        public readonly bool $can_update,
     ) {}
 
-    public static function fromTeam(Team $team, User $viewer, ?TeamRole $role = null): self
+    public static function fromTeam(Team $team, User $viewer): self
     {
-        $role ??= $viewer->teamRole($team);
+        $team = $viewer->teamWithMembership($team);
+        $role = $viewer->teamRole($team);
 
         return new self(
             id: $team->id,
             name: $team->name,
             slug: $team->slug,
             is_personal: $team->is_personal,
-            role: $role?->value,
+            role: $role,
             role_label: $role?->label(),
             is_current: $viewer->isCurrentTeam($team),
+            can_leave: $viewer->can('leave', $team),
+            can_update: $viewer->can('update', $team),
         );
     }
 }

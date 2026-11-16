@@ -30,10 +30,14 @@ it("lists the user's teams", function (): void {
             && $teams[0]['name'] === 'Acme'
             && $teams[0]['role'] === 'member'
             && $teams[0]['is_current'] === false
+            && $teams[0]['can_leave'] === true
+            && $teams[0]['can_update'] === false
             && $teams[1]['id'] === $personal->id
             && $teams[1]['is_personal'] === true
             && $teams[1]['role'] === 'owner'
-            && $teams[1]['is_current'] === true);
+            && $teams[1]['is_current'] === true
+            && $teams[1]['can_leave'] === false
+            && $teams[1]['can_update'] === true);
 });
 
 it('creates a team', function (): void {
@@ -99,8 +103,12 @@ it('shows a team to members', function (): void {
             && $members[0]['id'] === $member->id
             && $members[0]['role'] === 'member'
             && $members[0]['role_label'] === 'Member'
+            && $members[0]['can_update'] === true
+            && $members[0]['can_remove'] === true
             && $members[1]['id'] === $owner->id
-            && $members[1]['role'] === 'owner')
+            && $members[1]['role'] === 'owner'
+            && $members[1]['can_update'] === false
+            && $members[1]['can_remove'] === false)
         ->assertViewHas('invitations', fn (array $invitations): bool => count($invitations) === 1
             && $invitations[0]->code === $invitation->code
             && $invitations[0]->email === 'new@example.com'
@@ -114,10 +122,7 @@ it('shows a team to members', function (): void {
             'can_create_invitation' => true,
             'can_cancel_invitation' => true,
         ])
-        ->assertViewHas('availableRoles', [
-            ['value' => 'admin', 'label' => 'Admin'],
-            ['value' => 'member', 'label' => 'Member'],
-        ]);
+        ->assertViewHas('availableRoles', [TeamRole::Admin, TeamRole::Member]);
 });
 
 it('hides invitations from members without the invitation permission', function (): void {
@@ -134,6 +139,8 @@ it('hides invitations from members without the invitation permission', function 
     $this->actingAs($member)
         ->get(route('teams.edit', $team))
         ->assertOk()
+        ->assertViewHas('members', fn (array $members): bool => collect($members)
+            ->every(fn (array $viewed): bool => $viewed['can_update'] === false && $viewed['can_remove'] === false))
         ->assertViewHas('invitations', [])
         ->assertViewHas('permissions', [
             'can_update_team' => false,

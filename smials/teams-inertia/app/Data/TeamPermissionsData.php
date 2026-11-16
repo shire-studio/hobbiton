@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Data;
 
-use App\Enums\TeamPermission;
 use App\Models\Team;
 use App\Models\User;
 use Spatie\LaravelData\Data;
@@ -23,17 +22,16 @@ final class TeamPermissionsData extends Data
 
     public static function fromTeam(Team $team, User $viewer): self
     {
-        $role = $viewer->teamRole($team);
-        $can = fn (TeamPermission $permission): bool => $role?->hasPermission($permission) ?? false;
+        $team = $viewer->teamWithMembership($team);
 
         return new self(
-            can_update_team: $can(TeamPermission::UpdateTeam),
-            can_delete_team: ! $team->is_personal && $can(TeamPermission::DeleteTeam),
-            can_add_member: ! $team->is_personal && $can(TeamPermission::AddMember),
-            can_update_member: $can(TeamPermission::UpdateMember),
-            can_remove_member: $can(TeamPermission::RemoveMember),
-            can_create_invitation: ! $team->is_personal && $can(TeamPermission::CreateInvitation),
-            can_cancel_invitation: $can(TeamPermission::CancelInvitation),
+            can_update_team: $viewer->can('update', $team),
+            can_delete_team: $viewer->can('delete', $team),
+            can_add_member: $viewer->can('addMember', $team),
+            can_update_member: $viewer->can('updateMember', $team),
+            can_remove_member: $viewer->can('removeMember', $team),
+            can_create_invitation: $viewer->can('inviteMember', $team),
+            can_cancel_invitation: $viewer->can('cancelInvitation', $team),
         );
     }
 }

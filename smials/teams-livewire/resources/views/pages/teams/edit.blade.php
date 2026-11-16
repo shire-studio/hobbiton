@@ -83,7 +83,7 @@
                                 </div>
 
                                 <div class="flex shrink-0 items-center gap-2">
-                                    @if ($member['role'] !== 'owner' && $permissions['can_update_member'])
+                                    @if ($member['can_update'])
                                         <flux:dropdown align="end">
                                             <flux:button
                                                 size="sm"
@@ -100,14 +100,14 @@
                                                         @csrf
                                                         @method('PATCH')
                                                         <input type="hidden" name="form" value="member-role" />
-                                                        <input type="hidden" name="role" value="{{ $role['value'] }}" />
+                                                        <input type="hidden" name="role" value="{{ $role->value }}" />
                                                         <flux:menu.item
                                                             as="button"
                                                             type="submit"
                                                             class="w-full cursor-pointer"
                                                             data-test="member-role-option"
                                                         >
-                                                            {{ $role['label'] }}</flux:menu.item>
+                                                            {{ $role->label() }}</flux:menu.item>
                                                     </form>
                                                 @endforeach
                                             </flux:menu>
@@ -116,7 +116,7 @@
                                         <flux:badge size="sm">{{ $member['role_label'] }}</flux:badge>
                                     @endif
 
-                                    @if ($member['role'] !== 'owner' && $permissions['can_remove_member'])
+                                    @if ($member['can_remove'])
                                         <flux:modal.trigger :name="'remove-member-'.$member['id']">
                                             <flux:button
                                                 variant="ghost"
@@ -202,13 +202,11 @@
                 <x-invite-member-modal :team="$team" :available-roles="$availableRoles" />
             @endif
 
-            @if ($permissions['can_remove_member'])
-                @foreach ($members as $member)
-                    @if ($member['role'] !== 'owner')
-                        <x-remove-member-modal :team="$team" :member="$member" />
-                    @endif
-                @endforeach
-            @endif
+            @foreach ($members as $member)
+                @if ($member['can_remove'])
+                    <x-remove-member-modal :team="$team" :member="$member" />
+                @endif
+            @endforeach
 
             @if ($permissions['can_cancel_invitation'])
                 @foreach ($invitations as $invitation)

@@ -7,11 +7,9 @@ namespace App\Http\Controllers\Teams;
 use App\Actions\CreateTeam;
 use App\Actions\DeleteTeam;
 use App\Actions\UpdateTeam;
-use App\Enums\TeamPermission;
 use App\Enums\TeamRole;
 use App\Http\Requests\DeleteTeamRequest;
 use App\Http\Requests\SaveTeamRequest;
-use App\Models\Membership;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -25,7 +23,7 @@ final readonly class TeamController
         return view('pages.teams.index', [
             'teams' => $user->teams()->orderByRaw('LOWER(teams.name)')->get()
                 ->map(function (Team $team) use ($user): array {
-                    $role = ($pivot = $team->getRelation('pivot')) instanceof Membership ? $pivot->role : null;
+                    $role = $user->teamRole($team);
 
                     return [
                         'id' => $team->id,
@@ -35,6 +33,8 @@ final readonly class TeamController
                         'role' => $role?->value,
                         'role_label' => $role?->label(),
                         'is_current' => $user->isCurrentTeam($team),
+                        'can_leave' => $user->can('leave', $team),
+                        'can_update' => $user->can('update', $team),
                     ];
                 })
                 ->all(),
@@ -54,17 +54,16 @@ final readonly class TeamController
 
     public function edit(Team $team, #[CurrentUser] User $user): View
     {
-        $role = $user->teamRole($team);
-        $can = fn (TeamPermission $permission): bool => $role?->hasPermission($permission) ?? false;
+        $team = $user->teamWithMembership($team);
 
         $permissions = [
-            'can_update_team' => $can(TeamPermission::UpdateTeam),
-            'can_delete_team' => ! $team->is_personal && $can(TeamPermission::DeleteTeam),
-            'can_add_member' => ! $team->is_personal && $can(TeamPermission::AddMember),
-            'can_update_member' => $can(TeamPermission::UpdateMember),
-            'can_remove_member' => $can(TeamPermission::RemoveMember),
-            'can_create_invitation' => ! $team->is_personal && $can(TeamPermission::CreateInvitation),
-            'can_cancel_invitation' => $can(TeamPermission::CancelInvitation),
+            'can_update_team' => $user->can('update', $team),
+            'can_delete_team' => $user->can('delete', $team),
+            'can_add_member' => $user->can('addMember', $team),
+            'can_update_member' => $user->can('updateMember', $team),
+            'can_remove_member' => $user->can('removeMember', $team),
+            'can_create_invitation' => $user->can('inviteMember', $team),
+            'can_cancel_invitation' => $user->can('cancelInvitation', $team),
         ];
 
         $invitations = $team->invitations()->oldest();
@@ -73,8 +72,9 @@ final readonly class TeamController
         return view('pages.teams.edit', [
             'team' => $team,
             'members' => $team->members()->orderBy('name')->get()
-                ->map(function (User $member): array {
-                    $role = ($pivot = $member->getRelation('pivot')) instanceof Membership ? $pivot->role : TeamRole::Member;
+                ->map(function (User $member) use ($team, $user, $permissions): array {
+                    $role = $member->teamRole($team) ?? TeamRole::Member;
+                    $canManage = $user->can('manageMember', [$team, $member]);
 
                     return [
                         'id' => $member->id,
@@ -82,6 +82,8 @@ final readonly class TeamController
                         'email' => $member->email,
                         'role' => $role->value,
                         'role_label' => $role->label(),
+                        'can_update' => $canManage && $permissions['can_update_member'],
+                        'can_remove' => $canManage && $permissions['can_remove_member'],
                     ];
                 })
                 ->all(),

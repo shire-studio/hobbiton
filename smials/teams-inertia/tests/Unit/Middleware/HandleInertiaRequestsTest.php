@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Data\TeamData;
 use App\Data\UserData;
+use App\Enums\TeamRole;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\Team;
 use App\Models\User;
@@ -116,7 +117,7 @@ it('shares the current team and teams for a signed in user', function (): void {
         ->and(value($shared['currentTeam'])->slug)->toBe($user->personalTeam()?->slug)
         ->and(value($shared['teams']))->toHaveCount(2)
         ->and(value($shared['teams'])[0]->name)->toBe('Acme')
-        ->and(value($shared['teams'])[0]->role)->toBe('member');
+        ->and(value($shared['teams'])[0]->role)->toBe(TeamRole::Member);
 });
 
 it('shares null current team when the user has no team', function (): void {

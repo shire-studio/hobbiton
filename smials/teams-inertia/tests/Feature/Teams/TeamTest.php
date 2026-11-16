@@ -31,10 +31,14 @@ it("lists the user's teams", function (): void {
             ->where('teams.0.name', 'Acme')
             ->where('teams.0.role', 'member')
             ->where('teams.0.is_current', false)
+            ->where('teams.0.can_leave', true)
+            ->where('teams.0.can_update', false)
             ->where('teams.1.id', $personal->id)
             ->where('teams.1.is_personal', true)
             ->where('teams.1.role', 'owner')
-            ->where('teams.1.is_current', true));
+            ->where('teams.1.is_current', true)
+            ->where('teams.1.can_leave', false)
+            ->where('teams.1.can_update', true));
 });
 
 it('creates a team', function (): void {
@@ -99,11 +103,17 @@ it('shows a team to members', function (): void {
             ->where('team.id', $team->id)
             ->where('team.name', 'Acme')
             ->where('team.role', 'owner')
+            ->where('team.can_leave', false)
+            ->where('team.can_update', true)
             ->has('members', 2)
             ->where('members.0.id', $member->id)
             ->where('members.0.role', 'member')
+            ->where('members.0.can_update', true)
+            ->where('members.0.can_remove', true)
             ->where('members.1.id', $owner->id)
             ->where('members.1.role', 'owner')
+            ->where('members.1.can_update', false)
+            ->where('members.1.can_remove', false)
             ->has('invitations', 1)
             ->where('invitations.0.code', $invitation->code)
             ->where('invitations.0.email', 'new@example.com')
@@ -136,6 +146,12 @@ it('hides invitations from members without the invitation permission', function 
         ->get(route('teams.edit', $team))
         ->assertOk()
         ->assertInertia(fn ($page) => $page
+            ->where('team.can_leave', true)
+            ->where('team.can_update', false)
+            ->where('members.0.can_update', false)
+            ->where('members.0.can_remove', false)
+            ->where('members.1.can_update', false)
+            ->where('members.1.can_remove', false)
             ->where('invitations', [])
             ->where('permissions', [
                 'can_update_team' => false,

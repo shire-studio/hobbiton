@@ -60,7 +60,7 @@ it('never lets the owner delete a personal team', function (): void {
         ->and($permissions->can_update_team)->toBeTrue();
 });
 
-it('resolves the viewer role with a single query', function (): void {
+it('asks the policy with a single query for the viewer membership', function (): void {
     $user = User::factory()->create();
     $team = Team::factory()->create();
     $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
@@ -70,6 +70,23 @@ it('resolves the viewer role with a single query', function (): void {
     TeamPermissionsData::fromTeam($team, $user);
 
     expect(DB::getQueryLog())->toHaveCount(1);
+});
+
+it('asks the policy without a query for a team listed through the viewer', function (): void {
+    $user = User::factory()->create();
+    $team = $user->teams()->firstOrFail();
+
+    DB::enableQueryLog();
+
+    TeamPermissionsData::fromTeam($team, $user);
+
+    expect(DB::getQueryLog())->toBeEmpty();
+});
+
+it('denies everything to a non member', function (): void {
+    $permissions = TeamPermissionsData::fromTeam(Team::factory()->create(), User::factory()->create());
+
+    expect(array_filter($permissions->toArray()))->toBeEmpty();
 });
 
 it('never lets anyone add members or invite to a personal team', function (): void {
