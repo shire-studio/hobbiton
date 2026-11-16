@@ -25,6 +25,10 @@ it('grants members nothing', function (): void {
         ->and(TeamRole::Member->hasPermission(TeamPermission::UpdateTeam))->toBeFalse();
 });
 
+it('labels roles', function (): void {
+    expect(array_map(fn (TeamRole $role): string => $role->label(), TeamRole::cases()))->toBe(['Owner', 'Admin', 'Member']);
+});
+
 it('lists assignable roles without the owner', function (): void {
     expect(TeamRole::assignable())->toBe([TeamRole::Admin, TeamRole::Member]);
 });
