@@ -96,7 +96,7 @@ Edit `raised/react` like any Laravel app. Tend copies each change to the most sp
 
 A team kit is a kit with a `base`, such as `api-teams`, whose base is `api`. It is raised from its base kit's smials with the team smials added last, so team files win. A team kit has no repository of its own. It ships inside its base kit as an **overlay**.
 
-The overlay lives in `.starter-kit/teams/` in the base kit's repository. `manifest.json` holds `{"version": 1, "deleted": [...]}`, and `files/` holds every file the team kit adds or changes. Applying it means copying `files/` over the project, removing the `deleted` paths, then removing `.starter-kit/`. `php artisan pack --kit=api --to=dir` raises the base kit and writes the overlay into it. Packing a team kit is refused, so pack its base kit instead. `raise` never writes the overlay.
+The overlay lives in `.starter-kit/teams/` in the base kit's repository. `manifest.json` holds `{"version": 1, "deleted": [...]}`, and `files/` holds every file the team kit adds or changes. Paths the base kit's `.gitattributes` marks `export-ignore`, such as `README.md` and `art/`, are left out, since a created project never has them. Applying it means copying `files/` over the project, removing the `deleted` paths, then removing `.starter-kit/`. `php artisan pack --kit=api --to=dir` raises the base kit and writes the overlay into it. Packing a team kit is refused, so pack its base kit instead. `raise` never writes the overlay.
 
 Team kits share their base kit's lock files and `vet.json`, because teams add no dependencies.
 

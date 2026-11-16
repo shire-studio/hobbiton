@@ -14,8 +14,9 @@ class Overlay
      */
     public static function diff(string $basePath, string $variantPath): array
     {
-        $base = self::tree($basePath);
-        $variant = self::tree($variantPath);
+        $exportIgnored = self::exportIgnored($basePath);
+        $base = self::tree($basePath, $exportIgnored);
+        $variant = self::tree($variantPath, $exportIgnored);
 
         $files = array_values(array_filter(
             array_keys($variant),
@@ -56,18 +57,20 @@ class Overlay
     }
 
     /**
-     * Maps each relative path to a fingerprint of its bytes and executable bit.
+     * Maps each relative path to a fingerprint of its bytes and executable bit. Paths the base kit's archive leaves
+     * out are skipped, because a project created from the kit never has them.
      *
+     * @param  list<string>  $exportIgnored
      * @return array<string, string>
      */
-    private static function tree(string $path): array
+    private static function tree(string $path, array $exportIgnored): array
     {
         $tree = [];
 
         foreach (File::allFiles($path, hidden: true) as $file) {
-            $relative = $file->getRelativePathname();
+            $relative = str_replace('\\', '/', $file->getRelativePathname());
 
-            if (self::ignored($relative)) {
+            if (self::ignored($relative) || self::matchesAny($relative, $exportIgnored)) {
                 continue;
             }
 
@@ -82,6 +85,56 @@ class Overlay
         foreach ([...RaiseCommand::KEEP, '.starter-kit'] as $ignored) {
             if ($relativePath === $ignored || str_starts_with($relativePath, $ignored.'/')) {
                 return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * The patterns the kit's .gitattributes marks export-ignore.
+     *
+     * @return list<string>
+     */
+    private static function exportIgnored(string $basePath): array
+    {
+        if (! File::exists("{$basePath}/.gitattributes")) {
+            return [];
+        }
+
+        $patterns = [];
+
+        foreach (explode("\n", File::get("{$basePath}/.gitattributes")) as $line) {
+            $fields = preg_split('/\s+/', trim($line), flags: PREG_SPLIT_NO_EMPTY) ?: [];
+
+            if ($fields !== [] && ! str_starts_with($fields[0], '#') && in_array('export-ignore', array_slice($fields, 1), true)) {
+                $patterns[] = $fields[0];
+            }
+        }
+
+        return $patterns;
+    }
+
+    /**
+     * Matches a path, or any directory above it, the way git matches an attributes pattern: a pattern with a slash
+     * is relative to the root, and one without matches a name at any depth.
+     *
+     * @param  list<string>  $patterns
+     */
+    private static function matchesAny(string $relativePath, array $patterns): bool
+    {
+        $segments = explode('/', $relativePath);
+
+        foreach ($patterns as $pattern) {
+            $anchored = str_contains(rtrim($pattern, '/'), '/');
+            $pattern = trim($pattern, '/');
+
+            foreach (array_keys($segments) as $index) {
+                $candidate = $anchored ? implode('/', array_slice($segments, 0, $index + 1)) : $segments[$index];
+
+                if (fnmatch($pattern, $candidate, FNM_PATHNAME)) {
+                    return true;
+                }
             }
         }
 

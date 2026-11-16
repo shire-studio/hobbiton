@@ -59,6 +59,21 @@ it('ignores kept paths', function () {
     expect(Overlay::diff($this->base, $this->variant))->toBe(['files' => [], 'deleted' => []]);
 });
 
+it('leaves out paths the base kit export-ignores', function () {
+    put($this->base, '.gitattributes', "*.md diff=markdown\n/README.md export-ignore\n/art export-ignore\ndrafts export-ignore\n");
+    put($this->variant, '.gitattributes', "*.md diff=markdown\n/README.md export-ignore\n/art export-ignore\ndrafts export-ignore\n");
+    put($this->base, 'art/old.png');
+    put($this->variant, 'art/new.png');
+    put($this->variant, 'README.md');
+    put($this->variant, 'docs/drafts/a.md');
+    put($this->variant, 'docs/README.md');
+
+    expect(Overlay::diff($this->base, $this->variant))->toBe([
+        'files' => ['docs/README.md'],
+        'deleted' => [],
+    ]);
+});
+
 it('keeps the executable bit', function () {
     put($this->variant, 'bin/run', '#!/bin/sh', executable: true);
     put($this->variant, 'plain.txt');

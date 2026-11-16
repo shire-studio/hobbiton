@@ -10,10 +10,15 @@ afterEach(function () {
     File::deleteDirectory($this->root);
 });
 
+/**
+ * Paths the kits' .gitattributes export-ignores, which a created project never has.
+ */
+const EXPORT_IGNORED = ['.github/workflows/release.yml', 'art', 'CHANGELOG.md', 'README.md', 'SECURITY.md'];
+
 function tree(string $path, array $except = ['.git']): array
 {
     return collect(File::allFiles($path, hidden: true))
-        ->reject(fn ($file) => collect($except)->contains(fn ($skip) => str_starts_with($file->getRelativePathname(), $skip.'/')))
+        ->reject(fn ($file) => collect($except)->contains(fn ($skip) => $file->getRelativePathname() === $skip || str_starts_with($file->getRelativePathname(), $skip.'/')))
         ->mapWithKeys(fn ($file) => [$file->getRelativePathname() => md5_file($file->getPathname()).(is_executable($file->getPathname()) ? ' x' : '')])
         ->sortKeys()
         ->all();
@@ -52,8 +57,21 @@ it('applies the overlay to reproduce the team kit', function () {
 
     File::deleteDirectory("{$packed}/.starter-kit");
 
-    expect(tree($packed))->toBe(tree("{$this->root}/teams"));
+    expect(tree($packed, ['.git', ...EXPORT_IGNORED]))->toBe(tree("{$this->root}/teams", ['.git', ...EXPORT_IGNORED]));
 });
+
+it('leaves export-ignored paths out of the overlay', function (string $kit) {
+    $this->artisan('pack', ['--kit' => $kit, '--to' => "{$this->root}/packed"])->assertSuccessful();
+
+    $files = "{$this->root}/packed/.starter-kit/teams/files";
+
+    expect(File::get("{$this->root}/packed/.gitattributes"))->toContain('/README.md export-ignore')
+        ->and("{$files}/app")->toBeDirectory();
+
+    foreach (EXPORT_IGNORED as $path) {
+        expect("{$files}/{$path}")->not->toBeFile()->not->toBeDirectory();
+    }
+})->with(['api', 'livewire']);
 
 it('packs kits without a team variant unchanged', function () {
     $this->artisan('pack', ['--kit' => 'blade', '--to' => "{$this->root}/packed"])->assertSuccessful();
