@@ -24,7 +24,7 @@ final readonly class CreateUser
                 'password' => Hash::make($password),
             ]);
 
-            $this->createTeam->handle($user, ['name' => "{$user->name}'s Team"], personal: true);
+            $this->createTeam->handle($user, ['name' => $user->personalTeamName()], personal: true);
 
             return $user;
         });

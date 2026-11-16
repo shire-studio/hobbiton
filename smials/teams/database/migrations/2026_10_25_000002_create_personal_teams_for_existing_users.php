@@ -16,7 +16,7 @@ return new class extends Migration
             ->whereDoesntHave('teamMemberships')
             ->chunkById(100, function ($users) use ($createTeam): void {
                 foreach ($users as $user) {
-                    $createTeam->handle($user, ['name' => "{$user->name}'s Team"], personal: true);
+                    $createTeam->handle($user, ['name' => $user->personalTeamName()], personal: true);
                 }
             });
     }

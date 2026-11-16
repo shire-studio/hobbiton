@@ -43,3 +43,17 @@ it('falls back when the name has no slug characters', function (): void {
 
     expect(resolve(CreateTeamSlug::class)->handle('!!!'))->toBe('team-1');
 });
+
+it('caps the slug so a suffix still fits the column', function (): void {
+    $name = str_repeat('@', 255);
+
+    $slug = resolve(CreateTeamSlug::class)->handle($name);
+
+    expect(mb_strlen($slug))->toBeLessThanOrEqual(240)
+        ->and($slug)->toStartWith('at-at')
+        ->and($slug)->not->toEndWith('-');
+
+    Team::factory()->create(['slug' => $slug]);
+
+    expect(resolve(CreateTeamSlug::class)->handle($name))->toBe($slug.'-1');
+});

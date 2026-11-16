@@ -32,3 +32,15 @@ it('creates a personal team for the user', function (): void {
         ->and($user->teamRole($team ?? throw new RuntimeException()))->toBe(TeamRole::Owner)
         ->and($user->current_team_id)->toBe($team->id);
 });
+
+it('keeps the personal team name and slug within their columns', function (): void {
+    $user = resolve(CreateUser::class)->handle([
+        'name' => str_repeat('@', 255),
+        'email' => 'example@email.com',
+    ], 'password')->refresh();
+
+    $team = $user->personalTeam();
+
+    expect(mb_strlen($team?->name ?? ''))->toBeLessThanOrEqual(255)
+        ->and(mb_strlen($team?->slug ?? ''))->toBeLessThanOrEqual(255);
+});

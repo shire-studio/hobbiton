@@ -57,6 +57,13 @@ trait HasTeams
         return $this->belongsTo(Team::class, 'current_team_id');
     }
 
+    public function personalTeamName(): string
+    {
+        $suffix = "'s Team";
+
+        return mb_rtrim(mb_substr($this->name, 0, 255 - mb_strlen($suffix))).$suffix;
+    }
+
     public function personalTeam(): ?Team
     {
         return $this->ownedTeams()

@@ -20,6 +20,18 @@ it('creates a personal team for factory users', function (): void {
         ->and($user->ownedTeams()->count())->toBe(1);
 });
 
+it('caps the personal team name to the column length', function (): void {
+    $user = User::factory()->make(['name' => str_repeat('a', 247).' '.str_repeat('b', 7)]);
+
+    expect($user->personalTeamName())->toBe(str_repeat('a', 247)."'s Team")
+        ->and(mb_strlen($user->personalTeamName()))->toBe(254);
+
+    $user->name = str_repeat('a', 255);
+
+    expect($user->personalTeamName())->toBe(str_repeat('a', 248)."'s Team")
+        ->and(mb_strlen($user->personalTeamName()))->toBe(255);
+});
+
 it('skips the personal team when asked', function (): void {
     $user = User::factory()->withoutPersonalTeam()->create();
 
