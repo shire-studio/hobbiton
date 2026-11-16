@@ -6,7 +6,6 @@ namespace App\Http\Requests;
 
 use App\Enums\TeamRole;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 final class UpdateTeamMemberRequest extends FormRequest
 {
@@ -16,7 +15,7 @@ final class UpdateTeamMemberRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'role' => ['required', 'string', Rule::in(array_column(TeamRole::assignable(), 'value'))],
+            'role' => ['required', 'string', TeamRole::assignableRule()],
         ];
     }
 }

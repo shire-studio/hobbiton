@@ -9,7 +9,6 @@ use App\Models\Team;
 use App\Rules\UniqueTeamInvitation;
 use App\Rules\ValidEmail;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 final class CreateTeamInvitationRequest extends FormRequest
 {
@@ -32,7 +31,7 @@ final class CreateTeamInvitationRequest extends FormRequest
                 new ValidEmail,
                 new UniqueTeamInvitation($team),
             ],
-            'role' => ['required', 'string', Rule::in(array_column(TeamRole::assignable(), 'value'))],
+            'role' => ['required', 'string', TeamRole::assignableRule()],
         ];
     }
 }

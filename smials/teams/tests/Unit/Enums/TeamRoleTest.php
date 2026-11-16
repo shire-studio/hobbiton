@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\TeamPermission;
 use App\Enums\TeamRole;
+use Illuminate\Support\Facades\Validator;
 
 it('grants owners every permission', function (): void {
     expect(TeamRole::Owner->permissions())->toBe(TeamPermission::cases())
@@ -38,3 +39,12 @@ it('lists assignable roles without the owner', function (): void {
         ['value' => 'member', 'label' => 'Member'],
     ]);
 });
+
+it('validates assignable roles without the owner', function (string $role, bool $passes): void {
+    expect(Validator::make(['role' => $role], ['role' => [TeamRole::assignableRule()]])->passes())->toBe($passes);
+})->with([
+    'admin' => ['admin', true],
+    'member' => ['member', true],
+    'owner' => ['owner', false],
+    'unknown' => ['guest', false],
+]);

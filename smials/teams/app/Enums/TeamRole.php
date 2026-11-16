@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
+
 enum TeamRole: string
 {
     case Owner = 'owner';
@@ -19,6 +22,11 @@ enum TeamRole: string
             fn (self $role): array => ['value' => $role->value, 'label' => $role->label()],
             [self::Admin, self::Member],
         );
+    }
+
+    public static function assignableRule(): Enum
+    {
+        return Rule::enum(self::class)->except([self::Owner]);
     }
 
     public function label(): string
