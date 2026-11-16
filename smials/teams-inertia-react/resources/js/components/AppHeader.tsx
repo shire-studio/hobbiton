@@ -92,6 +92,7 @@ export default function AppHeader({ breadcrumbs = [] }: Props) {
                         'h-9 cursor-pointer px-3',
                       )}
                       href={item.href}
+                      data-test={`${item.title.toLowerCase()}-link`}
                     >
                       {item.icon && <item.icon className="mr-2 h-4 w-4" />}
                       {item.title}

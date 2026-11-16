@@ -103,6 +103,7 @@ const activeItemStyles =
                     'h-9 cursor-pointer px-3',
                   ]"
                   :href="item.href"
+                  :data-test="`${item.title.toLowerCase()}-link`"
                 >
                   <component
                     v-if="item.icon"

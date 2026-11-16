@@ -24,7 +24,10 @@
   <div class="grid flex-1 text-left text-sm leading-tight">
     <span class="truncate font-medium">{user.name}</span>
     {#if team}
-      <span class="truncate text-xs text-muted-foreground">{team.name}</span>
+      <span
+        class="truncate text-xs text-muted-foreground"
+        data-test="current-team-name">{team.name}</span
+      >
     {:else if showEmail}
       <span class="truncate text-xs text-muted-foreground">{user.email}</span>
     {/if}

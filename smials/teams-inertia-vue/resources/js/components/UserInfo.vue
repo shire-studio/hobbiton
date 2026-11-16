@@ -26,9 +26,12 @@ const initials = computed(() => getInitials(props.user.name))
 
     <div class="grid flex-1 text-left text-sm leading-tight">
       <span class="truncate font-medium">{{ user.name }}</span>
-      <span v-if="team" class="truncate text-xs text-muted-foreground">{{
-        team.name
-      }}</span>
+      <span
+        v-if="team"
+        class="truncate text-xs text-muted-foreground"
+        data-test="current-team-name"
+        >{{ team.name }}</span
+      >
       <span
         v-else-if="showEmail"
         class="truncate text-xs text-muted-foreground"

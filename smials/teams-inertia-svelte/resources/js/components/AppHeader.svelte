@@ -97,6 +97,7 @@
                     'h-9 cursor-pointer px-3',
                   )}
                   href={item.href}
+                  data-test={`${item.title.toLowerCase()}-link`}
                 >
                   {#if item.icon}
                     <item.icon class="mr-2 h-4 w-4" />
