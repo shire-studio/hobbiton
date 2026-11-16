@@ -28,8 +28,10 @@ class TeamOverrides
             $path = substr($key, strpos($key, '/') + 1);
             $entry = $ledger[$key] ?? null;
 
-            if ($entry === null || $entry['base'] !== $base) {
+            if ($entry === null) {
                 $problems[] = "{$key} overrides {$base}/{$path} but is not in team-overrides.json. Run composer tend to record it.";
+            } elseif ($entry['base'] !== $base) {
+                $problems[] = "{$key} is behind {$base}/{$path}, since team-overrides.json records it against {$entry['base']}. Review the team file, then run composer overrides -- --accept.";
             } elseif ($entry['sha1'] !== sha1_file("{$smialsPath}/{$base}/{$path}")) {
                 $problems[] = "{$key} overrides {$base}/{$path}, which changed since it was overridden. Review the team file, then run composer overrides -- --accept.";
             }

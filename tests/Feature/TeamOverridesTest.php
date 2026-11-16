@@ -67,6 +67,18 @@ it('fails when an override is missing from the ledger', function () {
         ->and($problems[0])->toContain('teams/app/Models/User.php')->toContain('auth');
 });
 
+it('fails when the ledger records an override against another base', function () {
+    $manifest = overridesFixture($this->root, [
+        'auth/app/Models/User.php' => 'auth',
+        'api/app/Models/User.php' => 'api',
+        'teams-api/app/Models/User.php' => 'team',
+    ]);
+
+    expect(TeamOverrides::problems($manifest, $this->root, ['teams-api/app/Models/User.php' => entry('auth', 'auth')]))->toBe([
+        'teams-api/app/Models/User.php is behind api/app/Models/User.php, since team-overrides.json records it against auth. Review the team file, then run composer overrides -- --accept.',
+    ]);
+});
+
 it('fails when the ledger lists a file that no longer exists', function () {
     $manifest = overridesFixture($this->root, ['auth/app/Models/User.php' => 'base']);
 
