@@ -64,6 +64,7 @@ it('requires a verified email', function (string $method, string $route): void {
     };
 
     $this->actingAs($user)
+        ->fromRoute('home')
         ->call($method, route($route, $parameters), ['name' => 'Acme', 'email' => 'new@example.com', 'role' => 'member'])
         ->assertRedirectToRoute('verification.notice');
 

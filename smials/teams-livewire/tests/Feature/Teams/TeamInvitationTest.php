@@ -136,8 +136,9 @@ it('still cancels an invitation on a personal team', function (): void {
     $invitation = TeamInvitation::factory()->create(['team_id' => $team->id, 'invited_by' => $user->id]);
 
     $this->actingAs($user)
+        ->fromRoute('teams.edit', $team)
         ->delete(route('teams.invitations.destroy', [$team, $invitation]))
-        ->assertRedirect();
+        ->assertRedirectToRoute('teams.edit', $team);
 
     expect(TeamInvitation::query()->find($invitation->id))->toBeNull();
 });

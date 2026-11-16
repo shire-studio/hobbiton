@@ -14,6 +14,7 @@ it('redirects the dashboard to the current team', function (): void {
     $user->update(['current_team_id' => $team->id]);
 
     $this->actingAs($user)
+        ->fromRoute('home')
         ->get(route('dashboard'))
         ->assertRedirectToRoute('team.dashboard', ['current_team' => $team->slug]);
 });
@@ -23,6 +24,7 @@ it('falls back to the personal team when no current team is set', function (): v
     $user->update(['current_team_id' => null]);
 
     $this->actingAs($user->refresh())
+        ->fromRoute('home')
         ->get(route('dashboard'))
         ->assertRedirectToRoute('team.dashboard', ['current_team' => $user->personalTeam()?->slug]);
 });
@@ -95,14 +97,18 @@ it('requires a verified email', function (): void {
     $user = User::factory()->unverified()->create();
 
     $this->actingAs($user)
+        ->fromRoute('home')
         ->get(route('team.dashboard', ['current_team' => $user->personalTeam()?->slug]))
         ->assertRedirectToRoute('verification.notice');
 
     $this->actingAs($user)
+        ->fromRoute('home')
         ->get(route('dashboard'))
         ->assertRedirectToRoute('verification.notice');
 });
 
 it('redirects guests to login', function (): void {
-    $this->get('/some-team/dashboard')->assertRedirectToRoute('login');
+    $this->fromRoute('home')
+        ->get('/some-team/dashboard')
+        ->assertRedirectToRoute('login');
 });
