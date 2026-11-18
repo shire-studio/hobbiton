@@ -35,22 +35,25 @@ it('lets later smials override earlier ones', function () {
         ->and("{$this->path}/resources/js/pages/auth/Login.vue")->not->toBeFile();
 });
 
-it('shares the php application between the inertia kits', function () {
+it('shares the php application between the inertia kits', function (array $kits) {
     $paths = ['app', 'routes', 'tests/Feature'];
 
-    $raised = collect(['vue', 'react', 'svelte'])->mapWithKeys(function (string $kit) use ($paths) {
+    $raised = collect($kits)->map(function (string $kit) use ($paths) {
         $path = "{$this->path}/{$kit}";
         raise($kit, $path);
 
-        return [$kit => collect($paths)->flatMap(fn (string $directory) => collect(File::allFiles("{$path}/{$directory}"))
+        return collect($paths)->flatMap(fn (string $directory) => collect(File::allFiles("{$path}/{$directory}"))
             ->mapWithKeys(fn ($file) => [$directory.'/'.$file->getRelativePathname() => md5($file->getContents())]))
             ->sortKeys()
-            ->all()];
+            ->all();
     });
 
-    expect($raised['react'])->toBe($raised['vue'])
-        ->and($raised['svelte'])->toBe($raised['vue']);
-});
+    expect($raised[1])->toBe($raised[0])
+        ->and($raised[2])->toBe($raised[0]);
+})->with([
+    'base kits' => [['vue', 'react', 'svelte']],
+    'team kits' => [['vue-teams', 'react-teams', 'svelte-teams']],
+]);
 
 it('removes excluded files and the directories they leave empty', function () {
     raise('api', $this->path);
@@ -79,3 +82,12 @@ it('keeps installs and local state when raising again', function () {
 it('rejects unknown kits', function () {
     $this->artisan('raise', ['--kit' => 'angular', '--to' => $this->path])->assertFailed();
 });
+
+it('removes the overlay first when a project is created', function (string $kit) {
+    raise($kit, $this->path);
+
+    $composer = json_decode(File::get("{$this->path}/composer.json"), true);
+
+    expect($composer['scripts']['post-create-project-cmd'][0])
+        ->toBe('@php -r "require \'vendor/autoload.php\'; (new Illuminate\Filesystem\Filesystem)->deleteDirectory(\'.starter-kit\');"');
+})->with(['vue', 'react', 'svelte', 'livewire', 'api']);

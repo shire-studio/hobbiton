@@ -5,8 +5,8 @@
  *
  * Phase 1 updates each kit in raised/<kit> and tends it back. Every Vet question comes here, and each
  * release is asked about once per run: approvals are seeded into later kits, and a declined release
- * is held at its current version for the rest of the run. Phase 2 surveys every updated kit, with no
- * questions. Majors and deliberate holds are never applied, only reported.
+ * is held at its current version for the rest of the run. Phase 2 surveys every updated kit and its team
+ * kit, with no questions. Team kits are never updated, since they share their base kit's lock files. Majors and deliberate holds are never applied, only reported.
  *
  * The Inertia kits share composer.json and vet.json, so selecting one harvests all three, and the
  * second and third resolve exactly the versions the first one locked.
@@ -19,7 +19,7 @@ import fs from 'fs';
 import path from 'path';
 import readline from 'readline/promises';
 import { promisify } from 'util';
-import { loadManifest, log, parseArgs, prepareKit, raisedDir, rootDir, run, smialsDir } from './helpers.js';
+import { baseKitNames, loadManifest, log, parseArgs, raisedDir, rootDir, run, smialsDir, teamKitsFor } from './helpers.js';
 import {
     bumpablePackages,
     catalogEntries,
@@ -55,10 +55,17 @@ const TRUST_BACKUP = 'vet.json.harvest';
 const ROOT_FILES = ['composer.json', 'composer.lock', 'vet.json', 'package.json', 'pnpm-lock.yaml'];
 
 const manifest = loadManifest();
-const args = process.argv.slice(2);
-const parsed = parseArgs(args, [], manifest).kits;
-const kits = withSiblings(parsed, Object.keys(manifest.kits), INERTIA);
-const fullRun = !args.some(arg => manifest.kits[arg.slice(2)]);
+const bases = baseKitNames(manifest);
+const { kits: selected, named } = parseArgs(process.argv.slice(2), [], manifest);
+const asked = named.filter(name => manifest.kits[name].base);
+
+if (asked.length > 0) {
+    log(`${asked.join(', ')} shares its base kit's dependencies. Harvest the base kit instead.`, 'red');
+    process.exit(1);
+}
+
+const kits = withSiblings(selected.filter(name => bases.includes(name)), bases, INERTIA);
+const fullRun = named.length === 0;
 
 const pool = new Map();
 const rejected = new Set();
@@ -128,7 +135,7 @@ function recoverTrust() {
 async function guard() {
     const untended = [];
 
-    for (const name of kits) {
+    for (const name of [...kits, ...teamKitsFor(kits, manifest)]) {
         if (!fs.existsSync(path.join(raisedDir, name, 'composer.json'))) {
             continue;
         }
@@ -319,10 +326,10 @@ async function harvestHobbiton() {
 }
 
 /**
- * Raise a kit without installing it. A sibling Inertia kit's old lock no longer fits the composer.json and vet.json
- * the first Inertia kit tended, so it goes straight to an update pinned to that kit's lock.
+ * Raise a kit without installing it. Its old lock may not fit: a sibling Inertia kit's no longer matches the shared
+ * composer.json and vet.json, and a security advisory can rule out a locked version, which only the update can fix.
  */
-async function raiseSibling(name) {
+async function raiseKit(name) {
     const dir = path.join(raisedDir, name);
 
     await run('php', ['artisan', 'raise', `--kit=${name}`], { cwd: rootDir });
@@ -343,7 +350,7 @@ async function harvestKit(name) {
     let dir;
 
     try {
-        dir = sibling ? await raiseSibling(name) : await prepareKit(name);
+        dir = await raiseKit(name);
 
         await updateComposer(dir, sibling ? pinArguments(inertiaLock) : []);
 
@@ -435,7 +442,7 @@ try {
 }
 
 if (!stopped) {
-    for (const name of updated) {
+    for (const name of [...updated, ...teamKitsFor(updated, manifest)]) {
         await run('node', [path.join(rootDir, 'scripts', 'survey.js'), `--${name}`, '--tend'], { cwd: rootDir }).catch(() => failures.push(manifest.kits[name].label));
     }
 

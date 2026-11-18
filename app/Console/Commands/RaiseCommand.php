@@ -17,7 +17,7 @@ class RaiseCommand extends Command
     /**
      * Files a raised kit keeps between raises, so installs and local state survive.
      */
-    private const array KEEP = ['.git', '.env', 'vendor', 'node_modules', 'database/database.sqlite'];
+    public const array KEEP = ['.git', '.env', 'vendor', 'node_modules', 'database/database.sqlite'];
 
     /**
      * @var string
