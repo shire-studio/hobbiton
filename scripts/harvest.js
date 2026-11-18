@@ -27,6 +27,7 @@ import {
     formatFindings,
     formatHolds,
     groupFindings,
+    isHold,
     lockMismatches,
     npmMajors,
     npmZeroMinors,
@@ -272,7 +273,7 @@ async function collectFindings(dir, label) {
     for (const { name, version } of catalogEntries(workspace)) {
         const latest = (await capture('pnpm', ['view', name, 'version'], dir)).trim();
 
-        latest !== version && holds.push({ name, from: version, to: latest, kit: label });
+        isHold(version) && latest !== version && holds.push({ name, from: version, to: latest, kit: label });
     }
 
     stale.push(...staleExcludes(workspace, fs.readFileSync(path.join(dir, 'pnpm-lock.yaml'), 'utf-8')).map(entry => `${entry} (${label})`));
