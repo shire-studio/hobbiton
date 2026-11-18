@@ -15,10 +15,6 @@
         "base": "api",
         "sha1": "cc979636c316ecf0cce86eb6defcfc16f51f006c"
     },
-    "teams-api/README.md": {
-        "base": "api",
-        "sha1": "2384d294eedea23997683e4e511d87c1b77b0faf"
-    },
     "teams-api/routes/api.php": {
         "base": "api",
         "sha1": "bb23f6e3ad2b2ce937e8711e31a85886899a490c"
@@ -191,10 +187,6 @@
         "base": "inertia",
         "sha1": "e6daa41622ccf7d506b1c3f094f20396b9280c10"
     },
-    "teams-inertia/README.md": {
-        "base": "inertia",
-        "sha1": "500d7bd89fbce1d153f24cca31e3d70446295395"
-    },
     "teams-inertia/routes/web.php": {
         "base": "inertia",
         "sha1": "4b4697ddbb83e9f7e07fd2f6cf8a4b75ec8dd3e0"
@@ -214,10 +206,6 @@
     "teams-livewire/bootstrap/app.php": {
         "base": "livewire",
         "sha1": "16a906cfc5d5b58614f661bd9ab7625c0ef73b2f"
-    },
-    "teams-livewire/README.md": {
-        "base": "livewire",
-        "sha1": "2e9ad9b779491d55018ea2b7fb0c7d483583e47c"
     },
     "teams-livewire/resources/views/components/desktop-user-menu.blade.php": {
         "base": "livewire",
