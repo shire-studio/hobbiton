@@ -94,8 +94,6 @@ export async function prepareKit(name) {
         fs.copyFileSync(path.join(dir, '.env.example'), path.join(dir, '.env'));
     }
 
-    // The lock's content hash covers composer.json, which raising personalises per kit.
-    await run('composer', ['update', '--lock', '--no-interaction', '--no-progress'], { cwd: dir });
     await run('composer', ['install', '--no-interaction', '--no-progress'], { cwd: dir });
 
     return dir;

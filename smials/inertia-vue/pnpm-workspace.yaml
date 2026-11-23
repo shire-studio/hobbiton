@@ -1,5 +1,6 @@
 allowBuilds:
   vue-demi: true
+minimumReleaseAge: 2880
 minimumReleaseAgeExclude:
   - playwright-core@1.63.0
   - playwright@1.63.0

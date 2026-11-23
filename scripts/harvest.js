@@ -32,6 +32,7 @@ import {
     npmMajors,
     npmZeroMinors,
     staleExcludes,
+    withCatalogEntry,
     withSiblings,
 } from './outdated.js';
 import {
@@ -52,6 +53,7 @@ const ATTEMPTS = 3;
 const TAZE = path.join(rootDir, 'node_modules', '.bin', 'taze');
 const TAZE_FLAGS = ['--no-github-actions', '--no-node-version', '--maturity-period', '2'];
 const INERTIA = ['vue', 'react', 'svelte'];
+const VITE_CORE = '@voidzero-dev/vite-plus-core';
 const TRUST_BACKUP = 'vet.json.harvest';
 const ROOT_FILES = ['composer.json', 'composer.lock', 'vet.json', 'package.json', 'pnpm-lock.yaml'];
 
@@ -247,6 +249,28 @@ async function updateNpm(dir) {
 
     await run(TAZE, ['minor', '-w', ...TAZE_FLAGS, ...(zeroMinors.length > 0 ? ['-x', zeroMinors.join(',')] : [])], { cwd: dir });
     await run('pnpm', ['update'], { cwd: dir });
+    await pairViteCore(dir);
+}
+
+/**
+ * vite-plus requires the exact vite-plus-core it was built with, and the catalog's `vite` alias must name the same one.
+ * Taze bumps the two separately, and sees a jump in core's version line as a major, so the alias follows vite-plus here.
+ */
+async function pairViteCore(dir) {
+    const vitePlusFile = path.join(dir, 'node_modules', 'vite-plus', 'package.json');
+    const workspaceFile = path.join(dir, 'pnpm-workspace.yaml');
+
+    if (!fs.existsSync(vitePlusFile) || !fs.existsSync(workspaceFile)) {
+        return;
+    }
+
+    const workspace = fs.readFileSync(workspaceFile, 'utf-8');
+    const paired = withCatalogEntry(workspace, 'vite', readJson(vitePlusFile).dependencies.vite);
+
+    if (paired !== workspace) {
+        fs.writeFileSync(workspaceFile, paired);
+        await run('pnpm', ['install'], { cwd: dir });
+    }
 }
 
 async function collectFindings(dir, label) {
@@ -270,7 +294,8 @@ async function collectFindings(dir, label) {
 
     const workspace = fs.readFileSync(workspaceFile, 'utf-8');
 
-    for (const { name, version } of catalogEntries(workspace)) {
+    // The vite-plus-core pin follows vite-plus, so it is never held on purpose.
+    for (const { name, version } of catalogEntries(workspace).filter(({ name }) => name !== VITE_CORE)) {
         const latest = (await capture('pnpm', ['view', name, 'version'], dir)).trim();
 
         isHold(version) && latest !== version && holds.push({ name, from: version, to: latest, kit: label });

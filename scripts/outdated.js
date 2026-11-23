@@ -98,6 +98,26 @@ export function catalogEntries(workspaceYaml) {
     });
 }
 
+/**
+ * The workspace with one catalog entry set to the given spec, and every other line untouched.
+ */
+export function withCatalogEntry(workspaceYaml, key, spec) {
+    let inside = false;
+
+    return workspaceYaml
+        .split('\n')
+        .map(line => {
+            if (/^\S/.test(line)) {
+                inside = line.trim() === 'catalog:';
+
+                return line;
+            }
+
+            return inside && line.trim().startsWith(`${key}: `) ? `${line.match(/^\s*/)[0]}${key}: ${spec}` : line;
+        })
+        .join('\n');
+}
+
 export function staleExcludes(workspaceYaml, lockText) {
     return block(workspaceYaml, 'minimumReleaseAgeExclude')
         .map(line => unquote(line.replace(/^- /, '')))

@@ -12,6 +12,7 @@ import {
     npmMajors,
     npmZeroMinors,
     staleExcludes,
+    withCatalogEntry,
     withSiblings,
 } from '../../scripts/outdated.js';
 
@@ -101,6 +102,16 @@ test('catalogEntries reads the catalog and resolves npm aliases', () => {
         { name: '@voidzero-dev/vite-plus-core', version: '0.3.1' },
         { name: 'vite-plus', version: '0.3.1' },
     ]);
+});
+
+test('withCatalogEntry replaces one catalog entry and leaves the rest alone', () => {
+    const paired = withCatalogEntry(workspace, 'vite', 'npm:@voidzero-dev/vite-plus-core@8.3.8000');
+
+    assert.deepEqual(catalogEntries(paired), [
+        { name: '@voidzero-dev/vite-plus-core', version: '8.3.8000' },
+        { name: 'vite-plus', version: '0.3.1' },
+    ]);
+    assert.equal(paired.replace('8.3.8000', '0.3.1'), workspace);
 });
 
 test('staleExcludes finds quoted and bare excludes the lock no longer holds', () => {
