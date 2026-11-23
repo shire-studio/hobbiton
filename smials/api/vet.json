@@ -37,24 +37,24 @@
             "hash": "tree-v2:19182f95f7c4750192e6cfe25b1f769686638fc59e5517710472b9f2b68315e7"
         },
         "guzzlehttp/guzzle": {
-            "version": "8.5.0",
-            "hash": "tree-v2:d831b1b9d2c933ad2bfa364f3302cb622236c120e15360e325087b2a0b8a4b42"
+            "version": "8.5.4",
+            "hash": "tree-v2:4310516f615ae771198d009550898e1e2c7db03c17e6813197df22319408653b"
         },
         "guzzlehttp/promises": {
-            "version": "3.1.0",
-            "hash": "tree-v2:90beef2946a71a82b0c7762474c161fcfd223f726458547690a7b2de50399e0e"
+            "version": "3.2.0",
+            "hash": "tree-v2:fd8a699e61073a8e41ad69f39258f6127e8b5f4f23e8c86eb835d0c46402a9be"
         },
         "guzzlehttp/psr7": {
-            "version": "3.4.0",
-            "hash": "tree-v2:6ee8e6361458edf21cd482d053c59adfffb144b5075744add6f2e1cc30ec9f98"
+            "version": "3.5.1",
+            "hash": "tree-v2:689a810e7350ede902c5371b14127c48a781ead19a4fb1210882eb1e0394cecb"
         },
         "guzzlehttp/uri-template": {
             "version": "v2.0.1",
             "hash": "tree-v2:c5f332afdb641a8e51865f5fe4448a3c4c2d9ec959e76360003b5489525deaf6"
         },
         "laravel/framework": {
-            "version": "v13.42.0",
-            "hash": "tree-v2:e83d2ceff9e16e7a221314e401371505fbe3c0bfbf56f0af76230eb7846852fd"
+            "version": "v13.43.0",
+            "hash": "tree-v2:3d8c081207c628cfc345785b40ea0af302de612c3534bc43741d7d52b9fbfa27"
         },
         "laravel/prompts": {
             "version": "v0.3.27",
@@ -375,16 +375,16 @@
             "hash": "tree-v2:a4979ba6a1811759bdd01063de9202136fc532059b277e711ddabffe7f370224"
         },
         "laravel/mcp": {
-            "version": "v1.2.0",
-            "hash": "tree-v2:088bc108c8ebbb90f2cd3905b2b4ce176c8ea6778131908a458c86ac4fdca239"
+            "version": "v1.2.1",
+            "hash": "tree-v2:a22e169d909c266450a7a4af68e480ac76d435d522eac792ebf05c432df587cd"
         },
         "laravel/pail": {
             "version": "v1.3.0",
             "hash": "tree-v2:85259b7c61fe47f3a937c2bcf404d0c81d600203922bf1002a6b3547999b2bca"
         },
         "laravel/pao": {
-            "version": "v1.1.5",
-            "hash": "tree-v2:f9d02c17b11ad280b6feb8753ff85b622573870aa21aa26ab8d126d9549c0a52"
+            "version": "v1.1.6",
+            "hash": "tree-v2:3a858c1eab83b1e1113b9b8ce9c27564f88e64cab7c18b9562ef96eea32a6e23"
         },
         "laravel/pint": {
             "version": "v1.32.3",
@@ -415,8 +415,8 @@
             "hash": "tree-v2:84769b07bae8f30c5399dee2f653eee5047d28b861fc12caee9e423ec782a955"
         },
         "pestphp/pest": {
-            "version": "v5.3.6",
-            "hash": "tree-v2:f52691faff7362c31f2fa9d2a030869d33bff3daa22b4dee8aaf780016ab51e7"
+            "version": "v5.3.7",
+            "hash": "tree-v2:5b240a3e4d140320f782876f6798e9d0141196b888df920c650ee46a41c7eb16"
         },
         "pestphp/pest-plugin": {
             "version": "v5.0.0",
@@ -451,8 +451,8 @@
             "hash": "tree-v2:185dcb944515b5af5eff4e1ecfda3e79cd9b5d44a83bb10ab31039acfc930c96"
         },
         "pestphp/pest-plugin-type-coverage": {
-            "version": "v5.1.0",
-            "hash": "tree-v2:4c88085a56d5511f415550fc59d23bb54486edb3f9d46a42c89d325fa0535262"
+            "version": "v5.1.1",
+            "hash": "tree-v2:302fa4895e2449aaae4e31e03a54db3302fb24d4c3bbf2c6119773e7e4286b63"
         },
         "phar-io/manifest": {
             "version": "2.0.4",
@@ -479,8 +479,8 @@
             "hash": "tree-v2:8147f596530cccea6efaf056a1e1d06141152407bb1e8a5a90a79a0a1874ab6c"
         },
         "phpstan/phpstan": {
-            "version": "2.3.6",
-            "hash": "tree-v2:24d9299ad968a955644f90a2734dcaff0f7e70586ab413cc71ef792b76743019"
+            "version": "2.3.7",
+            "hash": "tree-v2:0691dd92981e540a8ab99e2c1f9fadfd093c5b6f25b981a61e8c244e948e532e"
         },
         "phpunit/php-code-coverage": {
             "version": "14.5.2",
