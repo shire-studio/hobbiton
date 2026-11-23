@@ -103,8 +103,10 @@
             : login()}
           class="underline underline-offset-4"
           tabindex={6}
-          data-test="login-link">Log in</TextLink
+          data-test="login-link"
         >
+          Log in
+        </TextLink>
       </div>
     {/snippet}
   </Form>

@@ -85,8 +85,10 @@
             <UiButton
               type="submit"
               disabled={processing}
-              data-test="update-profile-button">Save</UiButton
+              data-test="update-profile-button"
             >
+              Save
+            </UiButton>
           </div>
         {/snippet}
       </Form>

@@ -2,7 +2,7 @@
  * Majors, deliberate holds and the report, for harvest.
  *
  * A finding is { name, from, to, kit }. A major is a semver major or a minor of a 0.x package, and
- * a hold is any Composer constraint that is not a caret range (or an npm catalog pin). Harvest
+ * a hold is any Composer constraint that is not a caret range (or an exact npm catalog pin). Harvest
  * applies neither, it only reports them.
  *
  * pnpm-workspace.yaml is small and machine written, so it is read line by line rather than with a YAML parser.
@@ -96,6 +96,26 @@ export function catalogEntries(workspaceYaml) {
 
         return alias ? { name: alias[1], version: alias[2] } : { name: unquote(key), version: spec };
     });
+}
+
+/**
+ * The workspace with one catalog entry set to the given spec, and every other line untouched.
+ */
+export function withCatalogEntry(workspaceYaml, key, spec) {
+    let inside = false;
+
+    return workspaceYaml
+        .split('\n')
+        .map(line => {
+            if (/^\S/.test(line)) {
+                inside = line.trim() === 'catalog:';
+
+                return line;
+            }
+
+            return inside && line.trim().startsWith(`${key}: `) ? `${line.match(/^\s*/)[0]}${key}: ${spec}` : line;
+        })
+        .join('\n');
 }
 
 export function staleExcludes(workspaceYaml, lockText) {
