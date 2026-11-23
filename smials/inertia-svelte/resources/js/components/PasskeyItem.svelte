@@ -71,9 +71,9 @@
       <UiDialogFooter class="gap-2">
         <UiDialogClose asChild>
           {#snippet children(props)}
-            <UiButton variant="secondary" onclick={props.onClick}
-              >Cancel</UiButton
-            >
+            <UiButton variant="secondary" onclick={props.onClick}>
+              Cancel
+            </UiButton>
           {/snippet}
         </UiDialogClose>
         <UiButton

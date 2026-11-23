@@ -112,8 +112,10 @@
           <TextLink
             href={register({ query: { invitation: teamInvitation?.code } })}
             tabindex={5}
-            data-test="register-link">Sign up</TextLink
+            data-test="register-link"
           >
+            Sign up
+          </TextLink>
         </div>
       {/if}
     {/snippet}

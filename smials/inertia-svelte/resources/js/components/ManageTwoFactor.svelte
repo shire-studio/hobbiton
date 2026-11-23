@@ -42,9 +42,9 @@
           {:else}
             <Form {...enable.form()} onSuccess={() => (showSetupModal = true)}>
               {#snippet children({ processing })}
-                <UiButton type="submit" disabled={processing}
-                  >Enable 2FA</UiButton
-                >
+                <UiButton type="submit" disabled={processing}>
+                  Enable 2FA
+                </UiButton>
               {/snippet}
             </Form>
           {/if}

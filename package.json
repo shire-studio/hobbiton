@@ -10,7 +10,7 @@
     },
     "devDependencies": {
         "chokidar": "^6.0.0",
-        "concurrently": "^10.0.6",
+        "concurrently": "^10.0.7",
         "taze": "^21.3.0"
     }
 }

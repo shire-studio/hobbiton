@@ -137,7 +137,7 @@ Team kits are not updated, since they share their base kit's lock files. They ar
 
 Vet asks about each new release once per run. A release you trust in one kit is trusted in every later kit that installs it. A release you leave unticked is held at its current version in every kit for the rest of the run, and the rest of the update goes ahead.
 
-Nothing that needs a decision is applied. At the end, harvest lists the majors (including a minor of a `0.x` package), the deliberate holds such as `laravel/framework ~13.34.0` and the `vite-plus` catalog pin with what is available, the releases you declined, any difference between the Inertia kits' PHP versions, and `minimumReleaseAgeExclude` entries that no longer match a locked version. Upgrade those by hand.
+Nothing that needs a decision is applied. At the end, harvest lists the majors (including a minor of a `0.x` package), any deliberate holds (a Composer constraint without a caret, or an exact catalog pin) with what is available, the releases you declined, any difference between the Inertia kits' PHP versions, and `minimumReleaseAgeExclude` entries that no longer match a locked version. Upgrade those by hand.
 
 Harvest refuses to start when a kit in `raised/`, or its team kit, has changes that are not yet in `smials/`, since raising would destroy them. It never commits, so review the changes and commit them yourself.
 

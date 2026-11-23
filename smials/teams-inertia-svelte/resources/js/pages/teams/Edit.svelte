@@ -142,8 +142,9 @@
             >
               <div class="flex items-center gap-4">
                 <UiAvatar class="h-10 w-10">
-                  <UiAvatarFallback>{getInitials(member.name)}</UiAvatarFallback
-                  >
+                  <UiAvatarFallback>
+                    {getInitials(member.name)}
+                  </UiAvatarFallback>
                 </UiAvatar>
                 <div>
                   <div class="font-medium">

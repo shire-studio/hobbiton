@@ -23,8 +23,10 @@
           <UiButton
             variant="destructive"
             data-test="delete-user-button"
-            onclick={props.onClick}>Delete account</UiButton
+            onclick={props.onClick}
           >
+            Delete account
+          </UiButton>
         {/snippet}
       </UiDialogTrigger>
       <UiDialogContent>
@@ -45,9 +47,9 @@
             validate,
           })}
             <div class="space-y-3">
-              <UiDialogTitle
-                >Are you sure you want to delete your account?</UiDialogTitle
-              >
+              <UiDialogTitle>
+                Are you sure you want to delete your account?
+              </UiDialogTitle>
               <UiDialogDescription>
                 Once your account is deleted, all of its resources and data will
                 also be permanently deleted. Please enter your password to

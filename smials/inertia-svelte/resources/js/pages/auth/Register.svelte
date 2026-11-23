@@ -92,8 +92,10 @@
         <TextLink
           href={login()}
           class="underline underline-offset-4"
-          tabindex={6}>Log in</TextLink
+          tabindex={6}
         >
+          Log in
+        </TextLink>
       </div>
     {/snippet}
   </Form>
