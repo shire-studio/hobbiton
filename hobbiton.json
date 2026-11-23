@@ -1,5 +1,5 @@
 {
-    "$comment": "Hobbiton raises every Shire Studio starter kit from shared smials. Each kit lists its smials in order, later smials override earlier ones. raise, tend, survey, deliver and both CI workflows read this file.",
+    "$comment": "Hobbiton raises every Shire Studio starter kit from shared smials. Each kit lists its smials in order, later smials override earlier ones. A team kit names its base kit and takes its repository, node and replacements, and its exclude adds to the base kit's. raise, tend, survey, deliver and both CI workflows read this file.",
     "kits": {
         "vue": {
             "label": "Vue",
@@ -102,6 +102,17 @@
                 "{{components}}": "JSON resources"
             }
         },
+        "api-teams": {
+            "label": "API Teams",
+            "base": "api",
+            "smials": [
+                "common",
+                "auth",
+                "api",
+                "teams",
+                "teams-api"
+            ]
+        },
         "blade": {
             "label": "Blade",
             "repository": "shire-studio/laravel-starter-kit-blade",
@@ -115,6 +126,64 @@
                 "{{framework}}": "Blade",
                 "{{components}}": "Blade"
             }
+        },
+        "vue-teams": {
+            "label": "Vue Teams",
+            "base": "vue",
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-vue",
+                "teams",
+                "teams-web",
+                "teams-inertia",
+                "teams-inertia-vue"
+            ]
+        },
+        "react-teams": {
+            "label": "React Teams",
+            "base": "react",
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-react",
+                "teams",
+                "teams-web",
+                "teams-inertia",
+                "teams-inertia-react"
+            ]
+        },
+        "svelte-teams": {
+            "label": "Svelte Teams",
+            "base": "svelte",
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "inertia",
+                "inertia-svelte",
+                "teams",
+                "teams-web",
+                "teams-inertia",
+                "teams-inertia-svelte"
+            ]
+        },
+        "livewire-teams": {
+            "label": "Livewire Teams",
+            "base": "livewire",
+            "smials": [
+                "common",
+                "auth",
+                "web",
+                "livewire",
+                "teams",
+                "teams-web",
+                "teams-livewire"
+            ]
         }
     },
     "replacementPaths": [
