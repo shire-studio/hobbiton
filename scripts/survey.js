@@ -60,8 +60,6 @@ for (const name of kits) {
 
         if (kit.node) {
             await run('pnpm', ['install'], { cwd: dir });
-            // Each Playwright release needs its own browser build, so the kit's Playwright installs the one it runs.
-            await run('pnpm', ['exec', 'playwright', 'install', 'chromium'], { cwd: dir });
             await run('pnpm', ['run', 'build'], { cwd: dir });
         }
 
