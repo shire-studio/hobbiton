@@ -77,9 +77,9 @@
           <InputError message={errors.recovery_code} />
         {/if}
 
-        <UiButton type="submit" class="w-full" disabled={processing}
-          >Continue</UiButton
-        >
+        <UiButton type="submit" class="w-full" disabled={processing}>
+          Continue
+        </UiButton>
 
         <div class="text-center text-sm text-muted-foreground">
           <span>or you can </span>
