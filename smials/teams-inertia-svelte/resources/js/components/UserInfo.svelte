@@ -26,8 +26,10 @@
     {#if team}
       <span
         class="truncate text-xs text-muted-foreground"
-        data-test="current-team-name">{team.name}</span
+        data-test="current-team-name"
       >
+        {team.name}
+      </span>
     {:else if showEmail}
       <span class="truncate text-xs text-muted-foreground">{user.email}</span>
     {/if}

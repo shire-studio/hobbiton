@@ -117,7 +117,7 @@
     },
     "teams-inertia-svelte/resources/js/pages/auth/Register.svelte": {
         "base": "inertia-svelte",
-        "sha1": "e1775d349f11eb1c320f7ee35ccb03576c01284d"
+        "sha1": "2270fdee6f38eafe98cc92d8e50612990f98b2de"
     },
     "teams-inertia-svelte/resources/js/pages/Dashboard.svelte": {
         "base": "inertia-svelte",
